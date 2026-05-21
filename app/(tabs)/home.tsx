@@ -1,47 +1,49 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from "expo-router";
+import { StyleSheet } from "react-native";
 
-import { diamomTheme } from '@/theme';
+import {
+  DiaScreen,
+  IllustrationPanel,
+  ListRowCard,
+  PageHeader,
+  SurfaceCard,
+} from "@/components/dia-ui";
+import { HOME_SHORTCUTS } from "@/features/materials/materials-content";
+import { diamomTheme } from "@/theme";
 
 export default function HomeDashboardScreen() {
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <Text style={styles.eyebrow}>Beranda</Text>
-        <Text style={styles.title}>Halo, Ibu</Text>
-        <Text style={styles.body}>
-          Dashboard DiaMom siap menampilkan latihan, materi, dan riwayat setelah onboarding selesai.
-        </Text>
-      </View>
-    </SafeAreaView>
+    <DiaScreen>
+      <PageHeader
+        eyebrow="Menu Utama"
+        title="Halo, Ibu Hebat!"
+        description="Mari persiapkan persalinan yang sehat dan nyaman dengan materi, gerakan, dan pemantauan VAS sederhana."
+      />
+
+      <IllustrationPanel
+        badge="DM"
+        title="Persiapan persalinan yang lembut, aman, dan terarah."
+        detail="DiaMom membantu Anda belajar, bergerak, dan memantau kenyamanan diri secara mandiri."
+      />
+
+      <SurfaceCard style={styles.cardGroup}>
+        {HOME_SHORTCUTS.map((shortcut) => (
+          <ListRowCard
+            description={shortcut.description}
+            key={shortcut.id}
+            onPress={() => router.push(shortcut.href)}
+            step={shortcut.step}
+            title={shortcut.title}
+          />
+        ))}
+      </SurfaceCard>
+    </DiaScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: diamomTheme.colors.background,
-  },
-  container: {
-    flex: 1,
+  cardGroup: {
     gap: diamomTheme.spacing.md,
-    justifyContent: 'center',
-    paddingHorizontal: diamomTheme.spacing.xl,
-  },
-  eyebrow: {
-    color: diamomTheme.colors.accent,
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  title: {
-    color: diamomTheme.colors.text,
-    fontSize: 32,
-    fontWeight: '800',
-    lineHeight: 40,
-  },
-  body: {
-    color: diamomTheme.colors.mutedText,
-    fontSize: 17,
-    lineHeight: 26,
+    padding: diamomTheme.spacing.sm,
   },
 });

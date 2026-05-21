@@ -1,7 +1,7 @@
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
-import { diamomTheme } from '@/theme';
+import { diamomTheme } from "@/theme";
 
 export default function RootLayout() {
   return (

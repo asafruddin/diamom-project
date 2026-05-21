@@ -1,7 +1,12 @@
 import { router } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, Text, View } from "react-native";
 
+import {
+    ActionButton,
+    DiaScreen,
+    IllustrationPanel,
+    InfoPill,
+} from "@/components/dia-ui";
 import { getInitialDiaMomRoute } from "@/features/entry/entry-routing";
 import { useProfileStore } from "@/features/onboarding/profile-store";
 import { diamomTheme } from "@/theme";
@@ -23,91 +28,52 @@ export default function DiaMomEntryScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <View style={styles.identityMark}>
-          <Text style={styles.identityInitials}>DM</Text>
-        </View>
-
-        <View style={styles.copyGroup}>
-          <Text style={styles.eyebrow}>Pendamping ibu hamil</Text>
-          <Text style={styles.title}>DiaMom</Text>
-          <Text style={styles.subtitle}>
-            Ruang belajar dan latihan pernapasan yang membantu ibu mengenal
-            tubuhnya dengan tenang.
-          </Text>
-        </View>
-
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Mulai menggunakan DiaMom"
-          onPress={handleStart}
-          style={({ pressed }) => [
-            styles.primaryButton,
-            pressed && styles.primaryButtonPressed,
-          ]}
-        >
-          <Text style={styles.primaryButtonText}>Mulai</Text>
-        </Pressable>
+    <DiaScreen contentContainerStyle={styles.container} scroll={false}>
+      <View style={styles.copyGroup}>
+        <InfoPill label="Persalinan Nyaman, Ibu Bahagia" />
+        <Text style={styles.brand}>DiaMom App</Text>
+        <Text style={styles.subtitle}>
+          Teman belajar untuk napas, Labor Dance, dan pemantauan kenyamanan diri
+          menjelang persalinan.
+        </Text>
       </View>
-    </SafeAreaView>
+
+      <IllustrationPanel
+        badge="DM"
+        title="Belajar dengan tenang, bergerak dengan lembut."
+        detail="DiaMom tidak menyimpan nama, usia kehamilan, atau kontak pribadi Anda."
+      />
+
+      <View style={styles.ctaGroup}>
+        <ActionButton
+          accessibilityLabel="Mulai menggunakan DiaMom"
+          label="Mulai"
+          onPress={handleStart}
+        />
+      </View>
+    </DiaScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: diamomTheme.colors.background },
   container: {
     flex: 1,
-    justifyContent: "center",
     gap: diamomTheme.spacing.xl,
-    paddingHorizontal: diamomTheme.spacing.xl,
-  },
-  identityMark: {
-    alignItems: "center",
-    alignSelf: "flex-start",
-    backgroundColor: diamomTheme.colors.primary,
-    borderRadius: 8,
-    height: 64,
     justifyContent: "center",
-    width: 64,
-  },
-  identityInitials: {
-    color: diamomTheme.colors.onPrimary,
-    fontSize: 22,
-    fontWeight: "800",
   },
   copyGroup: { gap: diamomTheme.spacing.sm },
-  eyebrow: {
-    color: diamomTheme.colors.accent,
-    fontSize: 15,
-    fontWeight: "700",
-  },
-  title: {
+  brand: {
     color: diamomTheme.colors.text,
-    fontSize: 44,
+    fontSize: 42,
     fontWeight: "800",
-    lineHeight: 52,
+    lineHeight: 50,
   },
   subtitle: {
     color: diamomTheme.colors.mutedText,
     fontSize: 17,
     lineHeight: 26,
-    maxWidth: 360,
   },
-  primaryButton: {
-    alignItems: "center",
-    alignSelf: "flex-start",
-    backgroundColor: diamomTheme.colors.primary,
-    borderRadius: 8,
-    minHeight: 52,
-    minWidth: 132,
-    justifyContent: "center",
-    paddingHorizontal: diamomTheme.spacing.lg,
-  },
-  primaryButtonPressed: { opacity: 0.78 },
-  primaryButtonText: {
-    color: diamomTheme.colors.onPrimary,
-    fontSize: 17,
-    fontWeight: "800",
+  ctaGroup: {
+    marginTop: diamomTheme.spacing.sm,
   },
 });
