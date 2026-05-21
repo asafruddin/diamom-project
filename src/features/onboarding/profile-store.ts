@@ -1,17 +1,6 @@
-
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-export interface UserProfile {
-  name: string;
-  emergencyContactName: string;
-  emergencyContactNumber: string;
-  pregnancyWeek?: string;
-  estimatedDueDate?: string;
-  isFirstPregnancy?: boolean;
-  hasProviderApproval?: boolean;
-}
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 export interface SafetyScreeningAnswers {
   signs: string[];
@@ -19,29 +8,23 @@ export interface SafetyScreeningAnswers {
   hasRisk: boolean;
 }
 
-export interface ProfileState {
-  profile: Partial<UserProfile> | null;
-  hasCompletedProfile: boolean;
+// DiaMom is fully anonymous — no user profile, login, or registration.
+// Only onboarding consent and safety screening state is persisted.
+export interface OnboardingState {
   hasAcceptedDisclaimer: boolean;
   hasCompletedSafetyScreening: boolean;
   safetyScreening: SafetyScreeningAnswers | null;
-  updateProfile: (data: Partial<UserProfile>) => void;
-  completeOnboarding: () => void;
   acceptDisclaimer: () => void;
   saveSafetyScreening: (signs: string[]) => void;
-  clearProfile: () => void;
+  clearOnboardingData: () => void;
 }
 
-export const useProfileStore = create<ProfileState>()(
+export const useProfileStore = create<OnboardingState>()(
   persist(
     (set) => ({
-      profile: null,
-      hasCompletedProfile: false,
       hasAcceptedDisclaimer: false,
       hasCompletedSafetyScreening: false,
       safetyScreening: null,
-      updateProfile: (data) => set((state) => ({ profile: { ...state.profile, ...data } })),
-      completeOnboarding: () => set({ hasCompletedProfile: true }),
       acceptDisclaimer: () => set({ hasAcceptedDisclaimer: true }),
       saveSafetyScreening: (signs) => {
         const hasRisk = signs.length > 0;
@@ -54,11 +37,16 @@ export const useProfileStore = create<ProfileState>()(
           hasCompletedSafetyScreening: true,
         });
       },
-      clearProfile: () => set({ profile: null, hasCompletedProfile: false, hasAcceptedDisclaimer: false, hasCompletedSafetyScreening: false, safetyScreening: null }),
+      clearOnboardingData: () =>
+        set({
+          hasAcceptedDisclaimer: false,
+          hasCompletedSafetyScreening: false,
+          safetyScreening: null,
+        }),
     }),
     {
-      name: 'diamom-profile-storage',
+      name: "diamom-profile-storage",
       storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
+    },
+  ),
 );

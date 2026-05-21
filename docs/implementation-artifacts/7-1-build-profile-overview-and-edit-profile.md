@@ -1,21 +1,22 @@
-# Story 7.1: Build Profile Overview and Edit Profile
+# Story 7.1: Build Settings Screen
+
+**Note: Renamed from "Build Profile Overview and Edit Profile" — PRD update 2026-05-21 removed all profile data collection.**
 
 Status: ready-for-dev
 
 ## Story
 
 As a user,
-I want to view and update my profile,
-so that DiaMom reflects my current pregnancy information.
+I want a settings screen,
+so that I can manage app preferences in one place.
 
 ## Acceptance Criteria
 
-1. **Given** the user opens `Profil`  
-   **When** profile data exists  
-   **Then** the app shows mother name, pregnancy week, estimated due date, emergency contact summary, activity history shortcut, and language preference  
-   **And** the user can edit and save profile fields with validation  
-   **And** changing pregnancy week updates local profile state  
-   **And** invalid edits show supportive errors.
+1. **Given** the user opens `Pengaturan`  
+   **When** the settings screen loads  
+   **Then** it shows voice guide, notification, language, privacy policy, terms/disclaimer, and delete local data options  
+   **And** no personal profile or emergency contact fields are shown  
+   **And** all settings work offline.
 
 ## Tasks / Subtasks
 

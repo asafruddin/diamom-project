@@ -1,7 +1,7 @@
 ---
 project_name: DiaMom
 user_name: Achmad
-date: '2026-05-21'
+date: "2026-05-21"
 sections_completed:
   - technology_stack
   - language_rules
@@ -21,18 +21,18 @@ _Lean implementation rules for DiaMom. Read `AGENTS.md` first for product bounda
 
 ## Technology Stack & Versions
 
-| Layer | Version / tool |
-|---|---|
-| Expo SDK | `~55.0.25` |
-| React Native | `0.83.6` (New Architecture required) |
-| React | `19.2.0` |
-| Expo Router | `~55.0.15` (`expo-router/entry`, typed routes enabled) |
-| Node.js | `20.19.x` minimum |
-| Package manager | `pnpm@11.1.1` |
-| TypeScript | `~5.9.2`, `strict: true` |
-| State | Zustand `^5.0.13` + `persist` + AsyncStorage |
-| Tests | Node test runner + `tsx` (not Jest yet) |
-| Lint | `eslint-config-expo` via `pnpm lint` |
+| Layer           | Version / tool                                         |
+| --------------- | ------------------------------------------------------ |
+| Expo SDK        | `~55.0.25`                                             |
+| React Native    | `0.83.6` (New Architecture required)                   |
+| React           | `19.2.0`                                               |
+| Expo Router     | `~55.0.15` (`expo-router/entry`, typed routes enabled) |
+| Node.js         | `20.19.x` minimum                                      |
+| Package manager | `pnpm@11.1.1`                                          |
+| TypeScript      | `~5.9.2`, `strict: true`                               |
+| State           | Zustand `^5.0.13` + `persist` + AsyncStorage           |
+| Tests           | Node test runner + `tsx` (not Jest yet)                |
+| Lint            | `eslint-config-expo` via `pnpm lint`                   |
 
 **Expo install rule:** `pnpm expo install <pkg>` for Expo/RN native packages — never hand-pick SDK versions.
 
@@ -94,23 +94,22 @@ _Lean implementation rules for DiaMom. Read `AGENTS.md` first for product bounda
 - **Never** tell users to continue after `emergency_stop` or warning-sign blocks.
 - **Never** put business rules in `app/*.tsx` — extract to `src/features/`.
 - **Never** claim medical outcomes in UI; VAS = self-reported comfort only.
-- Entry to home requires all three flags: `hasCompletedProfile`, `hasAcceptedDisclaimer`, `hasCompletedSafetyScreening`.
+- Entry to home requires both flags: `hasAcceptedDisclaimer` and `hasCompletedSafetyScreening`. No profile gate — DiaMom is fully anonymous.
 
 ---
 
 ## Brownfield Entry Points
 
-| Concern | File |
-|---|---|
-| Initial route | `src/features/entry/entry-routing.ts` |
-| Profile / onboarding state | `src/features/onboarding/profile-store.ts` |
-| Form validation | `src/features/onboarding/validation.ts` |
-| Safety gating | `src/features/session/safety-gating.ts` |
-| Safety copy constants | `src/constants/safety.ts` |
-| Privacy / redaction | `src/constants/privacy.ts`, `src/lib/sensitive-data.ts` |
-| Claim-safe copy | `src/constants/claim-safe-copy.ts`, `src/lib/copy-guardrails.ts` |
-| Analytics | `src/lib/analytics.ts` |
-| Theme | `src/theme/index.ts`, `src/constants/theme.ts` |
+| Concern                    | File                                                             |
+| -------------------------- | ---------------------------------------------------------------- |
+| Initial route              | `src/features/entry/entry-routing.ts`                            |
+| Profile / onboarding state | `src/features/onboarding/profile-store.ts` (`OnboardingState`)   |
+| Safety gating              | `src/features/session/safety-gating.ts`                          |
+| Safety copy constants      | `src/constants/safety.ts`                                        |
+| Privacy / redaction        | `src/constants/privacy.ts`, `src/lib/sensitive-data.ts`          |
+| Claim-safe copy            | `src/constants/claim-safe-copy.ts`, `src/lib/copy-guardrails.ts` |
+| Analytics                  | `src/lib/analytics.ts`                                           |
+| Theme                      | `src/theme/index.ts`, `src/constants/theme.ts`                   |
 
 ---
 

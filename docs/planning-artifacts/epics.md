@@ -22,9 +22,9 @@ This document provides the complete epic and story breakdown for DiaMom Mobile A
 
 FR1: Show a branded DiaMom splash/welcome screen with a `Mulai` CTA; route first-time users to onboarding and returning users to home.
 
-FR2: Collect onboarding and pregnancy profile information, including name, pregnancy week, estimated due date, first pregnancy status, doctor/midwife approval confirmation, and emergency contact.
+FR2: Show an onboarding introduction on first launch. No user profile, login, or registration is required. The app is fully anonymous — no name, pregnancy week, due date, doctor approval, or emergency contact is collected or stored.
 
-FR3: Require valid onboarding data and disclaimer consent before users can access activity features.
+FR3: Require safety screening completion and disclaimer consent before users can access activity features.
 
 FR4: Provide first-use safety screening for activity risk factors.
 
@@ -84,7 +84,7 @@ FR31: Provide activity history list, activity detail, delete-record behavior, no
 
 FR32: Provide VAS progress chart with weekly/monthly filtering, before/after trends, average before score, average after score, total completed sessions, and best improvement.
 
-FR33: Provide profile overview, edit profile, pregnancy detail, emergency contact, app settings, language settings, voice guide settings, notification settings, privacy/data page, privacy policy, terms/disclaimer, and delete local data.
+FR33: Provide app settings, language settings, voice guide settings, notification settings, privacy/data page, privacy policy, terms/disclaimer, and delete local data. No personal profile or emergency contact fields are collected or managed.
 
 FR34: Provide voice guide settings for voice on/off, background music on/off, volume, and instruction speed.
 
@@ -234,6 +234,7 @@ FR47: Epic 1 - glossary requirement for downstream build.
 ## Epic List
 
 ### Epic 1: Trustworthy Product Boundary and Launch Foundation
+
 Users and the product team get a safe, clear, Bahasa Indonesia DiaMom foundation: app identity, non-medical positioning, privacy/data boundaries, clinical content governance, glossary, user journeys, and traceability rules are established before implementation spreads across the app.
 
 **FRs covered:** FR1, FR29, FR39, FR43, FR44, FR45, FR46, FR47
@@ -242,16 +243,18 @@ Users and the product team get a safe, clear, Bahasa Indonesia DiaMom foundation
 
 **Natural dependencies:** This epic should come first because later onboarding, content, sessions, results, history, and settings all depend on the same product boundary, glossary, privacy stance, and approved copy rules.
 
-### Epic 2: Safe Onboarding, Pregnancy Profile, Consent, and Activity Eligibility
-First-time users can create a pregnancy profile, accept the disclaimer, complete safety screening, and receive clear activity eligibility guidance before any guided movement session is available.
+### Epic 2: Safe Onboarding, Consent, and Activity Eligibility
+
+First-time users complete a safety screening and accept the disclaimer before any guided movement session is available. No user profile, login, or registration is required — the app is fully anonymous.
 
 **FRs covered:** FR2, FR3, FR4, FR5, FR41, FR42
 
-**User value:** A mother is guided into the app with the right safety checks, understands when to stop or consult a provider, and can still access educational materials when activity is not appropriate.
+**User value:** A mother can open the app without any sign-up or profile input. She is guided through safety screening and disclaimer acceptance before activity access, and can still reach educational materials when activity is not appropriate.
 
 **Natural dependencies:** Builds on Epic 1's safety/privacy boundary. Enables Epic 3 home routing and Epic 5 session access.
 
 ### Epic 3: Home Dashboard and Core Navigation
+
 Returning users can land on a calm home dashboard, see progress context, and reach the core DiaMom areas quickly: start session, materials, VAS, history, and profile.
 
 **FRs covered:** FR6, FR7
@@ -261,6 +264,7 @@ Returning users can land on a calm home dashboard, see progress context, and rea
 **Natural dependencies:** Requires onboarding completion state from Epic 2. Enables discovery of Epics 4, 5, 6, and 7.
 
 ### Epic 4: Offline Learning Materials and Movement Education
+
 Users can learn Labor Dance, SOP guidance, breathing exercises, and movement details through reviewed offline educational content with preparation, benefits, safety notes, warnings, equipment, and companion requirements.
 
 **FRs covered:** FR8, FR9, FR10, FR11, FR14, FR15, FR16
@@ -270,6 +274,7 @@ Users can learn Labor Dance, SOP guidance, breathing exercises, and movement det
 **Natural dependencies:** Uses Epic 1 content governance and glossary. Can stand alone after navigation exists because education remains available even when activity is blocked.
 
 ### Epic 5: Safety-Gated Guided Session Flow
+
 Users can complete a full safety-gated guided practice loop: pre-session check, VAS before, session selection, preparation, guided timer, pause/stop/emergency handling, emergency contact access, VAS after, and high-VAS safety guidance.
 
 **FRs covered:** FR12, FR17, FR18, FR19, FR20, FR21, FR22, FR23, FR24, FR25, FR26, FR27, FR38
@@ -279,6 +284,7 @@ Users can complete a full safety-gated guided practice loop: pre-session check, 
 **Natural dependencies:** Requires safety eligibility from Epic 2, navigation from Epic 3, and content/session definitions from Epic 4.
 
 ### Epic 6: Results, Local History, and VAS Progress
+
 Users can save session outcomes locally, review activity history, inspect session details, delete records, and view VAS trends without the app making medical effectiveness claims.
 
 **FRs covered:** FR28, FR30, FR31, FR32
@@ -288,6 +294,7 @@ Users can save session outcomes locally, review activity history, inspect sessio
 **Natural dependencies:** Requires session output from Epic 5 and privacy/data rules from Epic 1.
 
 ### Epic 7: Profile, Emergency Contact, Privacy, and Data Controls
+
 Users can manage their profile, pregnancy detail, emergency contact, language preference, privacy/terms access, and local data deletion from the profile/settings area.
 
 **FRs covered:** FR33
@@ -297,6 +304,7 @@ Users can manage their profile, pregnancy detail, emergency contact, language pr
 **Natural dependencies:** Builds on profile data from Epic 2 and local data policies from Epic 1.
 
 ### Epic 8: Supportive Engagement: Voice Guidance, Music, and Reminders
+
 Users can configure voice guidance, background music, volume, instruction speed, and gentle practice/hydration reminders to make sessions easier to follow and return to.
 
 **FRs covered:** FR13, FR34, FR35
@@ -306,6 +314,7 @@ Users can configure voice guidance, background music, volume, instruction speed,
 **Natural dependencies:** Builds on guided session flow from Epic 5 and profile/settings surface from Epic 7.
 
 ### Epic 9: Resilience, Analytics Safety, QA, and Release Readiness
+
 Users experience graceful empty/error states, recover interrupted sessions, and benefit from a tested Android MVP whose analytics and diagnostics avoid sensitive health data.
 
 **FRs covered:** FR36, FR37, FR40
@@ -391,47 +400,32 @@ So that safety-critical content and downstream stories are auditable.
 **And** a traceability map links screens, FRs, data models, analytics events, and acceptance tests  
 **And** future CMS migration is noted as later-phase work, not an MVP dependency.
 
-## Epic 2: Safe Onboarding, Pregnancy Profile, Consent, and Activity Eligibility
+## Epic 2: Safe Onboarding, Consent, and Activity Eligibility
 
-First-time users can create a pregnancy profile, accept the disclaimer, complete safety screening, and receive clear activity eligibility guidance before any guided movement session is available.
+First-time users complete a safety screening and accept the disclaimer before any guided movement session is available. No user profile, login, or registration is required — the app is fully anonymous.
 
-### Story 2.1: Complete Onboarding Introduction and Mother Profile Form
+### Story 2.1: Onboarding Introduction
 
 As a first-time mother,
-I want a gentle onboarding flow that collects my basic profile,
-So that DiaMom can personalize the experience without overwhelming me.
+I want a gentle onboarding intro,
+So that I understand what DiaMom does before I start.
 
 **Acceptance Criteria:**
 
-**Given** a first-time user taps `Mulai`  
-**When** the onboarding intro and profile screens are shown  
-**Then** the user can enter name, pregnancy week, estimated due date, first pregnancy status, and emergency contact details  
-**And** required fields are clearly marked  
-**And** validation errors are shown in supportive Bahasa Indonesia copy  
+**Given** a first-time user opens the app  
+**When** the onboarding intro is shown  
+**Then** the user sees a welcoming explanation of DiaMom's purpose  
+**And** no personal data is collected  
+**And** the user can proceed to safety screening and disclaimer  
 **And** incomplete onboarding cannot unlock guided activity features.
 
-### Story 2.2: Validate Pregnancy Information and Provider Approval
+### Story 2.2: Require Medical Disclaimer Consent Before Activity Access
 
-As a pregnant mother,
-I want DiaMom to ask about pregnancy context and provider approval,
-So that activity guidance starts from a safety-aware baseline.
-
-**Acceptance Criteria:**
-
-**Given** the user is completing pregnancy information  
-**When** she enters pregnancy week and provider approval confirmation  
-**Then** pregnancy week must be valid and stored in the user profile  
-**And** doctor/midwife approval is captured as a required confirmation before activity access  
-**And** the app explains that provider guidance overrides app guidance  
-**And** invalid or missing values prevent onboarding completion.
-
-### Story 2.3: Require Medical Disclaimer Consent Before Activity Access
+_(Formerly Story 2.3 — Stories 2.2 pregnancy info/provider approval and 7.2 emergency contacts are removed because no profile data is collected.)_
 
 As a user,
 I want to review and accept DiaMom's medical disclaimer,
 So that I understand the app's limits before using activity features.
-
-**Acceptance Criteria:**
 
 **Given** the user reaches the consent screen  
 **When** she reviews the disclaimer and confirms consent  
@@ -440,7 +434,7 @@ So that I understand the app's limits before using activity features.
 **And** learning materials can still be available according to safety policy  
 **And** the terms/disclaimer screen can be revisited from settings later.
 
-### Story 2.4: Implement First-Use Safety Screening
+### Story 2.3: Implement First-Use Safety Screening
 
 As a pregnant mother,
 I want to complete a safety screening before activity use,
@@ -453,9 +447,9 @@ So that DiaMom can guide me away from movement when risk signs are present.
 **Then** the screening captures bleeding, severe dizziness/faintness, unusual severe pain, severe shortness of breath, bed rest recommendation, and provider prohibition of physical activity  
 **And** the screening result is stored locally with completion timestamp  
 **And** risky answers trigger the defined safety gating policy  
-**And** the user can update or retake screening from profile/settings.
+**And** the user can retake screening from settings.
 
-### Story 2.5: Implement Safety Gating and Education-Only Access
+### Story 2.4: Implement Safety Gating and Education-Only Access
 
 As a user with a risky screening answer,
 I want clear guidance on what I can still do in DiaMom,
@@ -470,7 +464,7 @@ So that I am not pushed into unsafe activity.
 **And** educational materials remain accessible when allowed by the safety policy  
 **And** the safety message recommends consulting a doctor or midwife without diagnosing the user.
 
-### Story 2.6: Add Complete Pregnancy Exercise Warning Signs
+### Story 2.5: Add Complete Pregnancy Exercise Warning Signs
 
 As a pregnant mother,
 I want warning signs to be complete and visible,
@@ -846,41 +840,27 @@ So that I can self-monitor comfort patterns.
 **And** incomplete records are handled according to chart rules  
 **And** chart copy frames trends as self-reported monitoring, not medical proof.
 
-## Epic 7: Profile, Emergency Contact, Privacy, and Data Controls
+## Epic 7: Privacy, Terms, Data Controls, and Settings
 
-Users can manage their profile, pregnancy detail, emergency contact, language preference, privacy/terms access, and local data deletion from the profile/settings area.
+Users can manage app preferences, access privacy/terms/disclaimer content, and delete their local data from the settings area. No personal profile or emergency contact data is collected or managed.
 
-### Story 7.1: Build Profile Overview and Edit Profile
+### Story 7.1: Build Settings Screen
 
 As a user,
-I want to view and update my profile,
-So that DiaMom reflects my current pregnancy information.
+I want a settings screen,
+So that I can manage app preferences in one place.
 
 **Acceptance Criteria:**
 
-**Given** the user opens `Profil`  
-**When** profile data exists  
-**Then** the app shows mother name, pregnancy week, estimated due date, emergency contact summary, activity history shortcut, and language preference  
-**And** the user can edit and save profile fields with validation  
-**And** changing pregnancy week updates local profile state  
-**And** invalid edits show supportive errors.
+**Given** the user opens `Pengaturan`  
+**When** the settings screen loads  
+**Then** it shows voice guide, notification, language, privacy policy, terms/disclaimer, and delete local data options  
+**And** no personal profile or emergency contact fields are shown  
+**And** all settings work offline.
 
-### Story 7.2: Manage Emergency Contacts
+### Story 7.2: Provide Privacy, Terms, and Disclaimer Screens
 
-As a user,
-I want to store support and care contact numbers,
-So that I can call quickly during or after a session.
-
-**Acceptance Criteria:**
-
-**Given** the user opens `Kontak Darurat`  
-**When** she edits contacts  
-**Then** she can save companion name/phone, midwife/doctor name/phone, and facility phone  
-**And** phone number fields are optional but recommended  
-**And** missing contact is handled with setup prompts in session flows  
-**And** saved contacts remain local.
-
-### Story 7.3: Provide Privacy, Terms, and Disclaimer Screens
+_(Formerly Story 7.3 — Story 7.2 emergency contacts is removed because DiaMom does not collect emergency contact data.)_
 
 As a user,
 I want to revisit privacy, terms, and disclaimer information,
@@ -895,7 +875,9 @@ So that I understand how DiaMom handles safety and data.
 **And** no screen claims legal or medical coverage beyond the app's defined scope  
 **And** content is available offline.
 
-### Story 7.4: Delete Local Data
+### Story 7.3: Delete Local Data
+
+_(Formerly Story 7.4)_
 
 As a user,
 I want to delete local DiaMom data,
@@ -906,11 +888,13 @@ So that I can remove sensitive pregnancy and activity records from my device.
 **Given** the user opens privacy/data settings  
 **When** she chooses delete local data  
 **Then** the app shows a clear confirmation explaining what will be removed  
-**And** confirmed deletion removes profile, safety screening, VAS records, activity sessions, settings, and reminders as appropriate  
+**And** confirmed deletion removes safety screening, VAS records, activity sessions, settings, and reminders as appropriate  
 **And** the app returns to first-launch/onboarding state after deletion  
 **And** deletion errors are surfaced safely.
 
-### Story 7.5: Add MVP Language Setting
+### Story 7.4: Add MVP Language Setting
+
+_(Formerly Story 7.5)_
 
 As a user,
 I want language settings to be clear,

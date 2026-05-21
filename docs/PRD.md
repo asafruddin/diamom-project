@@ -5,7 +5,7 @@
 **Platform:** React Native Expo SDK 55  
 **Primary Language:** Bahasa Indonesia  
 **Secondary Language:** English, planned for later release  
-**Product Type:** Pregnancy support, labor preparation, guided breathing, guided movement, pain tracking  
+**Product Type:** Pregnancy support, labor preparation, guided breathing, guided movement, pain tracking
 
 ---
 
@@ -15,7 +15,9 @@ DiaMom is a mobile app designed to support pregnant mothers in preparing for lab
 
 The current UI concept already covers the main user flow: welcome, home, materials, Labor Dance explanation, SOP, breathing, movement list, movement detail, VAS before activity, activity timer, VAS after activity, and result summary.
 
-To make the app complete and production-ready, the app must add safety onboarding, pregnancy profile setup, medical disclaimer, pre-session safety check, emergency stop flow, activity history, progress tracking, profile management, voice guidance, notification reminders, and proper privacy handling.
+To make the app complete and production-ready, the app must add safety onboarding, medical disclaimer, pre-session safety check, emergency stop flow, activity history, progress tracking, voice guidance, notification reminders, and proper privacy handling.
+
+DiaMom does not require a user account, login, registration, or any persistent profile input. All features are accessible anonymously. No personally identifiable information (name, pregnancy week, due date, etc.) is collected or stored.
 
 DiaMom must be positioned as a **support and education companion**, not as a replacement for doctor, midwife, or hospital care.
 
@@ -93,21 +95,21 @@ DiaMom must include a clear medical boundary across onboarding, activity screens
 
 The existing UI concept already includes:
 
-| No | Screen | Status |
-|---|---|---|
-| 1 | Splash / Welcome | Existing |
-| 2 | Main Menu / Home | Existing |
-| 3 | Material List | Existing |
-| 4 | Labor Dance Explanation | Existing |
-| 5 | SOP Labor Dance | Existing |
-| 6 | Breathing Exercise | Existing |
-| 7 | Labor Dance Movement Menu | Existing |
-| 8 | Movement Detail | Existing |
-| 9 | Closing / Motivation | Existing |
-| 10 | VAS Before Activity | Existing |
-| 11 | Activity Execution / Timer | Existing |
-| 12 | VAS After Activity | Existing |
-| 13 | Result Summary | Existing |
+| No  | Screen                     | Status   |
+| --- | -------------------------- | -------- |
+| 1   | Splash / Welcome           | Existing |
+| 2   | Main Menu / Home           | Existing |
+| 3   | Material List              | Existing |
+| 4   | Labor Dance Explanation    | Existing |
+| 5   | SOP Labor Dance            | Existing |
+| 6   | Breathing Exercise         | Existing |
+| 7   | Labor Dance Movement Menu  | Existing |
+| 8   | Movement Detail            | Existing |
+| 9   | Closing / Motivation       | Existing |
+| 10  | VAS Before Activity        | Existing |
+| 11  | Activity Execution / Timer | Existing |
+| 12  | VAS After Activity         | Existing |
+| 13  | Result Summary             | Existing |
 
 Current core flow:
 
@@ -133,19 +135,16 @@ Required screens:
 
 ```text
 01. Onboarding Introduction
-02. Mother Profile Setup
-03. Pregnancy Information
-04. Safety Screening
-05. Doctor / Midwife Approval Confirmation
-06. Medical Disclaimer & Consent
+02. Safety Screening
+03. Medical Disclaimer & Consent
 ```
 
 Purpose:
 
-- Collect basic user profile.
-- Understand pregnancy context.
 - Make sure the user reads safety guidance.
 - Prevent unsafe direct access to movement sessions.
+
+DiaMom does **not** collect a user profile. No name, pregnancy week, due date, pregnancy history, doctor/midwife approval confirmation, or emergency contact is required or stored. The app is fully anonymous.
 
 ---
 
@@ -178,30 +177,20 @@ Sebaiknya hentikan aktivitas dan konsultasikan dengan dokter atau bidan terlebih
 
 ---
 
-### 8.3 Profile Pages
+### 8.3 Settings Pages
 
-Required profile pages:
+Required settings pages:
 
 ```text
-Profile Overview
-Edit Mother Profile
-Pregnancy Detail
-Emergency Contact
 App Settings
+Voice Guide Settings
+Notification Settings
 Language Settings
 Privacy & Data
+Terms & Disclaimer
 ```
 
-Profile information:
-
-```text
-Nama Ibu
-Usia Kehamilan
-Hari Perkiraan Lahir
-Kontak Darurat
-Riwayat Aktivitas
-Preferensi Bahasa
-```
+No personal profile or emergency contact data is collected or displayed. Settings are limited to app preferences.
 
 ---
 
@@ -342,29 +331,9 @@ Sesi dihentikan. Silakan istirahat, minum air, dan hubungi pendamping, bidan, at
 
 ---
 
-### 8.9 Emergency Contact Page
+### 8.9 Emergency Guidance
 
-Required page:
-
-```text
-Kontak Darurat
-```
-
-Fields:
-
-```text
-Nama pendamping
-Nomor telepon pendamping
-Nama bidan / dokter
-Nomor bidan / dokter
-Nomor fasilitas kesehatan
-```
-
-During activity, show quick action:
-
-```text
-Hubungi Pendamping
-```
+DiaMom does not store or manage emergency contact data. During and after activity, the app must display a static safety message directing the user to contact their own healthcare provider or companion. No phone number fields are collected.
 
 ---
 
@@ -452,40 +421,36 @@ Mulai sesi pertama Anda hari ini.
 ```text
 01. Splash Screen
 02. Welcome / Onboarding Intro
-03. Mother Profile Setup
-04. Pregnancy Information
-05. Safety Screening
-06. Medical Disclaimer & Consent
-07. Home Dashboard
-08. Material List
-09. Labor Dance Explanation
-10. SOP Labor Dance
-11. Breathing Exercise List
-12. Breathing Exercise Detail
-13. Labor Dance Movement List
-14. Movement Detail
-15. VAS Before Activity
-16. Safety Check Before Session
-17. Choose Session Duration
-18. Session Preparation
-19. Guided Activity Timer
-20. Pause Modal
-21. Stop Confirmation Modal
-22. Emergency Stop Modal
-23. VAS After Activity
-24. Result Summary
-25. Save Result Success
-26. Activity History
-27. VAS Progress Chart
-28. Profile Overview
-29. Edit Profile
-30. Emergency Contact
-31. Notification Settings
-32. Voice Guide Settings
-33. Privacy Policy
-34. Terms & Disclaimer
-35. Empty State Pages
-36. Error State Pages
+03. Safety Screening
+04. Medical Disclaimer & Consent
+05. Home Dashboard
+06. Material List
+07. Labor Dance Explanation
+08. SOP Labor Dance
+09. Breathing Exercise List
+10. Breathing Exercise Detail
+11. Labor Dance Movement List
+12. Movement Detail
+13. VAS Before Activity
+14. Safety Check Before Session
+15. Choose Session Duration
+16. Session Preparation
+17. Guided Activity Timer
+18. Pause Modal
+19. Stop Confirmation Modal
+20. Emergency Stop Modal
+21. VAS After Activity
+22. Result Summary
+23. Save Result Success
+24. Activity History
+25. VAS Progress Chart
+26. Settings
+27. Notification Settings
+28. Voice Guide Settings
+29. Privacy Policy
+30. Terms & Disclaimer
+31. Empty State Pages
+32. Error State Pages
 ```
 
 ---
@@ -496,7 +461,7 @@ Mulai sesi pertama Anda hari ini.
 
 ```text
 Splash
-→ Onboarding / Profile Setup
+→ Onboarding Intro
 → Safety Screening
 → Medical Disclaimer
 → Home
@@ -557,24 +522,15 @@ Acceptance Criteria:
 
 ---
 
-### FR-002: Onboarding and Pregnancy Profile
+### FR-002: Onboarding
 
-The app must collect basic pregnancy and user profile information.
-
-Fields:
-
-- Name
-- Pregnancy week
-- Estimated due date
-- First pregnancy status
-- Doctor/midwife approval confirmation
-- Emergency contact
+The app shows an onboarding introduction on first launch. No profile data is collected. The app is fully anonymous — no name, pregnancy week, due date, doctor approval, or emergency contact is requested or stored.
 
 Acceptance Criteria:
 
-- User cannot finish onboarding without required fields.
-- Pregnancy week must be valid.
-- User must accept disclaimer before accessing activity features.
+- First-time users see the onboarding intro.
+- Returning users go directly to home.
+- User must complete safety screening and accept disclaimer before accessing activity features.
 
 ---
 
@@ -819,24 +775,23 @@ Acceptance Criteria:
 
 ---
 
-### FR-017: Profile and Settings
+### FR-017: Settings
 
-The app must provide profile and preference management.
+The app must provide preference management. No personal profile or emergency contact is collected or managed.
 
 Settings:
 
-- Edit profile
-- Emergency contact
 - Language
 - Voice guide
 - Notifications
 - Privacy policy
+- Terms & disclaimer
 - Delete local data
 
 Acceptance Criteria:
 
-- User can edit and save profile.
-- User can delete stored data.
+- User can adjust app preferences.
+- User can delete stored activity data.
 - User can manage reminders.
 
 ---
@@ -884,27 +839,13 @@ Acceptance Criteria:
 
 ### 13.1 User Profile
 
-```ts
-export type UserProfile = {
-  id: string;
-  name: string;
-  pregnancyWeek: number;
-  estimatedDueDate?: string;
-  isFirstPregnancy?: boolean;
-  doctorApprovalConfirmed: boolean;
-  emergencyContactName?: string;
-  emergencyContactPhone?: string;
-  createdAt: string;
-  updatedAt: string;
-};
-```
+**Removed.** DiaMom does not collect or store any user profile. No `UserProfile` data model is needed.
 
 ### 13.2 Safety Screening
 
 ```ts
 export type SafetyScreening = {
   id: string;
-  userId: string;
   hasBleeding: boolean;
   hasSevereDizziness: boolean;
   hasUnusualSeverePain: boolean;
@@ -920,12 +861,11 @@ export type SafetyScreening = {
 ```ts
 export type VasRecord = {
   id: string;
-  userId: string;
   beforeScore: number;
   afterScore?: number;
-  beforeCategory: 'none' | 'mild' | 'moderate' | 'severe';
-  afterCategory?: 'none' | 'mild' | 'moderate' | 'severe';
-  activityType: 'breathing' | 'labor_dance';
+  beforeCategory: "none" | "mild" | "moderate" | "severe";
+  afterCategory?: "none" | "mild" | "moderate" | "severe";
+  activityType: "breathing" | "labor_dance";
   sessionId?: string;
   durationMinutes?: number;
   note?: string;
@@ -939,9 +879,9 @@ export type VasRecord = {
 export type ActivitySession = {
   id: string;
   title: string;
-  type: 'breathing' | 'labor_dance';
+  type: "breathing" | "labor_dance";
   durationMinutes: number;
-  difficulty: 'beginner' | 'intermediate';
+  difficulty: "beginner" | "intermediate";
   requiresCompanion: boolean;
   requiredEquipment?: string[];
   movements: string[];
@@ -959,7 +899,7 @@ export type MovementContent = {
   steps: string[];
   benefits: string[];
   warnings: string[];
-  difficulty: 'beginner' | 'intermediate';
+  difficulty: "beginner" | "intermediate";
   requiresCompanion: boolean;
   requiredEquipment?: string[];
   illustrationAsset: string;
@@ -976,7 +916,6 @@ Track only product behavior. Do not send personally identifiable health details 
 Recommended events:
 
 ```text
-onboarding_started
 onboarding_completed
 safety_screening_completed
 medical_disclaimer_accepted
@@ -1029,8 +968,7 @@ Recommended behavior:
 
 ```text
 Splash screen
-Onboarding
-Pregnancy profile setup
+Onboarding intro
 Medical disclaimer
 Safety screening
 Home dashboard
@@ -1117,7 +1055,6 @@ Focus:
 ### Product Metrics
 
 ```text
-Onboarding completion rate
 Safety screening completion rate
 Session start rate
 Session completion rate

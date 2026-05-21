@@ -1,21 +1,10 @@
 # Story 2.2: Validate Pregnancy Information and Provider Approval
 
-Status: ready-for-dev
+**Status: REMOVED — superseded by PRD update 2026-05-21**
 
-## Story
+This story collected pregnancy week and doctor/midwife approval confirmation as profile data. The PRD has been updated to remove all user profile input. DiaMom is fully anonymous — no name, pregnancy week, due date, or provider approval is collected. This story is no longer implemented.
 
-As a pregnant mother,
-I want DiaMom to ask about pregnancy context and provider approval,
-so that activity guidance starts from a safety-aware baseline.
-
-## Acceptance Criteria
-
-1. **Given** the user is completing pregnancy information  
-   **When** she enters pregnancy week and provider approval confirmation  
-   **Then** pregnancy week must be valid and stored in the user profile  
-   **And** doctor/midwife approval is captured as a required confirmation before activity access  
-   **And** the app explains that provider guidance overrides app guidance  
-   **And** invalid or missing values prevent onboarding completion.
+See updated `epics.md` where former Story 2.3 (Medical Disclaimer Consent) is now renumbered to Story 2.2.
 
 ## Tasks / Subtasks
 

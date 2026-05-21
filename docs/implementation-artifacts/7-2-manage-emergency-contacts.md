@@ -1,21 +1,10 @@
 # Story 7.2: Manage Emergency Contacts
 
-Status: ready-for-dev
+**Status: REMOVED — superseded by PRD update 2026-05-21**
 
-## Story
+DiaMom does not collect or store emergency contact data. The emergency contact feature has been replaced with a static safety message directing users to contact their own healthcare provider or companion. This story is no longer implemented.
 
-As a user,
-I want to store support and care contact numbers,
-so that I can call quickly during or after a session.
-
-## Acceptance Criteria
-
-1. **Given** the user opens `Kontak Darurat`  
-   **When** she edits contacts  
-   **Then** she can save companion name/phone, midwife/doctor name/phone, and facility phone  
-   **And** phone number fields are optional but recommended  
-   **And** missing contact is handled with setup prompts in session flows  
-   **And** saved contacts remain local.
+Emergency guidance during activity is handled via a static display in the emergency stop screen.
 
 ## Tasks / Subtasks
 

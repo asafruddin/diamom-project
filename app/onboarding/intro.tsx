@@ -1,9 +1,8 @@
+import { router } from "expo-router";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { router } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { diamomTheme } from '@/theme';
+import { diamomTheme } from "@/theme";
 
 export default function OnboardingIntroScreen() {
   return (
@@ -12,12 +11,17 @@ export default function OnboardingIntroScreen() {
         <Text style={styles.eyebrow}>Onboarding</Text>
         <Text style={styles.title}>Selamat datang di DiaMom</Text>
         <Text style={styles.body}>
-          Ceritakan profil kehamilan dan baca batas penggunaan sebelum mulai memakai fitur latihan.
+          Pelajari persiapan persalinan melalui latihan napas, panduan gerak
+          Labor Dance, dan pemantauan kenyamanan diri.
         </Text>
         <Pressable
           accessibilityRole="button"
-          onPress={() => router.push('/onboarding/profile')}
-          style={({ pressed }) => [styles.primaryButton, pressed && styles.primaryButtonPressed]}
+          accessibilityLabel="Lanjutkan ke persetujuan medis"
+          onPress={() => router.push("/onboarding/consent")}
+          style={({ pressed }) => [
+            styles.primaryButton,
+            pressed && styles.primaryButtonPressed,
+          ]}
         >
           <Text style={styles.primaryButtonText}>Lanjutkan</Text>
         </Pressable>
@@ -34,18 +38,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     gap: diamomTheme.spacing.md,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingHorizontal: diamomTheme.spacing.xl,
   },
   eyebrow: {
     color: diamomTheme.colors.accent,
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   title: {
     color: diamomTheme.colors.text,
     fontSize: 32,
-    fontWeight: '800',
+    fontWeight: "800",
     lineHeight: 40,
   },
   body: {
@@ -55,11 +59,11 @@ const styles = StyleSheet.create({
     marginBottom: diamomTheme.spacing.xl,
   },
   primaryButton: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: diamomTheme.colors.primary,
     borderRadius: 8,
     minHeight: 52,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   primaryButtonPressed: {
     opacity: 0.78,
@@ -67,6 +71,6 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: diamomTheme.colors.onPrimary,
     fontSize: 17,
-    fontWeight: '800',
+    fontWeight: "800",
   },
 });

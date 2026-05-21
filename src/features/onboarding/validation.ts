@@ -1,6 +1,3 @@
-
-export const isValidPregnancyWeek = (week: string): boolean => {
-  const parsed = parseInt(week, 10);
-  if (isNaN(parsed)) return false;
-  return parsed > 0 && parsed <= 42;
-};
+// Pregnancy-specific validation has been removed.
+// DiaMom no longer collects pregnancy week or any profile data.
+// Add future onboarding validation helpers here if needed.

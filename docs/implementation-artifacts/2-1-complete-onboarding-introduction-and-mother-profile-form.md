@@ -1,20 +1,20 @@
-# Story 2.1: Complete Onboarding Introduction and Mother Profile Form
+# Story 2.1: Onboarding Introduction
 
 Status: ready-for-dev
 
 ## Story
 
 As a first-time mother,
-I want a gentle onboarding flow that collects my basic profile,
-so that DiaMom can personalize the experience without overwhelming me.
+I want a gentle onboarding intro,
+so that I understand what DiaMom does before I start.
 
 ## Acceptance Criteria
 
-1. **Given** a first-time user taps `Mulai`  
-   **When** the onboarding intro and profile screens are shown  
-   **Then** the user can enter name, pregnancy week, estimated due date, first pregnancy status, and emergency contact details  
-   **And** required fields are clearly marked  
-   **And** validation errors are shown in supportive Bahasa Indonesia copy  
+1. **Given** a first-time user opens the app  
+   **When** the onboarding intro screen is shown  
+   **Then** the user sees a welcoming explanation of DiaMom's purpose  
+   **And** no personal data (name, pregnancy week, due date, emergency contact, etc.) is collected  
+   **And** the user can proceed to safety screening and disclaimer  
    **And** incomplete onboarding cannot unlock guided activity features.
 
 ## Tasks / Subtasks
@@ -66,8 +66,9 @@ Onboarding and eligibility story: wire local profile/consent/safety state withou
 ### Likely Files / Areas To Touch
 
 - `app/onboarding/intro.tsx`
-- `app/onboarding/profile.tsx`
 - `src/features/onboarding/`
+
+> **Note:** `app/onboarding/profile.tsx` is no longer needed and should be removed or left empty. No profile form, name input, pregnancy week, due date, or emergency contact screens should be built.
 
 Before modifying any UPDATE file, read it completely and preserve existing behavior that later stories depend on.
 
