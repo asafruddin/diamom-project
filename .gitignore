@@ -1,4 +1,8 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+.DS_Store
+
+# BMAD personal/local configuration
+_bmad/config.user.toml
+_bmad/custom/config.user.toml
 
 # dependencies
 node_modules/
@@ -27,7 +31,6 @@ yarn-debug.*
 yarn-error.*
 
 # macOS
-.DS_Store
 *.pem
 
 # local env files

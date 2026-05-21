@@ -1,0 +1,110 @@
+# generated: 2026-05-21T10:18:49+07:00
+# last_updated: 2026-05-21T11:45:00+07:00
+# project: DiaMom Mobile App
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: docs/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog -> in-progress: Automatically when first story is created (via create-story)
+#   - in-progress -> done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-05-21T10:18:49+07:00
+last_updated: 2026-05-21T11:45:00+07:00
+project: DiaMom Mobile App
+project_key: NOKEY
+tracking_system: file-system
+story_location: docs/implementation-artifacts
+
+development_status:
+  epic-1: done
+  1-1-define-product-boundary-glossary-and-user-journeys: review
+  1-2-scaffold-the-expo-sdk-55-app-shell-and-diamom-entry: done
+  1-3-establish-claim-safe-copy-and-disclaimer-rules: done
+  1-4-define-local-only-privacy-and-sensitive-data-rules: done
+  1-5-add-content-governance-and-requirement-traceability: done
+  epic-1-retrospective: optional
+  epic-2: done
+  2-1-complete-onboarding-introduction-and-mother-profile-form: done
+  2-2-validate-pregnancy-information-and-provider-approval: done
+  2-3-require-medical-disclaimer-consent-before-activity-access: done
+  2-4-implement-first-use-safety-screening: done
+  2-5-implement-safety-gating-and-education-only-access: done
+  2-6-add-complete-pregnancy-exercise-warning-signs: done
+  epic-2-retrospective: optional
+  epic-3: in-progress
+  3-1-build-protected-main-tab-navigation: ready-for-dev
+  3-2-build-home-dashboard-with-progress-and-shortcuts: ready-for-dev
+  3-3-add-quick-start-with-eligibility-checks: ready-for-dev
+  epic-3-retrospective: optional
+  epic-4: in-progress
+  4-1-create-local-reviewed-content-structure: ready-for-dev
+  4-2-build-material-list-and-detail-navigation: ready-for-dev
+  4-3-build-sop-labor-dance-cards: ready-for-dev
+  4-4-build-breathing-exercise-catalog-and-details: ready-for-dev
+  4-5-build-labor-dance-movement-list-and-details: ready-for-dev
+  4-6-connect-learning-content-to-safe-practice-entry: ready-for-dev
+  epic-4-retrospective: optional
+  epic-5: in-progress
+  5-1-implement-session-state-engine-and-route-guards: ready-for-dev
+  5-2-build-pre-session-safety-check: ready-for-dev
+  5-3-build-vas-before-assessment: ready-for-dev
+  5-4-build-session-selection-and-preparation: ready-for-dev
+  5-5-build-guided-timer-and-movement-instruction-surface: ready-for-dev
+  5-6-implement-pause-and-stop-controls: ready-for-dev
+  5-7-implement-emergency-stop-and-contact-access: ready-for-dev
+  5-8-build-vas-after-and-incomplete-result-behavior: ready-for-dev
+  5-9-apply-high-vas-safety-guidance: ready-for-dev
+  epic-5-retrospective: optional
+  epic-6: in-progress
+  6-1-implement-local-session-and-vas-persistence: ready-for-dev
+  6-2-build-claim-safe-result-summary: ready-for-dev
+  6-3-build-activity-history-list: ready-for-dev
+  6-4-build-history-detail-and-delete-record: ready-for-dev
+  6-5-build-vas-progress-chart: ready-for-dev
+  epic-6-retrospective: optional
+  epic-7: in-progress
+  7-1-build-profile-overview-and-edit-profile: ready-for-dev
+  7-2-manage-emergency-contacts: ready-for-dev
+  7-3-provide-privacy-terms-and-disclaimer-screens: ready-for-dev
+  7-4-delete-local-data: ready-for-dev
+  7-5-add-mvp-language-setting: ready-for-dev
+  epic-7-retrospective: optional
+  epic-8: in-progress
+  8-1-build-voice-guide-and-music-settings: ready-for-dev
+  8-2-integrate-audio-playback-with-session-state: ready-for-dev
+  8-3-build-reminder-permission-and-settings: ready-for-dev
+  8-4-schedule-and-manage-local-notifications: ready-for-dev
+  epic-8-retrospective: optional
+  epic-9: in-progress
+  9-1-implement-shared-empty-and-error-states: ready-for-dev
+  9-2-recover-interrupted-sessions: ready-for-dev
+  9-3-add-privacy-safe-analytics-and-diagnostics: ready-for-dev
+  9-4-add-automated-tests-for-safety-critical-logic: ready-for-dev
+  9-5-complete-android-mvp-release-readiness: ready-for-dev
+  epic-9-retrospective: optional
