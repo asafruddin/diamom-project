@@ -1,48 +1,82 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
-import { DiaScreen, PageHeader, SurfaceCard } from "@/components/dia-ui";
-import { SOP_STEPS } from "@/features/materials/materials-content";
+import { DiaScreen, PageHeader } from "@/components/dia-ui";
+import {
+  LearningSectionCard,
+  MaterialHero,
+  PrevNextMaterialNav,
+  SafetyNoticeCard,
+  SectionChipRow,
+  StepTimelineCard,
+} from "@/features/materials/material-components";
+import {
+  SOP_DETAIL,
+  SOP_STEPS,
+  getMaterialNavigation,
+} from "@/features/materials/materials-content";
 import { diamomTheme } from "@/theme";
 
+const materialHref = "/(tabs)/materials/sop" as const;
+
 export default function SopLaborDanceScreen() {
+  const navigation = getMaterialNavigation(materialHref);
+
   return (
     <DiaScreen>
       <PageHeader
-        eyebrow="Materi 2"
+        eyebrow={SOP_DETAIL.eyebrow}
         showBack
-        title="SOP Labor Dance"
-        description="Urutan singkat ini membantu sesi berjalan lebih terarah dan tetap claim-safe."
+        title={SOP_DETAIL.title}
+        description={SOP_DETAIL.description}
       />
 
-      <View style={styles.list}>
+      <MaterialHero
+        detail={SOP_DETAIL.heroDetail}
+        iconName={SOP_DETAIL.heroIconName}
+        readTime={SOP_DETAIL.readTime}
+        title={SOP_DETAIL.heroTitle}
+      />
+
+      <SectionChipRow
+        sections={[
+          ...SOP_DETAIL.sections.map((section) => section.title),
+          ...SOP_STEPS.map((step) => step.title),
+          "Pengingat aman",
+        ]}
+      />
+
+      {SOP_DETAIL.sections.map((section) => (
+        <LearningSectionCard
+          body={section.body}
+          bullets={section.bullets}
+          iconName={section.iconName}
+          key={section.id}
+          title={section.title}
+          tone={section.tone}
+        />
+      ))}
+
+      <View style={styles.timelineList}>
         {SOP_STEPS.map((step) => (
-          <SurfaceCard key={step.id} style={styles.stepCard}>
-            <Text style={styles.stepNumber}>
-              {step.step}. {step.title}
-            </Text>
-            <Text style={styles.stepDescription}>{step.description}</Text>
-          </SurfaceCard>
+          <StepTimelineCard
+            description={step.description}
+            key={step.id}
+            step={step.step}
+            steps={step.bullets}
+            title={step.title}
+          />
         ))}
       </View>
+
+      <SafetyNoticeCard items={SOP_DETAIL.safetyNotes} title="Pengingat aman" />
+
+      <PrevNextMaterialNav {...navigation} />
     </DiaScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  list: {
+  timelineList: {
     gap: diamomTheme.spacing.md,
-  },
-  stepCard: {
-    gap: diamomTheme.spacing.sm,
-  },
-  stepNumber: {
-    color: diamomTheme.colors.text,
-    fontSize: 17,
-    fontWeight: "800",
-  },
-  stepDescription: {
-    color: diamomTheme.colors.mutedText,
-    fontSize: 15,
-    lineHeight: 22,
   },
 });

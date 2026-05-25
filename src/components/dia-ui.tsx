@@ -1,15 +1,23 @@
 import type { ReactNode } from "react";
+import { useRef } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  PanResponder,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
-    VAS_SCALE_POINTS,
-    getVasCategory,
-    getVasPointColor,
+  VAS_SCALE_POINTS,
+  getVasCategory,
+  getVasPointColor,
 } from "@/features/session/vas-scale";
 import { diamomTheme } from "@/theme";
 
@@ -61,6 +69,7 @@ interface InfoPillProps {
 
 interface VasSelectorProps {
   onChange: (score: number) => void;
+  showSummary?: boolean;
   value: number;
 }
 
@@ -232,52 +241,88 @@ export function InfoPill({ label }: InfoPillProps) {
   );
 }
 
-export function VasSelector({ onChange, value }: VasSelectorProps) {
+export function VasSelector({
+  onChange,
+  showSummary = true,
+  value,
+}: VasSelectorProps) {
+  const containerRef = useRef<View>(null);
+  const containerLayout = useRef({ width: 1, x: 0 });
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
+  const updateScoreFromPageX = (pageX: number) => {
+    const relX = pageX - containerLayout.current.x;
+    const ratio = Math.max(
+      0,
+      Math.min(1, relX / containerLayout.current.width),
+    );
+    onChangeRef.current(Math.round(ratio * 10));
+  };
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: (e) => updateScoreFromPageX(e.nativeEvent.pageX),
+      onPanResponderMove: (e) => updateScoreFromPageX(e.nativeEvent.pageX),
+    }),
+  ).current;
+
   return (
     <View style={styles.vasSection}>
-      <View style={styles.vasRow}>
-        {VAS_SCALE_POINTS.map((score) => {
-          const isSelected = score === value;
-          const pointColor = getVasPointColor(score);
-
-          return (
-            <Pressable
-              accessibilityLabel={`Pilih nilai VAS ${score}`}
-              accessibilityRole="button"
-              key={score}
-              onPress={() => onChange(score)}
-              style={[
-                styles.vasPoint,
-                {
-                  backgroundColor: isSelected
-                    ? pointColor
-                    : diamomTheme.colors.surface,
-                  borderColor: pointColor,
-                  height: isSelected ? 30 : 24,
-                  width: isSelected ? 30 : 24,
-                },
-              ]}
-            >
-              <Text
-                style={[
-                  styles.vasPointText,
-                  {
-                    color: isSelected
-                      ? diamomTheme.colors.onPrimary
-                      : pointColor,
-                  },
-                ]}
-              >
-                {score}
-              </Text>
-            </Pressable>
-          );
-        })}
+      <View
+        ref={containerRef}
+        onLayout={() => {
+          containerRef.current?.measure((_lx, _ly, width, _lh, pageX) => {
+            containerLayout.current = { width, x: pageX };
+          });
+        }}
+        style={styles.vasSliderWrapper}
+        {...panResponder.panHandlers}
+      >
+        <View style={styles.vasLabelsRow}>
+          {VAS_SCALE_POINTS.map((score) => (
+            <Text key={score} style={styles.vasLabel}>
+              {score}
+            </Text>
+          ))}
+        </View>
+        <View style={styles.vasTrackContainer}>
+          <View style={styles.vasTrackLine} />
+          <View style={styles.vasDotsRow}>
+            {VAS_SCALE_POINTS.map((score) => {
+              const isSelected = score === value;
+              const pointColor = getVasPointColor(score);
+              return (
+                <View
+                  accessibilityLabel={`VAS ${score}`}
+                  key={score}
+                  style={styles.vasDotWrap}
+                >
+                  <View
+                    style={[
+                      styles.vasDot,
+                      {
+                        backgroundColor: pointColor,
+                        height: isSelected ? 22 : 14,
+                        width: isSelected ? 22 : 14,
+                      },
+                      isSelected && styles.vasDotSelected,
+                    ]}
+                  />
+                </View>
+              );
+            })}
+          </View>
+        </View>
       </View>
-      <SurfaceCard style={styles.vasSummaryCard}>
-        <Text style={styles.vasSummaryValue}>{value}</Text>
-        <Text style={styles.vasSummaryLabel}>{getVasCategory(value)}</Text>
-      </SurfaceCard>
+      {showSummary ? (
+        <SurfaceCard style={styles.vasSummaryCard}>
+          <Text style={styles.vasSummaryValue}>{value}</Text>
+          <Text style={styles.vasSummaryLabel}>{getVasCategory(value)}</Text>
+        </SurfaceCard>
+      ) : null}
     </View>
   );
 }
@@ -480,22 +525,57 @@ const styles = StyleSheet.create({
   vasSection: {
     gap: diamomTheme.spacing.md,
   },
-  vasRow: {
+  vasSliderWrapper: {
+    gap: diamomTheme.spacing.sm,
+    paddingVertical: diamomTheme.spacing.sm,
+  },
+  vasLabelsRow: {
     alignItems: "center",
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: diamomTheme.spacing.sm,
     justifyContent: "space-between",
   },
-  vasPoint: {
+  vasLabel: {
+    color: diamomTheme.colors.text,
+    fontSize: 13,
+    fontWeight: "600",
+    minWidth: 20,
+    textAlign: "center",
+  },
+  vasTrackContainer: {
     alignItems: "center",
-    borderRadius: diamomTheme.radius.pill,
-    borderWidth: 2,
+    height: 28,
     justifyContent: "center",
   },
-  vasPointText: {
-    fontSize: 11,
-    fontWeight: "800",
+  vasTrackLine: {
+    backgroundColor: diamomTheme.colors.border,
+    height: 3,
+    left: 10,
+    position: "absolute",
+    right: 10,
+  },
+  vasDotsRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    left: 0,
+    position: "absolute",
+    right: 0,
+  },
+  vasDotWrap: {
+    alignItems: "center",
+    height: 28,
+    justifyContent: "center",
+    width: 28,
+  },
+  vasDot: {
+    borderRadius: diamomTheme.radius.pill,
+  },
+  vasDotSelected: {
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { height: 2, width: 0 },
+    shadowOpacity: 0.18,
+    shadowRadius: 4,
   },
   vasSummaryCard: {
     alignItems: "center",

@@ -1,51 +1,81 @@
-import { router } from "expo-router";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 
+import { DiaScreen, PageHeader } from "@/components/dia-ui";
 import {
-    ActionButton,
-    BulletList,
-    DiaScreen,
-    IllustrationPanel,
-    PageHeader,
-    SurfaceCard,
-} from "@/components/dia-ui";
-import { LABOR_DANCE_OVERVIEW } from "@/features/materials/materials-content";
+  LearningSectionCard,
+  MaterialHero,
+  PrevNextMaterialNav,
+  SafetyNoticeCard,
+  SectionChipRow,
+  StepTimelineCard,
+} from "@/features/materials/material-components";
+import {
+  LABOR_DANCE_DETAIL,
+  getMaterialNavigation,
+} from "@/features/materials/materials-content";
 import { diamomTheme } from "@/theme";
 
+const materialHref = "/(tabs)/materials/labor-dance" as const;
+
 export default function LaborDanceExplanationScreen() {
+  const navigation = getMaterialNavigation(materialHref);
+
   return (
     <DiaScreen>
       <PageHeader
-        eyebrow="Materi 1"
+        eyebrow={LABOR_DANCE_DETAIL.eyebrow}
         showBack
-        title={LABOR_DANCE_OVERVIEW.title}
-        description="Pahami tujuan Labor Dance sebelum mulai mempelajari SOP dan gerakannya."
+        title={LABOR_DANCE_DETAIL.title}
+        description={LABOR_DANCE_DETAIL.description}
       />
 
-      <IllustrationPanel
-        badge="LD"
-        title="Gerak ritmis yang membantu ibu tetap fokus pada napas dan kenyamanan diri."
-        detail="Lakukan dengan lembut dan tetap berhenti bila tubuh terasa tidak aman atau tidak nyaman."
+      <MaterialHero
+        detail={LABOR_DANCE_DETAIL.heroDetail}
+        iconName={LABOR_DANCE_DETAIL.heroIconName}
+        readTime={LABOR_DANCE_DETAIL.readTime}
+        title={LABOR_DANCE_DETAIL.heroTitle}
       />
 
-      <SurfaceCard>
-        <Text style={styles.body}>{LABOR_DANCE_OVERVIEW.body}</Text>
-        <BulletList items={LABOR_DANCE_OVERVIEW.benefits} />
-      </SurfaceCard>
-
-      <ActionButton
-        label="Buka SOP Labor Dance"
-        onPress={() => router.push("/(tabs)/materials/sop")}
-        variant="secondary"
+      <SectionChipRow
+        sections={[
+          ...LABOR_DANCE_DETAIL.sections.map((section) => section.title),
+          "Jangan lanjutkan",
+          "Rangkaian gerakan",
+        ]}
       />
+
+      {LABOR_DANCE_DETAIL.sections.map((section) => (
+        <LearningSectionCard
+          body={section.body}
+          bullets={section.bullets}
+          iconName={section.iconName}
+          key={section.id}
+          title={section.title}
+          tone={section.tone}
+        />
+      ))}
+
+      <SafetyNoticeCard items={LABOR_DANCE_DETAIL.safetyNotes} />
+
+      <View style={styles.timelineList}>
+        {LABOR_DANCE_DETAIL.movementGroups?.map((group) => (
+          <StepTimelineCard
+            description={group.description}
+            key={group.id}
+            step={group.step}
+            steps={group.steps}
+            title={group.title}
+          />
+        ))}
+      </View>
+
+      <PrevNextMaterialNav {...navigation} />
     </DiaScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  body: {
-    color: diamomTheme.colors.mutedText,
-    fontSize: 15,
-    lineHeight: 22,
+  timelineList: {
+    gap: diamomTheme.spacing.md,
   },
 });

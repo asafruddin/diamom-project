@@ -2,14 +2,7 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import {
-    ActionButton,
-    DiaScreen,
-    IllustrationPanel,
-    InfoPill,
-    PageHeader,
-    SurfaceCard,
-} from "@/components/dia-ui";
+import { ActionButton, DiaScreen, SurfaceCard } from "@/components/dia-ui";
 import { usePracticeSessionStore } from "@/features/session/session-store";
 import { formatTimer } from "@/features/session/vas-scale";
 import { diamomTheme } from "@/theme";
@@ -21,7 +14,8 @@ export default function PracticeSessionScreen() {
     (state) => state.durationMinutes,
   );
   const [isRunning, setIsRunning] = useState(false);
-  const [secondsLeft, setSecondsLeft] = useState(durationMinutes * 60);
+  const [secondsLeft, setSecondsLeft] = useState(5); // TODO: revert to durationMinutes * 60
+  const isDone = secondsLeft === 0;
 
   useEffect(() => {
     if (beforeScore === null) {
@@ -30,87 +24,106 @@ export default function PracticeSessionScreen() {
   }, [beforeScore]);
 
   useEffect(() => {
-    if (!isRunning) {
-      return;
-    }
+    if (!isRunning) return;
 
-    const intervalId = setInterval(() => {
-      setSecondsLeft((currentSeconds) => {
-        if (currentSeconds <= 1) {
-          clearInterval(intervalId);
+    const id = setInterval(() => {
+      setSecondsLeft((s) => {
+        if (s <= 1) {
+          clearInterval(id);
           setIsRunning(false);
           return 0;
         }
-
-        return currentSeconds - 1;
+        return s - 1;
       });
     }, 1000);
 
-    return () => clearInterval(intervalId);
+    return () => clearInterval(id);
   }, [isRunning]);
+
+  const handleNext = () => {
+    setIsRunning(false);
+    router.push("/(tabs)/vas/after");
+  };
 
   return (
     <DiaScreen>
-      <PageHeader
-        eyebrow="Pelaksanaan"
-        showBack
-        title={`Pelaksanaan ${activityTitle}`}
-        description="Ikuti gerakan dengan nyaman dan fokus pada napas panjang yang stabil."
-      />
-
-      <IllustrationPanel
-        badge={formatTimer(secondsLeft).slice(0, 2)}
-        title={formatTimer(secondsLeft)}
-        detail="Durasi kegiatan dapat dijalankan, dijeda, lalu dilanjutkan sesuai kebutuhan tubuh Anda."
-      />
+      <View style={styles.headerSection}>
+        <Text style={styles.title}>
+          Pelaksanaan{"\n"}
+          {activityTitle}
+        </Text>
+      </View>
 
       <SurfaceCard style={styles.timerCard}>
-        <InfoPill label={`VAS sebelum: ${beforeScore ?? "-"}`} />
         <Text style={styles.timer}>{formatTimer(secondsLeft)}</Text>
-        <Text style={styles.helperText}>
-          Bila tubuh terasa tidak aman atau tidak nyaman, hentikan sesi dan
-          kembali ke materi edukasi.
-        </Text>
+        <Text style={styles.timerLabel}>Durasi Kegiatan</Text>
       </SurfaceCard>
 
+      <Text style={styles.instruction}>
+        Ikuti gerakan dengan nyaman dan fokus pada napas.
+      </Text>
+
       <View style={styles.buttonGroup}>
-        <ActionButton
-          label={isRunning ? "Lanjutkan" : "Mulai"}
-          onPress={() => setIsRunning(true)}
-        />
-        <ActionButton
-          label="Jeda"
-          onPress={() => setIsRunning(false)}
-          variant="secondary"
-        />
-        <ActionButton
-          label="Lanjut ke Penilaian Akhir"
-          onPress={() => {
-            setIsRunning(false);
-            router.push("/(tabs)/vas/after");
-          }}
-          variant="secondary"
-        />
+        {isDone ? (
+          <ActionButton
+            label="Lanjut ke Penilaian Akhir"
+            onPress={handleNext}
+          />
+        ) : (
+          <>
+            <ActionButton
+              label={isRunning ? "Lanjutkan" : "Mulai"}
+              onPress={() => setIsRunning(true)}
+            />
+            <ActionButton
+              label="Jeda"
+              onPress={() => setIsRunning(false)}
+              variant="secondary"
+            />
+            <ActionButton
+              label="Lanjut ke Penilaian Akhir"
+              onPress={handleNext}
+              variant="secondary"
+            />
+          </>
+        )}
       </View>
     </DiaScreen>
   );
 }
 
 const styles = StyleSheet.create({
+  headerSection: {
+    alignItems: "center",
+    paddingTop: diamomTheme.spacing.sm,
+  },
+  title: {
+    color: diamomTheme.colors.text,
+    fontSize: 30,
+    fontWeight: "800",
+    lineHeight: 40,
+    textAlign: "center",
+  },
   timerCard: {
     alignItems: "center",
-    gap: diamomTheme.spacing.md,
+    gap: diamomTheme.spacing.sm,
+    paddingVertical: diamomTheme.spacing.xl,
   },
   timer: {
     color: diamomTheme.colors.text,
-    fontSize: 48,
+    fontSize: 64,
     fontWeight: "800",
-    lineHeight: 56,
+    lineHeight: 72,
   },
-  helperText: {
+  timerLabel: {
     color: diamomTheme.colors.mutedText,
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  instruction: {
+    color: diamomTheme.colors.mutedText,
+    fontSize: 16,
+    lineHeight: 24,
     textAlign: "center",
   },
   buttonGroup: {

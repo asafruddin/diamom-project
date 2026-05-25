@@ -1,14 +1,14 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useLocalSearchParams } from "expo-router";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
+import { ActionButton, DiaScreen, PageHeader, SurfaceCard } from "@/components/dia-ui";
 import {
-    ActionButton,
-    BulletList,
-    DiaScreen,
-    IllustrationPanel,
-    PageHeader,
-    SurfaceCard,
-} from "@/components/dia-ui";
+  LearningSectionCard,
+  MaterialHero,
+  SafetyNoticeCard,
+  StepTimelineCard,
+} from "@/features/materials/material-components";
 import { getMovementBySlug } from "@/features/materials/materials-content";
 import { diamomTheme } from "@/theme";
 
@@ -42,28 +42,44 @@ export default function LaborDanceMovementDetailScreen() {
         description={movement.summary}
       />
 
-      <IllustrationPanel
-        badge="GD"
-        title="Lakukan dengan ritme pelan sambil menjaga napas tetap stabil."
-        detail="Gerakan dapat dihentikan kapan saja jika tubuh terasa tidak aman atau tidak nyaman."
+      <MaterialHero
+        detail={movement.caution}
+        iconName="walk"
+        readTime={movement.difficulty}
+        title="Pelajari pelan-pelan sebelum mencoba gerakan."
       />
 
-      <SurfaceCard>
-        <Text style={styles.sectionTitle}>Cara melakukan</Text>
-        <BulletList items={movement.steps} />
+      <SurfaceCard style={styles.metaCard}>
+        <InfoMeta iconName="speedometer" label="Tingkat" value={movement.difficulty} />
+        <InfoMeta iconName="cube" label="Alat bantu" value={movement.equipment} />
+        <InfoMeta iconName="people" label="Pendamping" value={movement.companion} />
       </SurfaceCard>
 
-      <SurfaceCard>
-        <Text style={styles.sectionTitle}>Manfaat</Text>
-        <BulletList items={movement.benefits} />
-      </SurfaceCard>
+      <LearningSectionCard
+        bullets={movement.preparation}
+        iconName="checkmark-circle"
+        title="Persiapan"
+        tone="calm"
+      />
 
-      <SurfaceCard>
-        <Text style={styles.sectionTitle}>Perhatian</Text>
-        <Text style={styles.body}>{movement.caution}</Text>
-      </SurfaceCard>
+      <StepTimelineCard
+        description="Ikuti langkah dengan gerakan kecil dan napas yang nyaman."
+        step="01"
+        steps={movement.steps}
+        title="Cara melakukan"
+      />
+
+      <LearningSectionCard
+        bullets={movement.benefits}
+        iconName="heart-circle"
+        title="Dukungan kenyamanan"
+        tone="support"
+      />
+
+      <SafetyNoticeCard items={movement.whenToStop} />
 
       <ActionButton
+        accessibilityLabel="Lanjut ke penilaian VAS"
         label="Lanjut ke Penilaian VAS"
         onPress={() => router.push("/(tabs)/vas")}
       />
@@ -71,15 +87,62 @@ export default function LaborDanceMovementDetailScreen() {
   );
 }
 
+function InfoMeta({
+  iconName,
+  label,
+  value,
+}: {
+  iconName: keyof typeof Ionicons.glyphMap;
+  label: string;
+  value: string;
+}) {
+  return (
+    <View style={styles.metaRow}>
+      <View style={styles.metaIcon}>
+        <Ionicons
+          color={diamomTheme.colors.primaryStrong}
+          name={iconName}
+          size={18}
+        />
+      </View>
+      <View style={styles.metaTextBlock}>
+        <Text style={styles.metaLabel}>{label}</Text>
+        <Text style={styles.metaValue}>{value}</Text>
+      </View>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  sectionTitle: {
-    color: diamomTheme.colors.text,
-    fontSize: 17,
+  metaCard: {
+    gap: diamomTheme.spacing.md,
+  },
+  metaRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: diamomTheme.spacing.md,
+  },
+  metaIcon: {
+    alignItems: "center",
+    backgroundColor: diamomTheme.colors.primaryMuted,
+    borderRadius: diamomTheme.radius.md,
+    height: 42,
+    justifyContent: "center",
+    width: 42,
+  },
+  metaTextBlock: {
+    flex: 1,
+    gap: diamomTheme.spacing.xs,
+  },
+  metaLabel: {
+    color: diamomTheme.colors.textSoft,
+    fontSize: 12,
     fontWeight: "800",
   },
-  body: {
-    color: diamomTheme.colors.mutedText,
+  metaValue: {
+    color: diamomTheme.colors.text,
     fontSize: 15,
-    lineHeight: 22,
+    fontWeight: "800",
+    lineHeight: 21,
   },
 });

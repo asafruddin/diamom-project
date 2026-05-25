@@ -1,51 +1,66 @@
 import { router } from "expo-router";
-import { StyleSheet, Text } from "react-native";
 
+import { ActionButton, DiaScreen, PageHeader } from "@/components/dia-ui";
 import {
-    ActionButton,
-    DiaScreen,
-    IllustrationPanel,
-    PageHeader,
-    SurfaceCard,
-} from "@/components/dia-ui";
-import { diamomTheme } from "@/theme";
+  LearningSectionCard,
+  MaterialHero,
+  PrevNextMaterialNav,
+  SafetyNoticeCard,
+  SectionChipRow,
+} from "@/features/materials/material-components";
+import {
+  CLOSING_DETAIL,
+  getMaterialNavigation,
+} from "@/features/materials/materials-content";
+
+const materialHref = "/(tabs)/materials/closing" as const;
 
 export default function ClosingScreen() {
+  const navigation = getMaterialNavigation(materialHref);
+
   return (
     <DiaScreen>
       <PageHeader
-        eyebrow="Materi 5"
+        eyebrow={CLOSING_DETAIL.eyebrow}
         showBack
-        title="Penutup"
-        description="Akhiri sesi belajar dengan afirmasi lembut dan fokus pada napas Anda."
+        title={CLOSING_DETAIL.title}
+        description={CLOSING_DETAIL.description}
       />
 
-      <IllustrationPanel
-        badge="OK"
-        title="Anda hebat, Ibu."
-        detail="Tetap semangat dan yakin, persalinan lancar, ibu dan bayi sehat."
+      <MaterialHero
+        detail={CLOSING_DETAIL.heroDetail}
+        iconName={CLOSING_DETAIL.heroIconName}
+        readTime={CLOSING_DETAIL.readTime}
+        title={CLOSING_DETAIL.heroTitle}
       />
 
-      <SurfaceCard>
-        <Text style={styles.body}>
-          Labor Dance adalah salah satu cara alami untuk membantu ibu melalui
-          proses persalinan dengan lebih nyaman. Lakukan dengan tenang, fokus
-          pada napas, dan percayalah pada tubuh Anda.
-        </Text>
-      </SurfaceCard>
+      <SectionChipRow
+        sections={[
+          ...CLOSING_DETAIL.sections.map((section) => section.title),
+          "Pengingat aman",
+        ]}
+      />
+
+      {CLOSING_DETAIL.sections.map((section) => (
+        <LearningSectionCard
+          body={section.body}
+          bullets={section.bullets}
+          iconName={section.iconName}
+          key={section.id}
+          title={section.title}
+          tone={section.tone}
+        />
+      ))}
+
+      <SafetyNoticeCard items={CLOSING_DETAIL.safetyNotes} title="Pengingat aman" />
 
       <ActionButton
+        accessibilityLabel="Mulai penilaian VAS"
         label="Mulai Penilaian VAS"
         onPress={() => router.push("/(tabs)/vas")}
       />
+
+      <PrevNextMaterialNav {...navigation} />
     </DiaScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  body: {
-    color: diamomTheme.colors.mutedText,
-    fontSize: 15,
-    lineHeight: 22,
-  },
-});

@@ -1,12 +1,7 @@
-import { router } from "expo-router";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 
-import {
-    DiaScreen,
-    ListRowCard,
-    PageHeader,
-    SurfaceCard,
-} from "@/components/dia-ui";
+import { DiaScreen, PageHeader } from "@/components/dia-ui";
+import { MaterialHero, MaterialModuleCard } from "@/features/materials/material-components";
 import { MATERIAL_ITEMS } from "@/features/materials/materials-content";
 import { diamomTheme } from "@/theme";
 
@@ -19,17 +14,26 @@ export default function MaterialsListScreen() {
         description="Pelajari materi berikut untuk membantu persiapan persalinan yang lebih baik."
       />
 
-      <SurfaceCard style={styles.list}>
+      <MaterialHero
+        detail="Baca secara bertahap, mulai dari konsep, SOP, napas, gerakan, lalu penutup. Semua materi tersedia offline."
+        iconName="book"
+        readTime="20 menit"
+        title="Belajar dengan alur pendek agar tubuh dan pikiran tetap nyaman."
+      />
+
+      <View style={styles.list}>
         {MATERIAL_ITEMS.map((item) => (
-          <ListRowCard
+          <MaterialModuleCard
             description={item.description}
+            href={item.href}
+            iconName={item.iconName}
             key={item.id}
-            onPress={() => router.push(item.href)}
+            readTime={item.readTime}
             step={item.step}
             title={item.title}
           />
         ))}
-      </SurfaceCard>
+      </View>
     </DiaScreen>
   );
 }

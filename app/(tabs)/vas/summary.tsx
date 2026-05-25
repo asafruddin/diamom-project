@@ -1,16 +1,20 @@
 import { router } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 
-import {
-    ActionButton,
-    DiaScreen,
-    PageHeader,
-    SurfaceCard,
-} from "@/components/dia-ui";
-import { CLAIM_SAFE_COPY } from "@/constants/claim-safe-copy";
+import { ActionButton, DiaScreen, SurfaceCard } from "@/components/dia-ui";
 import { usePracticeSessionStore } from "@/features/session/session-store";
-import { getVasCategory } from "@/features/session/vas-scale";
+import { getVasCategory, getVasPointColor } from "@/features/session/vas-scale";
 import { diamomTheme } from "@/theme";
+
+function getMotivationalMessage(difference: number): string {
+  if (difference > 0) {
+    return "Luar biasa! \u{1F49C}\nLabor Dance membantu Anda bergerak lebih nyaman. Terus lakukan secara teratur untuk manfaat yang lebih baik.";
+  }
+  if (difference === 0) {
+    return "Nilai tetap stabil. Istirahatlah sejenak dan lanjutkan kembali bila tubuh terasa siap.";
+  }
+  return "Nilai meningkat. Dengarkan tubuh Anda dan beristirahatlah bila perlu. Konsultasikan dengan tenaga kesehatan Anda.";
+}
 
 export default function VasSummaryScreen() {
   const afterScore = usePracticeSessionStore((state) => state.afterScore);
@@ -19,48 +23,54 @@ export default function VasSummaryScreen() {
     (state) => state.resetPracticeSession,
   );
 
-  const previousScore = beforeScore ?? 0;
-  const nextScore = afterScore ?? 0;
-  const difference = previousScore - nextScore;
-  const improvementCopy =
-    difference > 0
-      ? "Luar biasa! Latihan terasa lebih nyaman setelah sesi selesai."
-      : difference === 0
-        ? "Nilai tetap stabil. Anda dapat mengulangi latihan di waktu lain bila tubuh terasa aman."
-        : "Nilai meningkat. Sebaiknya beristirahat dan hentikan latihan bila tubuh terasa tidak nyaman.";
+  const prev = beforeScore ?? 0;
+  const next = afterScore ?? 0;
+  const difference = prev - next;
 
   return (
     <DiaScreen>
-      <PageHeader
-        eyebrow="Hasil Ringkasan"
-        title="Hasil Penilaian"
-        description="Perubahan tingkat nyeri Anda berdasarkan input VAS sebelum dan sesudah sesi."
-      />
+      <View style={styles.headerSection}>
+        <Text style={styles.title}>Hasil Penilaian</Text>
+        <Text style={styles.subtitle}>Perubahan tingkat nyeri Anda</Text>
+      </View>
 
-      <SurfaceCard style={styles.summaryCard}>
+      <SurfaceCard style={styles.comparisonCard}>
         <View style={styles.scoreRow}>
           <View style={styles.scoreBlock}>
             <Text style={styles.scoreLabel}>Sebelum</Text>
-            <Text style={styles.scoreValue}>{previousScore}</Text>
-            <Text style={styles.scoreCategory}>
-              {getVasCategory(previousScore)}
+            <Text
+              style={[styles.scoreValue, { color: getVasPointColor(prev) }]}
+            >
+              {prev}
+            </Text>
+            <Text
+              style={[styles.scoreCategory, { color: getVasPointColor(prev) }]}
+            >
+              {getVasCategory(prev)}
             </Text>
           </View>
 
-          <Text style={styles.arrow}>-&gt;</Text>
+          <Text style={styles.arrow}>{"\u2192"}</Text>
 
           <View style={styles.scoreBlock}>
             <Text style={styles.scoreLabel}>Sesudah</Text>
-            <Text style={styles.scoreValue}>{nextScore}</Text>
-            <Text style={styles.scoreCategory}>
-              {getVasCategory(nextScore)}
+            <Text
+              style={[styles.scoreValue, { color: getVasPointColor(next) }]}
+            >
+              {next}
+            </Text>
+            <Text
+              style={[styles.scoreCategory, { color: getVasPointColor(next) }]}
+            >
+              {getVasCategory(next)}
             </Text>
           </View>
         </View>
+      </SurfaceCard>
 
-        <Text style={styles.improvementCopy}>{improvementCopy}</Text>
-        <Text style={styles.disclaimer}>
-          {CLAIM_SAFE_COPY.RESULT_LANGUAGE.SELF_MONITORING}
+      <SurfaceCard style={styles.motivationalCard}>
+        <Text style={styles.motivationalText}>
+          {getMotivationalMessage(difference)}
         </Text>
       </SurfaceCard>
 
@@ -68,7 +78,7 @@ export default function VasSummaryScreen() {
         label="Selesai"
         onPress={() => {
           resetPracticeSession();
-          router.push("/(tabs)/home");
+          router.replace("/(tabs)/vas");
         }}
       />
     </DiaScreen>
@@ -76,8 +86,25 @@ export default function VasSummaryScreen() {
 }
 
 const styles = StyleSheet.create({
-  summaryCard: {
-    gap: diamomTheme.spacing.md,
+  headerSection: {
+    alignItems: "center",
+    gap: diamomTheme.spacing.xs,
+  },
+  title: {
+    color: diamomTheme.colors.text,
+    fontSize: 28,
+    fontWeight: "800",
+    lineHeight: 36,
+    textAlign: "center",
+  },
+  subtitle: {
+    color: diamomTheme.colors.mutedText,
+    fontSize: 16,
+    lineHeight: 24,
+    textAlign: "center",
+  },
+  comparisonCard: {
+    paddingVertical: diamomTheme.spacing.lg,
   },
   scoreRow: {
     alignItems: "center",
@@ -95,12 +122,11 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   scoreValue: {
-    color: diamomTheme.colors.text,
-    fontSize: 42,
+    fontSize: 56,
     fontWeight: "800",
+    lineHeight: 64,
   },
   scoreCategory: {
-    color: diamomTheme.colors.accentStrong,
     fontSize: 14,
     fontWeight: "700",
     textAlign: "center",
@@ -111,15 +137,14 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     paddingHorizontal: diamomTheme.spacing.sm,
   },
-  improvementCopy: {
-    color: diamomTheme.colors.text,
-    fontSize: 15,
-    fontWeight: "700",
-    lineHeight: 22,
+  motivationalCard: {
+    backgroundColor: diamomTheme.colors.primaryMuted,
+    borderColor: diamomTheme.colors.primaryMuted,
   },
-  disclaimer: {
-    color: diamomTheme.colors.mutedText,
-    fontSize: 14,
-    lineHeight: 21,
+  motivationalText: {
+    color: diamomTheme.colors.primaryStrong,
+    fontSize: 16,
+    fontWeight: "600",
+    lineHeight: 26,
   },
 });

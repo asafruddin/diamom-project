@@ -1,27 +1,69 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import { DiaScreen, PageHeader, SurfaceCard } from "@/components/dia-ui";
 import {
-    DiaScreen,
-    ListRowCard,
-    PageHeader,
-    SurfaceCard,
-} from "@/components/dia-ui";
-import { LABOR_DANCE_MOVEMENTS } from "@/features/materials/materials-content";
+  LearningSectionCard,
+  MaterialHero,
+  PrevNextMaterialNav,
+  SafetyNoticeCard,
+  SectionChipRow,
+} from "@/features/materials/material-components";
+import {
+  LABOR_DANCE_MOVEMENTS,
+  MOVEMENTS_DETAIL,
+  getMaterialNavigation,
+} from "@/features/materials/materials-content";
+import { diamomTheme } from "@/theme";
+
+const materialHref = "/(tabs)/materials/movements" as const;
 
 export default function LaborDanceMovementsScreen() {
+  const navigation = getMaterialNavigation(materialHref);
+
   return (
     <DiaScreen>
       <PageHeader
-        eyebrow="Materi 4"
+        eyebrow={MOVEMENTS_DETAIL.eyebrow}
         showBack
-        title="Gerakan Labor Dance"
-        description="Pilih gerakan yang ingin Anda pelajari terlebih dahulu."
+        title={MOVEMENTS_DETAIL.title}
+        description={MOVEMENTS_DETAIL.description}
       />
 
-      <SurfaceCard>
+      <MaterialHero
+        detail={MOVEMENTS_DETAIL.heroDetail}
+        iconName={MOVEMENTS_DETAIL.heroIconName}
+        readTime={MOVEMENTS_DETAIL.readTime}
+        title={MOVEMENTS_DETAIL.heroTitle}
+      />
+
+      <SectionChipRow
+        sections={[
+          ...MOVEMENTS_DETAIL.sections.map((section) => section.title),
+          "Pengingat aman",
+          ...LABOR_DANCE_MOVEMENTS.map((movement) => movement.title),
+        ]}
+      />
+
+      {MOVEMENTS_DETAIL.sections.map((section) => (
+        <LearningSectionCard
+          body={section.body}
+          bullets={section.bullets}
+          iconName={section.iconName}
+          key={section.id}
+          title={section.title}
+          tone={section.tone}
+        />
+      ))}
+
+      <SafetyNoticeCard items={MOVEMENTS_DETAIL.safetyNotes} />
+
+      <View style={styles.list}>
         {LABOR_DANCE_MOVEMENTS.map((movement, index) => (
-          <ListRowCard
-            description={movement.summary}
+          <Pressable
+            accessibilityLabel={`Buka detail gerakan ${movement.title}`}
+            accessibilityRole="button"
             key={movement.slug}
             onPress={() =>
               router.push({
@@ -29,11 +71,118 @@ export default function LaborDanceMovementsScreen() {
                 pathname: "/(tabs)/materials/movement/[slug]",
               })
             }
-            step={`${index + 1}`}
-            title={movement.title}
-          />
+            style={({ pressed }) => [pressed && styles.pressed]}
+          >
+            <SurfaceCard style={styles.movementCard}>
+              <View style={styles.movementTopRow}>
+                <View style={styles.movementNumber}>
+                  <Text style={styles.movementNumberText}>{index + 1}</Text>
+                </View>
+                <View style={styles.movementTextBlock}>
+                  <Text style={styles.movementTitle}>{movement.title}</Text>
+                  <Text style={styles.body}>{movement.summary}</Text>
+                </View>
+                <Ionicons
+                  color={diamomTheme.colors.textSoft}
+                  name="chevron-forward"
+                  size={20}
+                />
+              </View>
+              <View style={styles.metaGrid}>
+                <InfoMeta iconName="speedometer" label={movement.difficulty} />
+                <InfoMeta iconName="cube" label={movement.equipment} />
+                <InfoMeta iconName="people" label={movement.companion} />
+              </View>
+            </SurfaceCard>
+          </Pressable>
         ))}
-      </SurfaceCard>
+      </View>
+
+      <PrevNextMaterialNav {...navigation} />
     </DiaScreen>
   );
 }
+
+function InfoMeta({
+  iconName,
+  label,
+}: {
+  iconName: keyof typeof Ionicons.glyphMap;
+  label: string;
+}) {
+  return (
+    <View style={styles.metaItem}>
+      <Ionicons
+        color={diamomTheme.colors.primaryStrong}
+        name={iconName}
+        size={15}
+      />
+      <Text style={styles.metaText}>{label}</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  list: {
+    gap: diamomTheme.spacing.md,
+  },
+  movementCard: {
+    gap: diamomTheme.spacing.md,
+  },
+  movementTopRow: {
+    alignItems: "flex-start",
+    flexDirection: "row",
+    gap: diamomTheme.spacing.md,
+  },
+  movementNumber: {
+    alignItems: "center",
+    backgroundColor: diamomTheme.colors.primary,
+    borderRadius: diamomTheme.radius.md,
+    height: 44,
+    justifyContent: "center",
+    width: 44,
+  },
+  movementNumberText: {
+    color: diamomTheme.colors.onPrimary,
+    fontSize: 16,
+    fontWeight: "800",
+  },
+  movementTextBlock: {
+    flex: 1,
+    gap: diamomTheme.spacing.xs,
+  },
+  movementTitle: {
+    color: diamomTheme.colors.text,
+    fontSize: 17,
+    fontWeight: "800",
+    lineHeight: 23,
+  },
+  body: {
+    color: diamomTheme.colors.mutedText,
+    flex: 1,
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  metaGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: diamomTheme.spacing.sm,
+  },
+  metaItem: {
+    alignItems: "center",
+    backgroundColor: diamomTheme.colors.primaryMuted,
+    borderRadius: diamomTheme.radius.pill,
+    flexDirection: "row",
+    gap: diamomTheme.spacing.xs,
+    paddingHorizontal: diamomTheme.spacing.md,
+    paddingVertical: diamomTheme.spacing.sm,
+  },
+  metaText: {
+    color: diamomTheme.colors.primaryStrong,
+    fontSize: 12,
+    fontWeight: "800",
+  },
+  pressed: {
+    opacity: 0.86,
+  },
+});
