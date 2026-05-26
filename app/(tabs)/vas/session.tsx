@@ -14,7 +14,7 @@ export default function PracticeSessionScreen() {
     (state) => state.durationMinutes,
   );
   const [isRunning, setIsRunning] = useState(false);
-  const [secondsLeft, setSecondsLeft] = useState(5); // TODO: revert to durationMinutes * 60
+  const [secondsLeft, setSecondsLeft] = useState(durationMinutes * 60);
   const isDone = secondsLeft === 0;
 
   useEffect(() => {

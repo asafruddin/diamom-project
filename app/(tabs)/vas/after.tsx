@@ -1,14 +1,15 @@
 import { router } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 
 import {
-    ActionButton,
-    DiaScreen,
-    SurfaceCard,
-    VasSelector,
+  ActionButton,
+  DiaScreen,
+  SurfaceCard,
+  VasSelector,
 } from "@/components/dia-ui";
 import { usePracticeSessionStore } from "@/features/session/session-store";
+import { useVasHistoryStore } from "@/features/session/vas-history-store";
 import { getVasCategory } from "@/features/session/vas-scale";
 import { diamomTheme } from "@/theme";
 
@@ -20,9 +21,38 @@ const VAS_LEGEND = [
 ] as const;
 
 export default function VasAfterScreen() {
+  const activityTitle = usePracticeSessionStore((state) => state.activityTitle);
   const afterScore = usePracticeSessionStore((state) => state.afterScore);
+  const beforeScore = usePracticeSessionStore((state) => state.beforeScore);
   const setAfterScore = usePracticeSessionStore((state) => state.setAfterScore);
+  const addRecord = useVasHistoryStore((state) => state.addRecord);
   const [selectedScore, setSelectedScore] = useState(afterScore ?? 3);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = () => {
+    if (isSaving) {
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      setAfterScore(selectedScore);
+      addRecord({
+        activityTitle,
+        afterScore: selectedScore,
+        beforeScore: beforeScore ?? selectedScore,
+      });
+      router.push("/(tabs)/vas/summary");
+    } catch {
+      Alert.alert(
+        "Hasil belum tersimpan",
+        "Silakan coba lagi. Data VAS hanya disimpan lokal di perangkat ini.",
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <DiaScreen>
@@ -62,11 +92,9 @@ export default function VasAfterScreen() {
       </SurfaceCard>
 
       <ActionButton
-        label="Simpan Hasil"
-        onPress={() => {
-          setAfterScore(selectedScore);
-          router.push("/(tabs)/vas/summary");
-        }}
+        accessibilityLabel="Simpan hasil penilaian VAS"
+        label={isSaving ? "Menyimpan..." : "Simpan Hasil"}
+        onPress={handleSave}
       />
     </DiaScreen>
   );

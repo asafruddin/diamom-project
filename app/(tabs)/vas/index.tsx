@@ -62,14 +62,22 @@ export default function VasBeforeScreen() {
         ))}
       </SurfaceCard>
 
-      <ActionButton
-        accessibilityLabel="Mulai kegiatan Labor Dance"
-        label="Mulai Kegiatan"
-        onPress={() => {
-          setBeforeScore(selectedScore);
-          router.push("/(tabs)/vas/session");
-        }}
-      />
+      <View style={styles.buttonGroup}>
+        <ActionButton
+          accessibilityLabel="Mulai kegiatan Labor Dance"
+          label="Mulai Kegiatan"
+          onPress={() => {
+            setBeforeScore(selectedScore);
+            router.push("/(tabs)/vas/session");
+          }}
+        />
+        <ActionButton
+          accessibilityLabel="Buka riwayat VAS"
+          label="Lihat Riwayat VAS"
+          onPress={() => router.push("/(tabs)/vas/history")}
+          variant="secondary"
+        />
+      </View>
     </DiaScreen>
   );
 }
@@ -142,5 +150,8 @@ const styles = StyleSheet.create({
   legendLabel: {
     color: diamomTheme.colors.mutedText,
     fontSize: 14,
+  },
+  buttonGroup: {
+    gap: diamomTheme.spacing.md,
   },
 });
