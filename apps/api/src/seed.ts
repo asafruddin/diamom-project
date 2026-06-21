@@ -1,5 +1,7 @@
-import { apiConfig } from "./config";
+import { getApiConfig } from "./config";
 import { seedDefaultResearcher } from "@diamom/db";
 
+const apiConfig = getApiConfig();
+
 await seedDefaultResearcher(apiConfig.DATABASE_URL);
-console.log("Seeded default researcher account: admin / admin1234");
+console.log("Seeded default researcher account.");

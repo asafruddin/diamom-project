@@ -1,6 +1,7 @@
-import { apiConfig } from "./config";
+import { getApiConfig } from "./config";
 import { createApp } from "./app";
 
+const apiConfig = getApiConfig();
 const app = await createApp();
 
 await app.listen({

@@ -1,14 +1,16 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 
-import { createApp } from "../src/app";
+type CreateApp = typeof import("../src/app").createApp;
+type ApiApp = Awaited<ReturnType<CreateApp>>;
 
-let app: Awaited<ReturnType<typeof createApp>> | null = null;
-let appPromise: Promise<Awaited<ReturnType<typeof createApp>>> | null = null;
+let app: ApiApp | null = null;
+let appPromise: Promise<ApiApp> | null = null;
 
 async function getApp() {
   if (!app) {
     if (!appPromise) {
       appPromise = (async () => {
+        const { createApp } = await import("../src/app");
         const instance = await createApp();
         await instance.ready();
         return instance;

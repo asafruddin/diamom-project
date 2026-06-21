@@ -12,4 +12,13 @@ const envSchema = z.object({
 
 export type ApiConfig = z.infer<typeof envSchema>;
 
-export const apiConfig = envSchema.parse(process.env);
+let cachedConfig: ApiConfig | null = null;
+
+export function parseApiConfig(env: NodeJS.ProcessEnv): ApiConfig {
+  return envSchema.parse(env);
+}
+
+export function getApiConfig(): ApiConfig {
+  cachedConfig ??= parseApiConfig(process.env);
+  return cachedConfig;
+}
