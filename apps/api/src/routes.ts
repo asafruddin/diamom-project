@@ -19,7 +19,7 @@ import {
   saveParticipantSafetyScreening,
   type createDatabase,
 } from "@diamom/db";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import type { FastifyInstance } from "fastify";
 
 import {

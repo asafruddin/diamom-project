@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 import { createDatabase, createId } from "./client";
 import { researchers } from "./schema";
