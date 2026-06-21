@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc --outDir dist",
     "dev": "tsx watch src/server.ts",
+    "postinstall": "pnpm -w build:packages",
     "seed:researcher": "tsx src/seed.ts",
     "start": "node --enable-source-maps ./dist/server.js",
     "typecheck": "tsc --noEmit",

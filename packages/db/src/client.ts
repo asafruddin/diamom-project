@@ -9,7 +9,7 @@ import {
   researcherSessions,
   syncEvents,
   vasSessions,
-} from "./schema";
+} from "./schema.js";
 
 export function createDatabase(connectionString: string) {
   const queryClient = neon(connectionString);

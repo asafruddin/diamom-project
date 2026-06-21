@@ -9,8 +9,8 @@ import type {
 } from "@diamom/contracts";
 import { and, desc, eq, isNull } from "drizzle-orm";
 
-import { buildDashboardSummary } from "./dashboard";
-import { createDatabase, createId } from "./client";
+import { buildDashboardSummary } from "./dashboard.js";
+import { createDatabase, createId } from "./client.js";
 import {
   participantAppSessions,
   participantConsents,
@@ -19,12 +19,12 @@ import {
   researcherSessions,
   syncEvents,
   vasSessions,
-} from "./schema";
+} from "./schema.js";
 
-export * from "./dashboard";
-export * from "./client";
-export * from "./schema";
-export * from "./seed-default-researcher";
+export * from "./dashboard.js";
+export * from "./client.js";
+export * from "./schema.js";
+export * from "./seed-default-researcher.js";
 
 type Database = ReturnType<typeof createDatabase>;
 

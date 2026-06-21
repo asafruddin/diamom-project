@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 
-import { createDatabase, createId } from "./client";
-import { researchers } from "./schema";
+import { createDatabase, createId } from "./client.js";
+import { researchers } from "./schema.js";
 
 export async function seedDefaultResearcher(connectionString: string) {
   const db = createDatabase(connectionString);

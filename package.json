@@ -3,12 +3,14 @@
   "private": true,
   "packageManager": "pnpm@11.1.1",
   "scripts": {
+    "build:packages": "pnpm --filter @diamom/contracts build && pnpm --filter @diamom/db build",
     "dev:mobile": "pnpm --filter @diamom/mobile start",
     "dev:api": "pnpm --filter @diamom/api dev",
     "android": "pnpm --filter @diamom/mobile android",
     "ios": "pnpm --filter @diamom/mobile ios",
     "web": "pnpm --filter @diamom/mobile web",
     "doctor": "pnpm --filter @diamom/mobile doctor",
+    "postinstall": "pnpm build:packages",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm -r --if-present test",
     "lint": "pnpm -r --if-present lint"
