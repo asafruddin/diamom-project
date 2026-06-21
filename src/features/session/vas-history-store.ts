@@ -8,16 +8,22 @@ export type VasHistoryRecord = {
   activityTitle: string;
   afterScore: number;
   beforeScore: number;
+  durationMinutes?: number;
   id: string;
+  motherName?: string;
   savedAt: string;
+  status: string;
 };
 
 type CreateVasHistoryRecordInput = {
   activityTitle?: string;
   afterScore: number;
   beforeScore: number;
+  durationMinutes?: number;
   id?: string;
+  motherName?: string;
   savedAt?: string;
+  status?: string;
 };
 
 export interface VasHistoryState {
@@ -34,8 +40,11 @@ export function createVasHistoryRecord(
     activityTitle: input.activityTitle ?? "Labor Dance",
     afterScore: clampVasScore(input.afterScore),
     beforeScore: clampVasScore(input.beforeScore),
+    durationMinutes: input.durationMinutes,
     id: input.id ?? `vas-${savedAt}-${Math.random().toString(36).slice(2, 8)}`,
+    motherName: input.motherName,
     savedAt,
+    status: input.status ?? "Intervensi Selesai",
   };
 }
 

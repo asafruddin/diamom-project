@@ -78,8 +78,8 @@ export default function ProfileSettingsScreen() {
   const screeningSummary = !hasCompletedSafetyScreening
     ? "Skrining keamanan belum selesai."
     : safetyScreening?.hasRisk
-      ? "Skrining terakhir mencatat kondisi yang perlu diperhatikan."
-      : "Skrining terakhir tidak mencatat tanda berisiko.";
+      ? "Skrining terakhir belum memenuhi semua indikator keamanan."
+      : "Semua indikator keamanan terakhir sudah terpenuhi.";
 
   const handleRetakeScreening = () => {
     router.push("/onboarding/safety-screening");

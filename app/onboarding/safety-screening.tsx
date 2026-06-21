@@ -3,12 +3,16 @@ import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import {
-    ActionButton,
-    DiaScreen,
-    PageHeader,
-    SurfaceCard,
+  ActionButton,
+  DiaScreen,
+  PageHeader,
+  SurfaceCard,
 } from "@/components/dia-ui";
-import { SAFETY_WARNING_SIGNS } from "@/constants/safety";
+import { SAFETY_SCREENING_INDICATORS } from "@/constants/safety";
+import {
+  getSelectedSafetyIndicatorIds,
+  hasCompletedSafetyScreening,
+} from "@/features/onboarding/safety-screening";
 import { useProfileStore } from "@/features/onboarding/profile-store";
 import { diamomTheme } from "@/theme";
 
@@ -19,19 +23,24 @@ export default function OnboardingSafetyScreeningScreen() {
   const hasCompletedMotherIdentity = useProfileStore(
     (state) => state.hasCompletedMotherIdentity,
   );
-  const [selectedSigns, setSelectedSigns] = useState<Record<string, boolean>>(
-    {},
-  );
+  const [selectedIndicators, setSelectedIndicators] = useState<
+    Record<string, boolean>
+  >({});
 
-  const toggleSign = (id: string) => {
-    setSelectedSigns((prev) => ({ ...prev, [id]: !prev[id] }));
+  const toggleIndicator = (id: string) => {
+    setSelectedIndicators((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const selectedIndicatorIds =
+    getSelectedSafetyIndicatorIds(selectedIndicators);
+  const canStart = hasCompletedSafetyScreening(selectedIndicatorIds);
+
   const handleSave = () => {
-    const signs = Object.keys(selectedSigns).filter(
-      (key) => selectedSigns[key],
-    );
-    saveSafetyScreening(signs);
+    if (!canStart) {
+      return;
+    }
+
+    saveSafetyScreening(selectedIndicatorIds);
     router.push("/(tabs)/home");
   };
 
@@ -45,25 +54,27 @@ export default function OnboardingSafetyScreeningScreen() {
         eyebrow="Skrining"
         showBack
         title="Skrining Keamanan"
-        description="Apakah Anda saat ini mengalami atau memiliki kondisi berikut? Pilih semua yang sesuai."
+        description="Centang semua indikator berikut sebelum memulai. Lanjutkan hanya bila seluruh kondisi ini sudah dipastikan aman."
       />
 
       <View style={styles.list}>
-        {SAFETY_WARNING_SIGNS.map((sign) => {
-          const isSelected = !!selectedSigns[sign.id];
+        {SAFETY_SCREENING_INDICATORS.map((indicator) => {
+          const isSelected = !!selectedIndicators[indicator.id];
           return (
             <Pressable
-              key={sign.id}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: isSelected }}
+              key={indicator.id}
               style={[
                 styles.checkboxRow,
                 isSelected && styles.checkboxRowSelected,
               ]}
-              onPress={() => toggleSign(sign.id)}
+              onPress={() => toggleIndicator(indicator.id)}
             >
               <View
                 style={[styles.checkbox, isSelected && styles.checkboxSelected]}
               />
-              <Text style={styles.label}>{sign.label}</Text>
+              <Text style={styles.label}>{indicator.label}</Text>
             </Pressable>
           );
         })}
@@ -71,12 +82,17 @@ export default function OnboardingSafetyScreeningScreen() {
 
       <SurfaceCard>
         <Text style={styles.note}>
-          Jika Anda memilih kondisi berisiko, DiaMom akan tetap membuka materi
-          edukasi tetapi membatasi sesi gerak terpandu.
+          DiaMom membantu edukasi dan dukungan. Ikuti arahan bidan atau tenaga
+          kesehatan, dan hentikan bila merasa tidak aman atau tidak nyaman.
         </Text>
       </SurfaceCard>
 
-      <ActionButton label="Selesai Skrining" onPress={handleSave} />
+      <ActionButton
+        accessibilityLabel="Mulai setelah semua indikator keamanan dicentang"
+        disabled={!canStart}
+        label="Mulai"
+        onPress={handleSave}
+      />
     </DiaScreen>
   );
 }

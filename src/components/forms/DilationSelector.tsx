@@ -1,4 +1,12 @@
-import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import {
+    Dimensions,
+    type LayoutChangeEvent,
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
+} from "react-native";
 
 import { diamomTheme } from "@/theme";
 
@@ -21,16 +29,23 @@ export function DilationSelector({
   accessibilityLabelPrefix = "Pembukaan",
   columns = 5,
 }: DilationSelectorProps) {
+  const [containerWidth, setContainerWidth] = useState(0);
   const screenWidth = Dimensions.get("window").width;
   // Account for DiaScreen padding (lg=24) + SurfaceCard padding (md=16) = 40 per side
   const horizontalPadding = 80;
   const gap = diamomTheme.spacing.sm;
+  const availableWidth =
+    containerWidth > 0 ? containerWidth : screenWidth - horizontalPadding;
   const totalGap = gap * (columns - 1);
-  const itemWidth = (screenWidth - horizontalPadding - totalGap) / columns;
+  const itemWidth = (availableWidth - totalGap) / columns;
+
+  const handleGridLayout = (event: LayoutChangeEvent) => {
+    setContainerWidth(event.nativeEvent.layout.width);
+  };
 
   return (
     <View>
-      <View style={[styles.dilationGrid, { gap }]}>
+      <View onLayout={handleGridLayout} style={[styles.dilationGrid, { gap }]}>
         {options.map((option) => {
           const isSelected = value === option;
           return (
@@ -77,7 +92,7 @@ const styles = StyleSheet.create({
   dilationGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
   },
   dilationOption: {
     alignItems: "center",

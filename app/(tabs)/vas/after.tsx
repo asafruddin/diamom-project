@@ -8,6 +8,7 @@ import {
   SurfaceCard,
   VasSelector,
 } from "@/components/dia-ui";
+import { useProfileStore } from "@/features/onboarding/profile-store";
 import { usePracticeSessionStore } from "@/features/session/session-store";
 import { useVasHistoryStore } from "@/features/session/vas-history-store";
 import { getVasCategory } from "@/features/session/vas-scale";
@@ -24,8 +25,14 @@ export default function VasAfterScreen() {
   const activityTitle = usePracticeSessionStore((state) => state.activityTitle);
   const afterScore = usePracticeSessionStore((state) => state.afterScore);
   const beforeScore = usePracticeSessionStore((state) => state.beforeScore);
+  const durationMinutes = usePracticeSessionStore(
+    (state) => state.durationMinutes,
+  );
   const setAfterScore = usePracticeSessionStore((state) => state.setAfterScore);
   const addRecord = useVasHistoryStore((state) => state.addRecord);
+  const motherName = useProfileStore(
+    (state) => state.motherIdentity?.motherName ?? "Ibu",
+  );
   const [selectedScore, setSelectedScore] = useState(afterScore ?? 3);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -42,6 +49,9 @@ export default function VasAfterScreen() {
         activityTitle,
         afterScore: selectedScore,
         beforeScore: beforeScore ?? selectedScore,
+        durationMinutes,
+        motherName,
+        status: "Intervensi Selesai",
       });
       router.push("/(tabs)/vas/summary");
     } catch {

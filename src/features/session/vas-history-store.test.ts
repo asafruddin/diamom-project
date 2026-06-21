@@ -8,7 +8,9 @@ test("createVasHistoryRecord stores clamped before and after VAS scores", () => 
     activityTitle: "Labor Dance",
     afterScore: -2,
     beforeScore: 12,
+    durationMinutes: 30,
     id: "record-1",
+    motherName: "Ayu",
     savedAt: "2026-05-26T08:46:00.000Z",
   });
 
@@ -16,8 +18,11 @@ test("createVasHistoryRecord stores clamped before and after VAS scores", () => 
     activityTitle: "Labor Dance",
     afterScore: 0,
     beforeScore: 10,
+    durationMinutes: 30,
     id: "record-1",
+    motherName: "Ayu",
     savedAt: "2026-05-26T08:46:00.000Z",
+    status: "Intervensi Selesai",
   });
 });
 
@@ -31,5 +36,6 @@ test("createVasHistoryRecord defaults activity title and timestamp", () => {
   assert.strictEqual(record.activityTitle, "Labor Dance");
   assert.strictEqual(record.beforeScore, 6);
   assert.strictEqual(record.afterScore, 3);
+  assert.strictEqual(record.status, "Intervensi Selesai");
   assert.match(record.savedAt, /^\d{4}-\d{2}-\d{2}T/);
 });

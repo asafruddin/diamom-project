@@ -36,6 +36,7 @@ interface PageHeaderProps {
 
 interface ActionButtonProps {
   accessibilityLabel?: string;
+  disabled?: boolean;
   label: string;
   onPress: () => void;
   variant?: "primary" | "secondary";
@@ -136,6 +137,7 @@ export function SurfaceCard({ children, style }: SurfaceCardProps) {
 
 export function ActionButton({
   accessibilityLabel,
+  disabled = false,
   label,
   onPress,
   variant = "primary",
@@ -146,17 +148,21 @@ export function ActionButton({
     <Pressable
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityRole="button"
+      accessibilityState={{ disabled }}
+      disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
         isPrimary ? styles.primaryButton : styles.secondaryButton,
-        pressed && styles.buttonPressed,
+        disabled && styles.buttonDisabled,
+        pressed && !disabled && styles.buttonPressed,
       ]}
     >
       <Text
         style={[
           styles.buttonText,
           isPrimary ? styles.primaryButtonText : styles.secondaryButtonText,
+          disabled && styles.buttonTextDisabled,
         ]}
       >
         {label}
@@ -391,9 +397,16 @@ const styles = StyleSheet.create({
     borderColor: diamomTheme.colors.border,
     borderWidth: 1,
   },
+  buttonDisabled: {
+    backgroundColor: diamomTheme.colors.border,
+    borderColor: diamomTheme.colors.border,
+  },
   buttonText: {
     fontSize: 16,
     fontWeight: "800",
+  },
+  buttonTextDisabled: {
+    color: diamomTheme.colors.textSoft,
   },
   primaryButtonText: {
     color: diamomTheme.colors.onPrimary,

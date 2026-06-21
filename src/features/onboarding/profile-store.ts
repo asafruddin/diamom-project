@@ -2,6 +2,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import { deriveSafetyScreeningRisk } from "@/features/onboarding/safety-screening";
+
 export interface SafetyScreeningAnswers {
   signs: string[];
   timestamp: string;
@@ -68,7 +70,7 @@ export const useProfileStore = create<OnboardingState>()(
           };
         }),
       saveSafetyScreening: (signs) => {
-        const hasRisk = signs.length > 0;
+        const hasRisk = deriveSafetyScreeningRisk(signs);
         set({
           safetyScreening: {
             signs,
