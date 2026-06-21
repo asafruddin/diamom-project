@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm build:packages",
   "builds": [
     {
       "src": "api/index.ts",
