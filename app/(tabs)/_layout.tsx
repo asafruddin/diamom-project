@@ -12,8 +12,15 @@ export default function MainTabsLayout() {
   const hasCompletedSafetyScreening = useProfileStore(
     (state) => state.hasCompletedSafetyScreening,
   );
+  const hasCompletedMotherIdentity = useProfileStore(
+    (state) => state.hasCompletedMotherIdentity,
+  );
 
-  if (!hasAcceptedDisclaimer || !hasCompletedSafetyScreening) {
+  if (
+    !hasAcceptedDisclaimer ||
+    !hasCompletedMotherIdentity ||
+    !hasCompletedSafetyScreening
+  ) {
     return <Redirect href="/onboarding/intro" />;
   }
 

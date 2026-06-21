@@ -2,10 +2,22 @@ import type Ionicons from "@expo/vector-icons/Ionicons";
 
 import IoniconsIcon from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import {
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 import { DiaScreen, InfoPill, PageHeader, SurfaceCard } from "@/components/dia-ui";
+import { DilationSelector, FormField } from "@/components/forms";
 import { useProfileStore } from "@/features/onboarding/profile-store";
+import {
+  type PregnancyProgressFormValues,
+  validatePregnancyProgress,
+} from "@/features/onboarding/validation";
 import { usePracticeSessionStore } from "@/features/session/session-store";
 import { useVasHistoryStore } from "@/features/session/vas-history-store";
 import { diamomTheme } from "@/theme";
@@ -23,12 +35,24 @@ type StatusItemProps = {
   label: string;
 };
 
+type IdentityDetailProps = {
+  label: string;
+  value: string;
+};
+
 export default function ProfileSettingsScreen() {
   const hasAcceptedDisclaimer = useProfileStore(
     (state) => state.hasAcceptedDisclaimer,
   );
   const hasCompletedSafetyScreening = useProfileStore(
     (state) => state.hasCompletedSafetyScreening,
+  );
+  const hasCompletedMotherIdentity = useProfileStore(
+    (state) => state.hasCompletedMotherIdentity,
+  );
+  const motherIdentity = useProfileStore((state) => state.motherIdentity);
+  const updatePregnancyProgress = useProfileStore(
+    (state) => state.updatePregnancyProgress,
   );
   const safetyScreening = useProfileStore((state) => state.safetyScreening);
   const clearOnboardingData = useProfileStore(
@@ -38,6 +62,18 @@ export default function ProfileSettingsScreen() {
     (state) => state.resetPracticeSession,
   );
   const clearVasHistory = useVasHistoryStore((state) => state.clearRecords);
+  const [isEditingPregnancy, setIsEditingPregnancy] = useState(false);
+  const [pregnancyDraft, setPregnancyDraft] =
+    useState<PregnancyProgressFormValues>({
+      dilationCm: null,
+      pregnancyWeek: "",
+    });
+  const [pregnancyErrors, setPregnancyErrors] = useState<
+    Record<keyof PregnancyProgressFormValues, string | undefined>
+  >({
+    dilationCm: undefined,
+    pregnancyWeek: undefined,
+  });
 
   const screeningSummary = !hasCompletedSafetyScreening
     ? "Skrining keamanan belum selesai."
@@ -49,10 +85,55 @@ export default function ProfileSettingsScreen() {
     router.push("/onboarding/safety-screening");
   };
 
+  const handleStartEditPregnancy = () => {
+    if (!motherIdentity) {
+      router.push("/onboarding/profile");
+      return;
+    }
+
+    setPregnancyDraft({
+      dilationCm: motherIdentity.dilationCm,
+      pregnancyWeek: String(motherIdentity.pregnancyWeek),
+    });
+    setPregnancyErrors({
+      dilationCm: undefined,
+      pregnancyWeek: undefined,
+    });
+    setIsEditingPregnancy(true);
+  };
+
+  const handleCancelEditPregnancy = () => {
+    setIsEditingPregnancy(false);
+    setPregnancyErrors({
+      dilationCm: undefined,
+      pregnancyWeek: undefined,
+    });
+  };
+
+  const updatePregnancyDraft = (
+    key: keyof PregnancyProgressFormValues,
+    value: string | number | null,
+  ) => {
+    setPregnancyDraft((current) => ({ ...current, [key]: value }));
+    setPregnancyErrors((current) => ({ ...current, [key]: undefined }));
+  };
+
+  const handleSavePregnancyProgress = () => {
+    const result = validatePregnancyProgress(pregnancyDraft);
+    setPregnancyErrors(result.errors);
+
+    if (!result.isValid) {
+      return;
+    }
+
+    updatePregnancyProgress(result.value);
+    setIsEditingPregnancy(false);
+  };
+
   const handleDeleteLocalData = () => {
     Alert.alert(
       "Hapus data lokal?",
-      "Tindakan ini menghapus status persetujuan, skrining keamanan, sesi VAS sementara, dan riwayat VAS di perangkat ini. Anda akan kembali ke onboarding.",
+      "Tindakan ini menghapus identitas ibu, status persetujuan, skrining keamanan, sesi VAS sementara, dan riwayat VAS di perangkat ini. Anda akan kembali ke onboarding.",
       [
         {
           style: "cancel",
@@ -77,7 +158,7 @@ export default function ProfileSettingsScreen() {
       <PageHeader
         eyebrow="Pengaturan"
         title="Profil & Pengaturan"
-        description="Kelola akses, materi, dan data lokal DiaMom tanpa membuat akun atau menyimpan profil pribadi."
+        description="Kelola akses, materi, dan data lokal DiaMom tanpa akun atau sinkronisasi cloud."
       />
 
       <SurfaceCard style={styles.heroCard}>
@@ -90,10 +171,10 @@ export default function ProfileSettingsScreen() {
             />
           </View>
           <View style={styles.heroTextBlock}>
-            <Text style={styles.heroTitle}>Mode anonim aktif</Text>
+            <Text style={styles.heroTitle}>Data lokal aktif</Text>
             <Text style={styles.heroDescription}>
-              DiaMom tidak meminta nama, kontak darurat, minggu kehamilan, atau
-              akun pengguna.
+              Identitas ibu dan catatan DiaMom tersimpan di perangkat ini saja,
+              tanpa akun pengguna.
             </Text>
           </View>
         </View>
@@ -103,11 +184,124 @@ export default function ProfileSettingsScreen() {
         </View>
       </SurfaceCard>
 
+      <SurfaceCard style={styles.identityCard}>
+        <View style={styles.identityHeaderRow}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Identitas ibu</Text>
+            <Text style={styles.sectionDescription}>
+              Data ini disimpan lokal di perangkat melalui penyimpanan aplikasi.
+            </Text>
+          </View>
+          <Pressable
+            accessibilityLabel={
+              motherIdentity
+                ? "Edit usia kehamilan dan pembukaan"
+                : "Isi identitas ibu"
+            }
+            accessibilityRole="button"
+            onPress={handleStartEditPregnancy}
+            style={({ pressed }) => [
+              styles.editButton,
+              pressed && styles.pressed,
+            ]}
+          >
+            <IoniconsIcon
+              color={diamomTheme.colors.primaryStrong}
+              name={motherIdentity ? "create-outline" : "add"}
+              size={18}
+            />
+            <Text style={styles.editButtonText}>
+              {motherIdentity ? "Edit" : "Isi"}
+            </Text>
+          </Pressable>
+        </View>
+
+        {motherIdentity ? (
+          <>
+            <View style={styles.identityGrid}>
+              <IdentityDetail label="Nama" value={motherIdentity.motherName} />
+              <IdentityDetail
+                label="Umur"
+                value={`${motherIdentity.age} tahun`}
+              />
+              <IdentityDetail label="GPA" value={motherIdentity.gpa} />
+              <IdentityDetail
+                label="Usia Kehamilan"
+                value={`${motherIdentity.pregnancyWeek} minggu`}
+              />
+              <IdentityDetail
+                label="Pembukaan"
+                value={`${motherIdentity.dilationCm} cm`}
+              />
+            </View>
+
+            {isEditingPregnancy ? (
+              <View style={styles.editorBlock}>
+                <FormField
+                  accessibilityLabel="Usia Kehamilan"
+                  error={pregnancyErrors.pregnancyWeek}
+                  keyboardType="number-pad"
+                  label="Usia Kehamilan"
+                  onChangeText={(text) =>
+                    updatePregnancyDraft("pregnancyWeek", text)
+                  }
+                  placeholder="Minggu"
+                  rightLabel="minggu"
+                  value={pregnancyDraft.pregnancyWeek}
+                />
+
+                <DilationSelector
+                  error={pregnancyErrors.dilationCm}
+                  onChange={(value) =>
+                    updatePregnancyDraft("dilationCm", value)
+                  }
+                  value={pregnancyDraft.dilationCm}
+                />
+
+                <View style={styles.editorActions}>
+                  <Pressable
+                    accessibilityLabel="Batal edit usia kehamilan dan pembukaan"
+                    accessibilityRole="button"
+                    onPress={handleCancelEditPregnancy}
+                    style={({ pressed }) => [
+                      styles.secondaryAction,
+                      pressed && styles.pressed,
+                    ]}
+                  >
+                    <Text style={styles.secondaryActionText}>Batal</Text>
+                  </Pressable>
+                  <Pressable
+                    accessibilityLabel="Simpan usia kehamilan dan pembukaan"
+                    accessibilityRole="button"
+                    onPress={handleSavePregnancyProgress}
+                    style={({ pressed }) => [
+                      styles.primaryAction,
+                      pressed && styles.pressed,
+                    ]}
+                  >
+                    <Text style={styles.primaryActionText}>Simpan</Text>
+                  </Pressable>
+                </View>
+              </View>
+            ) : null}
+          </>
+        ) : (
+          <Text style={styles.emptyIdentityText}>
+            Identitas ibu belum tersedia. Isi data terlebih dahulu sebelum
+            memakai fitur latihan DiaMom.
+          </Text>
+        )}
+      </SurfaceCard>
+
       <SurfaceCard style={styles.statusCard}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Status akses</Text>
           <Text style={styles.sectionDescription}>{screeningSummary}</Text>
         </View>
+        <StatusItem
+          isComplete={hasCompletedMotherIdentity}
+          label="Identitas ibu tersimpan lokal"
+        />
         <StatusItem
           isComplete={hasAcceptedDisclaimer}
           label="Pernyataan medis disetujui"
@@ -167,6 +361,15 @@ export default function ProfileSettingsScreen() {
         />
       </View>
     </DiaScreen>
+  );
+}
+
+function IdentityDetail({ label, value }: IdentityDetailProps) {
+  return (
+    <View style={styles.identityDetail}>
+      <Text style={styles.identityLabel}>{label}</Text>
+      <Text style={styles.identityValue}>{value}</Text>
+    </View>
   );
 }
 
@@ -281,6 +484,99 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: diamomTheme.spacing.sm,
+  },
+  identityCard: {
+    gap: diamomTheme.spacing.md,
+  },
+  identityHeaderRow: {
+    alignItems: "flex-start",
+    flexDirection: "row",
+    gap: diamomTheme.spacing.md,
+    justifyContent: "space-between",
+  },
+  editButton: {
+    alignItems: "center",
+    backgroundColor: diamomTheme.colors.primaryMuted,
+    borderRadius: diamomTheme.radius.pill,
+    flexDirection: "row",
+    gap: diamomTheme.spacing.xs,
+    minHeight: 40,
+    paddingHorizontal: diamomTheme.spacing.md,
+  },
+  editButtonText: {
+    color: diamomTheme.colors.primaryStrong,
+    fontSize: 14,
+    fontWeight: "800",
+  },
+  identityGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: diamomTheme.spacing.sm,
+  },
+  identityDetail: {
+    backgroundColor: diamomTheme.colors.backgroundElevated,
+    borderColor: diamomTheme.colors.border,
+    borderRadius: diamomTheme.radius.sm,
+    borderWidth: 1,
+    flexGrow: 1,
+    gap: diamomTheme.spacing.xs,
+    minHeight: 76,
+    minWidth: "47%",
+    padding: diamomTheme.spacing.md,
+  },
+  identityLabel: {
+    color: diamomTheme.colors.mutedText,
+    fontSize: 12,
+    fontWeight: "800",
+  },
+  identityValue: {
+    color: diamomTheme.colors.text,
+    fontSize: 17,
+    fontWeight: "900",
+    lineHeight: 23,
+  },
+  emptyIdentityText: {
+    color: diamomTheme.colors.mutedText,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  editorBlock: {
+    borderColor: diamomTheme.colors.border,
+    borderRadius: diamomTheme.radius.md,
+    borderWidth: 1,
+    gap: diamomTheme.spacing.md,
+    padding: diamomTheme.spacing.md,
+  },
+  editorActions: {
+    flexDirection: "row",
+    gap: diamomTheme.spacing.sm,
+    justifyContent: "flex-end",
+  },
+  secondaryAction: {
+    alignItems: "center",
+    backgroundColor: diamomTheme.colors.primaryMuted,
+    borderRadius: diamomTheme.radius.pill,
+    justifyContent: "center",
+    minHeight: 44,
+    paddingHorizontal: diamomTheme.spacing.lg,
+  },
+  secondaryActionText: {
+    color: diamomTheme.colors.primaryStrong,
+    fontSize: 15,
+    fontWeight: "800",
+  },
+  primaryAction: {
+    alignItems: "center",
+    backgroundColor: diamomTheme.colors.primary,
+    borderRadius: diamomTheme.radius.pill,
+    justifyContent: "center",
+    minHeight: 44,
+    paddingHorizontal: diamomTheme.spacing.lg,
+  },
+  primaryActionText: {
+    color: diamomTheme.colors.onPrimary,
+    fontSize: 15,
+    fontWeight: "800",
   },
   statusCard: {
     gap: diamomTheme.spacing.md,

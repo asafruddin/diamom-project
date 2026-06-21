@@ -18,10 +18,14 @@ export default function DiaMomEntryScreen() {
   const hasCompletedSafetyScreening = useProfileStore(
     (state) => state.hasCompletedSafetyScreening,
   );
+  const hasCompletedMotherIdentity = useProfileStore(
+    (state) => state.hasCompletedMotherIdentity,
+  );
 
   const handleStart = () => {
     const route = getInitialDiaMomRoute({
       hasAcceptedDisclaimer,
+      hasCompletedMotherIdentity,
       hasCompletedSafetyScreening,
     });
     router.push(route);
@@ -41,7 +45,7 @@ export default function DiaMomEntryScreen() {
       <IllustrationPanel
         badge="DM"
         title="Belajar dengan tenang, bergerak dengan lembut."
-        detail="DiaMom tidak menyimpan nama, usia kehamilan, atau kontak pribadi Anda."
+        detail="Data identitas yang diminta saat onboarding disimpan lokal di perangkat ini."
       />
 
       <View style={styles.ctaGroup}>

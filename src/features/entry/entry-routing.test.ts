@@ -7,6 +7,7 @@ test("getInitialDiaMomRoute", async (t) => {
     assert.strictEqual(
       getInitialDiaMomRoute({
         hasAcceptedDisclaimer: false,
+        hasCompletedMotherIdentity: false,
         hasCompletedSafetyScreening: false,
       }),
       "/onboarding/intro",
@@ -19,6 +20,7 @@ test("getInitialDiaMomRoute", async (t) => {
       assert.strictEqual(
         getInitialDiaMomRoute({
           hasAcceptedDisclaimer: true,
+          hasCompletedMotherIdentity: true,
           hasCompletedSafetyScreening: false,
         }),
         "/onboarding/intro",
@@ -26,10 +28,22 @@ test("getInitialDiaMomRoute", async (t) => {
     },
   );
 
+  await t.test("routes users missing mother identity to onboarding intro", () => {
+    assert.strictEqual(
+      getInitialDiaMomRoute({
+        hasAcceptedDisclaimer: true,
+        hasCompletedMotherIdentity: false,
+        hasCompletedSafetyScreening: true,
+      }),
+      "/onboarding/intro",
+    );
+  });
+
   await t.test("routes users missing disclaimer to onboarding intro", () => {
     assert.strictEqual(
       getInitialDiaMomRoute({
         hasAcceptedDisclaimer: false,
+        hasCompletedMotherIdentity: true,
         hasCompletedSafetyScreening: true,
       }),
       "/onboarding/intro",
@@ -42,6 +56,7 @@ test("getInitialDiaMomRoute", async (t) => {
       assert.strictEqual(
         getInitialDiaMomRoute({
           hasAcceptedDisclaimer: true,
+          hasCompletedMotherIdentity: true,
           hasCompletedSafetyScreening: true,
         }),
         "/(tabs)/home",

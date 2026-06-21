@@ -20,7 +20,7 @@ export default function OnboardingIntroScreen() {
       <IllustrationPanel
         badge="01"
         title="DiaMom hadir sebagai pendamping edukasi, bukan pengganti tenaga medis."
-        detail="Selesaikan persetujuan medis dan skrining keamanan sebelum menggunakan fitur latihan."
+        detail="Selesaikan persetujuan medis, identitas ibu, dan skrining keamanan sebelum menggunakan fitur latihan."
       />
 
       <SurfaceCard>

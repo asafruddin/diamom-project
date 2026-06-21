@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -16,6 +16,9 @@ export default function OnboardingSafetyScreeningScreen() {
   const saveSafetyScreening = useProfileStore(
     (state) => state.saveSafetyScreening,
   );
+  const hasCompletedMotherIdentity = useProfileStore(
+    (state) => state.hasCompletedMotherIdentity,
+  );
   const [selectedSigns, setSelectedSigns] = useState<Record<string, boolean>>(
     {},
   );
@@ -31,6 +34,10 @@ export default function OnboardingSafetyScreeningScreen() {
     saveSafetyScreening(signs);
     router.push("/(tabs)/home");
   };
+
+  if (!hasCompletedMotherIdentity) {
+    return <Redirect href="/onboarding/profile" />;
+  }
 
   return (
     <DiaScreen>

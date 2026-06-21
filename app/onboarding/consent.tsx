@@ -26,7 +26,7 @@ export default function OnboardingConsentScreen() {
     }
 
     acceptDisclaimer();
-    router.push("/onboarding/safety-screening" as any);
+    router.push("/onboarding/profile");
   };
 
   return (
