@@ -42,6 +42,8 @@ export interface MotherIdentity {
   timestamp: string;
 }
 
+let participantHydrationPromise: Promise<void> | null = null;
+
 function mapSnapshot(snapshot: ParticipantSnapshot) {
   return {
     hasAcceptedDisclaimer: snapshot.hasAcceptedDisclaimer,
@@ -111,7 +113,9 @@ async function ensureParticipantToken(
   const refreshedToken = getState().participantToken;
 
   if (!refreshedToken) {
-    throw new Error("Sesi peserta belum siap.");
+    throw new Error(
+      getState().lastSyncError ?? "Sesi peserta belum siap.",
+    );
   }
 
   return refreshedToken;
@@ -193,49 +197,55 @@ export const useParticipantStore = create<ParticipantDataState>((set, get) => ({
   hasCompletedSafetyScreening: false,
   hasResearchConsent: false,
   hydrate: async () => {
-    if (get().isHydrating) {
-      return;
+    if (participantHydrationPromise) {
+      return participantHydrationPromise;
     }
 
-    set({ isHydrating: true, lastSyncError: null });
+    participantHydrationPromise = (async () => {
+      set({ isHydrating: true, lastSyncError: null });
 
-    try {
-      const savedToken = await readParticipantAppToken();
+      try {
+        const savedToken = await readParticipantAppToken();
 
-      if (savedToken) {
-        try {
-          const snapshot = await fetchParticipantSnapshot(savedToken);
-          set({
-            ...mapSnapshot(snapshot),
-            isHydrated: true,
-            isHydrating: false,
-            participantToken: savedToken,
-          });
-          return;
-        } catch {
-          await deleteParticipantAppToken();
+        if (savedToken) {
+          try {
+            const snapshot = await fetchParticipantSnapshot(savedToken);
+            set({
+              ...mapSnapshot(snapshot),
+              isHydrated: true,
+              isHydrating: false,
+              participantToken: savedToken,
+            });
+            return;
+          } catch {
+            await deleteParticipantAppToken();
+          }
         }
+
+        const session = await bootstrapParticipantApp();
+        await saveParticipantAppToken(session.accessToken);
+
+        set({
+          ...mapSnapshot(session.participant),
+          isHydrated: true,
+          isHydrating: false,
+          participantToken: session.accessToken,
+        });
+      } catch (error) {
+        set({
+          isHydrated: true,
+          isHydrating: false,
+          lastSyncError:
+            error instanceof Error
+              ? error.message
+              : "Gagal memuat data peserta dari server.",
+        });
+      } finally {
+        participantHydrationPromise = null;
       }
+    })();
 
-      const session = await bootstrapParticipantApp();
-      await saveParticipantAppToken(session.accessToken);
-
-      set({
-        ...mapSnapshot(session.participant),
-        isHydrated: true,
-        isHydrating: false,
-        participantToken: session.accessToken,
-      });
-    } catch (error) {
-      set({
-        isHydrated: true,
-        isHydrating: false,
-        lastSyncError:
-          error instanceof Error
-            ? error.message
-            : "Gagal memuat data peserta dari server.",
-      });
-    }
+    return participantHydrationPromise;
   },
   isHydrated: false,
   isHydrating: false,

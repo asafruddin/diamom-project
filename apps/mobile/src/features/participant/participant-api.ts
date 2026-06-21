@@ -17,30 +17,37 @@ function getApiBaseUrl() {
     return process.env.EXPO_PUBLIC_API_URL;
   }
 
-  return Platform.OS === "android" ? "http://10.0.2.2:4000" : "http://localhost:4000";
+  return Platform.OS === "android"
+    ? "http://10.0.2.2:4000"
+    : "http://localhost:4000";
 }
 
-async function requestJson<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<T> {
+async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
+  const { headers, ...requestInit } = init ?? {};
+
   const response = await fetch(`${getApiBaseUrl()}${path}`, {
+    ...requestInit,
     headers: {
-      "Content-Type": "application/json",
-      ...(init?.headers ?? {}),
+      ...(requestInit.body ? { "Content-Type": "application/json" } : {}),
+      ...(headers ?? {}),
     },
-    ...init,
   });
 
   if (!response.ok) {
-    const message = await response
-      .json()
-      .then((payload) =>
-        typeof payload?.message === "string"
-          ? payload.message
-          : "Permintaan ke server gagal.",
-      )
-      .catch(() => "Permintaan ke server gagal.");
+    const contentType = response.headers.get("content-type") ?? "";
+    const message = contentType.includes("application/json")
+      ? await response
+          .json()
+          .then((payload) =>
+            typeof payload?.message === "string"
+              ? payload.message
+              : "Permintaan ke server gagal.",
+          )
+          .catch(() => "Permintaan ke server gagal.")
+      : response.status === 401
+        ? "Server API memerlukan autentikasi. Periksa alamat API aplikasi."
+        : "Permintaan ke server gagal.";
+
     throw new Error(message);
   }
 

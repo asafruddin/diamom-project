@@ -195,7 +195,7 @@ export default function ProfileSettingsScreen() {
 
       <SurfaceCard style={styles.identityCard}>
         <View style={styles.identityHeaderRow}>
-          <View style={styles.sectionHeader}>
+          <View style={[styles.sectionHeader, styles.identityHeaderContent]}>
             <Text style={styles.sectionTitle}>Identitas ibu</Text>
             <Text style={styles.sectionDescription}>
               Data ini tersimpan di database DiaMom dan dimuat kembali setiap
@@ -358,10 +358,11 @@ export default function ProfileSettingsScreen() {
             onPress={() => router.push("/research/consent")}
             style={({ pressed }) => [
               styles.primaryAction,
+              styles.researchActionButton,
               pressed && styles.pressed,
             ]}
           >
-            <Text style={styles.primaryActionText}>
+            <Text style={[styles.primaryActionText, styles.researchActionText]}>
               {hasResearchConsent ? "Kelola Persetujuan" : "Aktifkan Persetujuan"}
             </Text>
           </Pressable>
@@ -373,10 +374,13 @@ export default function ProfileSettingsScreen() {
             }}
             style={({ pressed }) => [
               styles.secondaryAction,
+              styles.researchActionButton,
               pressed && styles.pressed,
             ]}
           >
-            <Text style={styles.secondaryActionText}>Muat Ulang Data</Text>
+            <Text style={[styles.secondaryActionText, styles.researchActionText]}>
+              Muat Ulang Data
+            </Text>
           </Pressable>
         </View>
       </SurfaceCard>
@@ -576,10 +580,16 @@ const styles = StyleSheet.create({
   identityHeaderRow: {
     alignItems: "flex-start",
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: diamomTheme.spacing.md,
     justifyContent: "space-between",
   },
+  identityHeaderContent: {
+    flex: 1,
+    minWidth: 0,
+  },
   editButton: {
+    alignSelf: "flex-start",
     alignItems: "center",
     backgroundColor: diamomTheme.colors.primaryMuted,
     borderRadius: diamomTheme.radius.pill,
@@ -590,6 +600,7 @@ const styles = StyleSheet.create({
   },
   editButtonText: {
     color: diamomTheme.colors.primaryStrong,
+    flexShrink: 1,
     fontSize: 14,
     fontWeight: "800",
   },
@@ -669,6 +680,16 @@ const styles = StyleSheet.create({
   researchActions: {
     flexDirection: "row",
     gap: diamomTheme.spacing.sm,
+    width: "100%",
+  },
+  researchActionButton: {
+    flex: 1,
+    minWidth: 0,
+    paddingHorizontal: diamomTheme.spacing.md,
+  },
+  researchActionText: {
+    flexShrink: 1,
+    textAlign: "center",
   },
   researchCard: {
     gap: diamomTheme.spacing.md,

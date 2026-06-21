@@ -1,4 +1,5 @@
 import { router } from "expo-router";
+import { Image } from "expo-image";
 import { StyleSheet, Text, View } from "react-native";
 
 import {
@@ -39,8 +40,13 @@ export default function DiaMomEntryScreen() {
   return (
     <DiaScreen contentContainerStyle={styles.container} scroll={false}>
       <View style={styles.copyGroup}>
+        <Image
+          accessibilityLabel="Logo DiaMom"
+          contentFit="contain"
+          source={require("@/assets/icon/diamom-logo.png")}
+          style={styles.brandMark}
+        />
         <InfoPill label="Persalinan Nyaman, Ibu Bahagia" />
-        <Text style={styles.brand}>DiaMom App</Text>
         <Text style={styles.subtitle}>
           Teman belajar untuk napas, Labor Dance, dan pemantauan kenyamanan diri
           menjelang persalinan.
@@ -77,17 +83,20 @@ const styles = StyleSheet.create({
     gap: diamomTheme.spacing.xl,
     justifyContent: "center",
   },
-  copyGroup: { gap: diamomTheme.spacing.sm },
-  brand: {
-    color: diamomTheme.colors.text,
-    fontSize: 42,
-    fontWeight: "800",
-    lineHeight: 50,
+  copyGroup: {
+    alignItems: "center",
+    gap: diamomTheme.spacing.sm,
+  },
+  brandMark: {
+    height: 128,
+    maxWidth: 280,
+    width: "72%",
   },
   subtitle: {
     color: diamomTheme.colors.mutedText,
     fontSize: 17,
     lineHeight: 26,
+    textAlign: "center",
   },
   ctaGroup: {
     gap: diamomTheme.spacing.md,

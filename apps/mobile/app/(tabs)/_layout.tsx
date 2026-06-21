@@ -1,5 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Redirect, Tabs } from "expo-router";
+import { Redirect, Tabs, router } from "expo-router";
 import { StyleSheet } from "react-native";
 
 import { useProfileStore } from "@/features/onboarding/profile-store";
@@ -67,7 +67,13 @@ export default function MainTabsLayout() {
       />
       <Tabs.Screen
         name="vas"
+        listeners={{
+          tabPress: () => {
+            router.replace("/(tabs)/vas");
+          },
+        }}
         options={{
+          popToTopOnBlur: true,
           title: "VAS",
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
