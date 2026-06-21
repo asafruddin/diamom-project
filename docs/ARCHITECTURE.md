@@ -310,74 +310,34 @@ pnpm add -D detox
 
 ```text
 
-├── app/
-│   ├── _layout.tsx
-│   ├── index.tsx
-│   ├── onboarding/
-│   │   ├── intro.tsx
-│   │   ├── profile.tsx
-│   │   ├── pregnancy.tsx
-│   │   ├── safety-screening.tsx
-│   │   └── consent.tsx
-│   ├── (tabs)/
-│   │   ├── _layout.tsx
-│   │   ├── home.tsx
-│   │   ├── materials.tsx
-│   │   ├── training.tsx
-│   │   ├── vas.tsx
-│   │   └── profile.tsx
-│   ├── materials/
-│   │   ├── [materialId].tsx
-│   │   └── sop.tsx
-│   ├── breathing/
-│   │   ├── index.tsx
-│   │   └── [exerciseId].tsx
-│   ├── movements/
-│   │   ├── index.tsx
-│   │   └── [movementId].tsx
-│   ├── session/
-│   │   ├── safety-check.tsx
-│   │   ├── vas-before.tsx
-│   │   ├── choose-duration.tsx
-│   │   ├── preparation.tsx
-│   │   ├── timer.tsx
-│   │   ├── vas-after.tsx
-│   │   └── result.tsx
-│   ├── history/
-│   │   ├── index.tsx
-│   │   └── [recordId].tsx
-│   ├── settings/
-│   │   ├── emergency-contact.tsx
-│   │   ├── notifications.tsx
-│   │   ├── voice-guide.tsx
-│   │   ├── privacy.tsx
-│   │   └── terms.tsx
-│   └── modal/
-│       ├── pause-session.tsx
-│       ├── stop-session.tsx
-│       └── emergency-stop.tsx
-├── src/
-│   ├── assets/
-│   │   ├── audio/
-│   │   ├── fonts/
-│   │   ├── icons/
-│   │   └── images/
-│   ├── components/
-│   │   ├── common/
-│   │   ├── forms/
-│   │   ├── layout/
-│   │   ├── session/
-│   │   └── vas/
-│   ├── constants/
-│   │   ├── colors.ts
-│   │   ├── routes.ts
-│   │   └── safety.ts
-│   ├── content/
-│   │   ├── materials.id.json
-│   │   ├── movements.id.json
-│   │   ├── breathing.id.json
-│   │   └── disclaimers.id.json
-│   ├── db/
+├── apps/
+│   ├── mobile/
+│   │   ├── app/
+│   │   │   ├── _layout.tsx
+│   │   │   ├── index.tsx
+│   │   │   ├── researcher/
+│   │   │   ├── research/
+│   │   │   ├── onboarding/
+│   │   │   └── (tabs)/
+│   │   ├── src/
+│   │   ├── assets/
+│   │   ├── app.json
+│   │   └── package.json
+│   └── api/
+│       ├── src/
+│       ├── package.json
+│       └── tsconfig.json
+├── packages/
+│   ├── contracts/
+│   │   └── src/
+│   └── db/
+│       ├── drizzle/
+│       └── src/
+├── docs/
+└── README.md
+```
+
+The participant and researcher UIs both live in `apps/mobile`, while `apps/api` hosts the Fastify backend and `packages/db` contains the Neon/Drizzle schema and helpers.
 │   │   ├── client.ts
 │   │   ├── schema.ts
 │   │   ├── migrations/
@@ -795,19 +755,27 @@ Rules:
 
 ## 15. Privacy and Security Architecture
 
-### MVP
+### Current Approved Backend
 
 ```text
-Store records locally only
-No backend account
-No cloud sync
-No health data analytics
-Allow delete local data
+Participant app uses anonymous backend-backed storage by default
+Researcher login uses backend authentication
+Research dashboard inclusion is consent-based only
+Neon PostgreSQL is the system of record for participant and research data
+Delete participant data remains available in the mobile app
 ```
 
-### Future Backend
+### Non-Consented Default
 
-If backend is added:
+```text
+Store records through the anonymous participant backend session
+No participant backend account UI
+No researcher dashboard inclusion without consent
+No health data analytics
+Allow delete participant data
+```
+
+### Required Backend Guardrails
 
 ```text
 Use authentication
@@ -1171,7 +1139,6 @@ After MVP validation, continue with:
 ```text
 iOS support
 English localization
-Backend sync
 PDF export
 Midwife/admin features
 ```

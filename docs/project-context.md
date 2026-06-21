@@ -1,7 +1,7 @@
 ---
 project_name: DiaMom
 user_name: Achmad
-date: "2026-05-21"
+date: "2026-06-21"
 sections_completed:
   - technology_stack
   - language_rules
@@ -30,7 +30,7 @@ _Lean implementation rules for DiaMom. Read `AGENTS.md` first for product bounda
 | Node.js         | `20.19.x` minimum                                      |
 | Package manager | `pnpm@11.1.1`                                          |
 | TypeScript      | `~5.9.2`, `strict: true`                               |
-| State           | Zustand `^5.0.13` + `persist` + AsyncStorage           |
+| State           | Zustand `^5.0.13` + backend-backed participant store   |
 | Tests           | Node test runner + `tsx` (not Jest yet)                |
 | Lint            | `eslint-config-expo` via `pnpm lint`                   |
 
@@ -44,27 +44,28 @@ _Lean implementation rules for DiaMom. Read `AGENTS.md` first for product bounda
 
 ### Language-Specific (TypeScript)
 
-- Use path alias `@/` → `src/` (e.g. `@/features/entry/entry-routing`, `@/constants/safety`).
-- Export pure decision functions from `src/features/*` or `src/lib/*`; keep them testable without RN runtime.
+- Mobile app code lives in `apps/mobile`. Use path alias `@/` → `apps/mobile/src/` within the mobile package.
+- Export pure decision functions from `apps/mobile/src/features/*` or `apps/mobile/src/lib/*`; keep them testable without RN runtime.
 - Prefer explicit return types on gating/routing helpers (`GatingResult`, `DiaMomEntryRoute`).
 - Use `as const` for theme tokens and fixed string unions.
 - Do not use `any` to bypass route or safety types.
 
 ### Framework-Specific (Expo Router + React Native)
 
-- **Routes:** `app/**/*.tsx` = screens only. Navigation via `router.push()` / `router.replace()` from `expo-router`.
-- **Entry routing:** All initial-route logic in `src/features/entry/entry-routing.ts`. Screens pass store flags into `getInitialDiaMomRoute()` — never inline duplicate conditions in `app/index.tsx`.
+- **Routes:** `apps/mobile/app/**/*.tsx` = mobile screens only. Navigation via `router.push()` / `router.replace()` from `expo-router`.
+- **Entry routing:** All initial-route logic in `apps/mobile/src/features/entry/entry-routing.ts`. Screens pass store flags into `getInitialDiaMomRoute()` — never inline duplicate conditions in `apps/mobile/app/index.tsx`.
 - **Safe areas:** Wrap full screens with `SafeAreaView` from `react-native-safe-area-context`.
 - **Styling:** Use `diamomTheme` from `@/theme` (`colors`, `spacing`). Avoid ad-hoc hex values when a token exists.
 - **Pressables:** Set `accessibilityRole="button"` and Bahasa `accessibilityLabel` on primary actions.
-- **Stores:** Zustand + `persist` + AsyncStorage for onboarding/profile flags. Storage key pattern: `diamom-*-storage`. Long-term health records belong in SQLite when those stories land — not only Zustand.
-- **Copy:** User-visible strings in Bahasa Indonesia, claim-safe. Pull disclaimers from `src/content/disclaimers.id.json` / `src/constants/claim-safe-copy.ts`.
+- **Stores:** Use Zustand as the in-memory UI layer only. Participant profile, disclaimer state, safety screening, and VAS history must be fetched from and written to the backend database. Keep only anonymous participant tokens and researcher tokens in `expo-secure-store`.
+- **Copy:** User-visible strings in Bahasa Indonesia, claim-safe. Pull disclaimers from `apps/mobile/src/content/disclaimers.id.json` / `apps/mobile/src/constants/claim-safe-copy.ts`.
 - **Safety gating:** Return `GatingResult` with `decision: 'allow' | 'block'`, Bahasa `message`, and `canAccessEducation`. Blocked guided activity may still allow education (`canAccessEducation: true`).
-- **Analytics:** Only via `logAnalyticsEvent()` in `src/lib/analytics.ts`. Event union is fixed — extend the type when adding events. Params pass through `redactSensitiveData()`.
+- **Analytics:** Only via `logAnalyticsEvent()` in `apps/mobile/src/lib/analytics.ts`. Event union is fixed — extend the type when adding events. Params pass through `redactSensitiveData()`.
+- **Research sync:** Researcher auth tokens and anonymous participant session tokens must use `expo-secure-store`. Participant domain data is database-first; do not reintroduce `AsyncStorage` persistence for onboarding or VAS records.
 
 ### Testing Rules
 
-- Colocate `*.test.ts` next to the module under `src/`.
+- Colocate `*.test.ts` next to the module under its package `src/`.
 - Use `node:test` + `node:assert` (see `entry-routing.test.ts`).
 - Run: `pnpm test`.
 - Test pure functions: routing, validation, safety gating, copy guardrails, redaction, content governance.
@@ -75,8 +76,9 @@ _Lean implementation rules for DiaMom. Read `AGENTS.md` first for product bounda
 - ESLint: `pnpm lint` (Expo config).
 - Typecheck: `pnpm typecheck` after route or type changes.
 - File naming: `kebab-case.ts` for modules; route files match Expo Router paths (`safety-screening.tsx`).
-- Feature folders: `src/features/<area>/` with logic + optional `*-store.ts` + tests.
-- Constants: product rules in `src/constants/` (safety, privacy, claim-safe-copy, traceability).
+- Mobile feature folders: `apps/mobile/src/features/<area>/` with logic + optional `*-store.ts` + tests.
+- Backend feature folders: `apps/api/src/` for route/auth code, `packages/db/src/` for schema/helpers, `packages/contracts/src/` for shared types.
+- Constants: mobile product rules in `apps/mobile/src/constants/`.
 - Content JSON: `*.id.json` suffix for Bahasa static content.
 
 ### Development Workflow
@@ -89,12 +91,12 @@ _Lean implementation rules for DiaMom. Read `AGENTS.md` first for product bounda
 ### Critical Don't-Miss Rules
 
 - **Never** log profile, VAS, safety answers, or emergency contacts — use `redactSensitiveData()` / `SENSITIVE_KEYS`.
-- **Never** add Sentry/PostHog/backend until PRD + story authorize; analytics stays dev-console only today.
+- **Never** add any new backend surface beyond the consented researcher flow without PRD + story authorization; analytics stays privacy-safe and no sensitive values reach logs.
 - **Never** weaken `experiments.typedRoutes` — fix types after route changes.
 - **Never** tell users to continue after `emergency_stop` or warning-sign blocks.
-- **Never** put business rules in `app/*.tsx` — extract to `src/features/`.
+- **Never** put business rules in `apps/mobile/app/*.tsx` — extract to `apps/mobile/src/features/`.
 - **Never** claim medical outcomes in UI; VAS = self-reported comfort only.
-- Entry to home requires both flags: `hasAcceptedDisclaimer` and `hasCompletedSafetyScreening`. No profile gate — DiaMom is fully anonymous.
+- Entry to home requires both flags: `hasAcceptedDisclaimer` and `hasCompletedSafetyScreening`. Researcher auth must stay in a separate route flow from participant onboarding and tabs.
 
 ---
 
@@ -102,14 +104,18 @@ _Lean implementation rules for DiaMom. Read `AGENTS.md` first for product bounda
 
 | Concern                    | File                                                             |
 | -------------------------- | ---------------------------------------------------------------- |
-| Initial route              | `src/features/entry/entry-routing.ts`                            |
-| Profile / onboarding state | `src/features/onboarding/profile-store.ts` (`OnboardingState`)   |
-| Safety gating              | `src/features/session/safety-gating.ts`                          |
-| Safety copy constants      | `src/constants/safety.ts`                                        |
-| Privacy / redaction        | `src/constants/privacy.ts`, `src/lib/sensitive-data.ts`          |
-| Claim-safe copy            | `src/constants/claim-safe-copy.ts`, `src/lib/copy-guardrails.ts` |
-| Analytics                  | `src/lib/analytics.ts`                                           |
-| Theme                      | `src/theme/index.ts`, `src/constants/theme.ts`                   |
+| Initial route              | `apps/mobile/src/features/entry/entry-routing.ts`                            |
+| Profile / onboarding state | `apps/mobile/src/features/onboarding/profile-store.ts` (`OnboardingState`)   |
+| Research sync state        | `apps/mobile/src/features/research/research-sync-store.ts`                   |
+| Researcher auth state      | `apps/mobile/src/features/research/researcher-auth-store.ts`                 |
+| Safety gating              | `apps/mobile/src/features/session/safety-gating.ts`                          |
+| Safety copy constants      | `apps/mobile/src/constants/safety.ts`                                        |
+| Privacy / redaction        | `apps/mobile/src/constants/privacy.ts`, `apps/mobile/src/lib/sensitive-data.ts`          |
+| Claim-safe copy            | `apps/mobile/src/constants/claim-safe-copy.ts`, `apps/mobile/src/lib/copy-guardrails.ts` |
+| Analytics                  | `apps/mobile/src/lib/analytics.ts`                                           |
+| Theme                      | `apps/mobile/src/theme/index.ts`, `apps/mobile/src/constants/theme.ts`                   |
+| Neon schema/helpers        | `packages/db/src/index.ts`, `packages/db/src/schema.ts`                      |
+| Shared contracts           | `packages/contracts/src/index.ts`                                            |
 
 ---
 
@@ -119,4 +125,4 @@ _Lean implementation rules for DiaMom. Read `AGENTS.md` first for product bounda
 
 **For humans:** Keep lean; update when stack or patterns change. Remove rules that become obvious.
 
-Last Updated: 2026-05-21
+Last Updated: 2026-06-21

@@ -27,7 +27,7 @@ Do not duplicate `project-context.md` rules here. When coding, follow both files
 
 **Current focus:** Epics 1–2 done; Epics 3–5 in progress (`ready-for-dev`). Check `sprint-status.yaml` before picking work.
 
-**MVP platform:** Android-first. No iOS production, English UI, backend, cloud sync, CMS, AI, or exports unless a story and PRD authorize them.
+**Current platform:** Android-first monorepo with `apps/mobile` participant + researcher flows, `apps/api` backend, Neon database support, and consent-based research sync. No iOS production, English UI, CMS, AI, or exports unless a story and PRD authorize them.
 
 ---
 
@@ -87,14 +87,17 @@ Stop and surface conflicts between story, PRD, architecture, and these instructi
 
 ## 5. Project Structure (Summary)
 
-- `app/` — Expo Router screens only
-- `src/features/` — business logic, stores, route decisions, tests
-- `src/lib/` — analytics, redaction, guardrails
-- `src/constants/` — safety, privacy, claim-safe, traceability
-- `src/content/` — Bahasa JSON content
+- `apps/mobile/app/` — Expo Router screens only
+- `apps/mobile/src/features/` — mobile business logic, stores, route decisions, tests
+- `apps/mobile/src/lib/` — analytics, redaction, guardrails
+- `apps/mobile/src/constants/` — safety, privacy, claim-safe, traceability
+- `apps/mobile/src/content/` — Bahasa JSON content
+- `apps/api/src/` — Fastify routes, auth, backend entrypoints
+- `packages/db/src/` — Neon/Drizzle schema and typed helpers
+- `packages/contracts/src/` — shared API/request/response types
 - `docs/` — PRD, architecture, stories, **`project-context.md`**
 
-Aliases: `@/*` → `src/*`, `@/assets/*` → `assets/*`. Single Expo app at repo root — no nested app.
+Aliases in mobile: `@/*` → `src/*`, `@/assets/*` → `assets/*`. Treat `apps/mobile` as the Expo app root.
 
 Layering and naming: **`docs/project-context.md`**.
 
@@ -104,14 +107,14 @@ Layering and naming: **`docs/project-context.md`**.
 
 **Sensitive data:** names, pregnancy week, due date, provider approval, emergency contacts, safety answers, VAS, activity history, notes.
 
-- Local storage only for MVP health data.
-- No cloud sync, backend, CMS, AI, exports without PRD + story.
+- Local storage remains the default for participant health data until explicit research consent is granted.
+- Consent-based sync to the Neon backend is allowed only for the research flow; do not add any other cloud sync, CMS, AI, or exports without PRD + story.
 - No sensitive values in console, analytics, or crash reports.
-- Use `src/lib/sensitive-data.ts`, `src/constants/privacy.ts`, `src/lib/analytics.ts`.
-- Use `src/content/disclaimers.id.json`, `src/constants/claim-safe-copy.ts`, `src/lib/copy-guardrails.ts`.
+- Use `apps/mobile/src/lib/sensitive-data.ts`, `apps/mobile/src/constants/privacy.ts`, `apps/mobile/src/lib/analytics.ts`.
+- Use `apps/mobile/src/content/disclaimers.id.json`, `apps/mobile/src/constants/claim-safe-copy.ts`, `apps/mobile/src/lib/copy-guardrails.ts`.
 - VAS = self-reported comfort only — never medical proof.
 - Emergency stop must never urge continuation; warning signs block with calm Bahasa guidance.
-- Reuse `src/features/session/safety-gating.ts` and `src/constants/safety.ts`.
+- Reuse `apps/mobile/src/features/session/safety-gating.ts` and `apps/mobile/src/constants/safety.ts`.
 
 ---
 
@@ -143,7 +146,7 @@ Explain any skipped checks in the story artifact or response.
 - `pnpm` only; `pnpm expo install` for Expo/RN; `pnpm add` for pure JS libs.
 - No new dependency if an existing helper suffices.
 - No `android/` / `ios/` unless story requires prebuild.
-- AsyncStorage for simple prefs today; SQLite for durable health records per architecture.
+- Keep participant domain data in the approved backend database. Use secure local storage only for session tokens or transient device credentials.
 
 ---
 
@@ -171,8 +174,8 @@ Reviews: lead with findings, risks, missing tests.
 - [ ] Read `docs/project-context.md` before code changes
 - [ ] PRD, architecture, product-foundation respected
 - [ ] Bahasa Indonesia, claim-safe copy
-- [ ] Sensitive data local-only and redacted from logs/analytics
-- [ ] Routes in `app/`, logic in `src/`
+- [ ] Sensitive data redacted from logs/analytics and synced only through the consented research flow
+- [ ] Mobile routes in `apps/mobile/app/`, mobile logic in `apps/mobile/src/`
 - [ ] `pnpm typecheck`, `pnpm test`, `pnpm lint` run (or explained)
 - [ ] Story + sprint status updated if applicable
 - [ ] No unauthorized MVP scope expansion

@@ -13,7 +13,9 @@ DiaMom may:
 - Provide educational materials about Labor Dance, breathing, preparation, and self-monitoring.
 - Guide safe, gentle practice flows only after required consent and safety checks.
 - Record self-reported pain/comfort scores using VAS.
-- Help users view local history and progress as self-monitoring information.
+- Help users view history and progress as self-monitoring information.
+- Support a separate researcher-only login flow inside the app for approved research users.
+- Sync explicitly consented participant research data to a Neon backend for aggregated dashboard reporting.
 - Remind users to practice, hydrate, relax, or review materials.
 - Encourage users to follow doctor, midwife, or healthcare provider guidance.
 
@@ -35,9 +37,8 @@ Required product-boundary language, in substance:
 
 The MVP explicitly excludes:
 
-- Backend account creation.
-- Cloud sync.
-- Provider dashboard or midwife dashboard.
+- Participant account creation.
+- Midwife dashboard or clinician-facing dashboard.
 - Admin CMS.
 - PDF export.
 - AI voice recap or personalized AI recommendation.
@@ -46,7 +47,7 @@ The MVP explicitly excludes:
 - iOS production release.
 - Diagnosis, treatment, emergency triage, clinical decision support, or medical-device behavior.
 
-Future backend, provider-facing, AI, personalized recommendation, CMS, or data-sharing features require separate discovery, privacy/legal review, and PRD update before implementation.
+The approved scope today includes backend-backed participant storage, anonymous participant sessions, and the researcher dashboard flow. Any additional provider-facing, AI, personalized recommendation, CMS, or broader data-sharing features still require separate discovery, privacy/legal review, and PRD update before implementation.
 
 ## Glossary
 
@@ -59,6 +60,8 @@ Future backend, provider-facing, AI, personalized recommendation, CMS, or data-s
 | Pre-Session Safety Check | Quick condition check completed before every guided session to confirm the user is safe enough to proceed at that moment. |
 | Emergency Stop | Immediate session-ending action for discomfort, warning signs, or user concern. It stops activity and shows rest/contact guidance without diagnosis. |
 | Companion | A support person such as husband, partner, family member, doula, midwife, nurse, or other birth companion who may assist during practice. |
+| Research Consent | Explicit participant approval that allows selected research data to sync from the app to the Neon backend. |
+| Researcher Dashboard | An authenticated in-app dashboard for approved researchers showing aggregated participant metrics only. |
 | Completed Session | A guided breathing or Labor Dance session that reaches completion and has required session data saved. |
 | Incomplete Session | A session that is stopped, interrupted, emergency-stopped, or missing required VAS information. Incomplete sessions must be labeled clearly and handled safely in history/progress logic. |
 
@@ -80,11 +83,11 @@ Future backend, provider-facing, AI, personalized recommendation, CMS, or data-s
 6. Reviews and accepts medical disclaimer.
 7. Reaches home dashboard if all required gates pass.
 
-**Success Outcome:** The user reaches DiaMom home with profile, consent, and safety baseline stored locally.
+**Success Outcome:** The user reaches DiaMom home with profile, consent, and safety baseline stored in the DiaMom database.
 
 **Safety Notes:** Guided activity remains locked until consent and safety requirements are complete. Provider guidance overrides app guidance.
 
-**Privacy Notes:** Profile, pregnancy week, due date, emergency contact, and consent status are local-only MVP data.
+**Privacy Notes:** Profile and session data are stored through the anonymous participant backend session. Research dashboard reporting still requires explicit participant research consent.
 
 ### Journey 2: Returning Mother Quick Session
 
@@ -104,11 +107,11 @@ Future backend, provider-facing, AI, personalized recommendation, CMS, or data-s
 8. Records or intentionally skips VAS after.
 9. Reviews result summary and saves history.
 
-**Success Outcome:** The user completes or safely exits a guided session and has an accurate local record.
+**Success Outcome:** The user completes or safely exits a guided session and has an accurate database-backed record.
 
 **Safety Notes:** Pre-session check, VAS before, pause, stop, and emergency stop cannot be bypassed.
 
-**Privacy Notes:** VAS and session history remain local. Analytics may track flow events only, never score values.
+**Privacy Notes:** VAS and session history are stored in the DiaMom backend. Only consented participant records may appear in researcher dashboard aggregates. Analytics may track flow events only, never score values.
 
 ### Journey 3: High-Risk Safety Stop
 
@@ -148,7 +151,25 @@ Future backend, provider-facing, AI, personalized recommendation, CMS, or data-s
 
 **Safety Notes:** Professional guidance always overrides app content. The app must not represent itself as clinical protocol.
 
-**Privacy Notes:** Professional-use data sharing, provider dashboards, exports, and backend sync are out of MVP scope and require separate review.
+**Privacy Notes:** Midwife/provider dashboards, exports, and non-research backend sync remain out of scope and require separate review.
+
+### Journey 5: Research Consent and Dashboard Review
+
+**Actor:** Participant and approved researcher.
+
+**Trigger:** A participant enables research sync, or a researcher signs into the in-app dashboard.
+
+**Main Steps:**
+
+1. Participant reviews the research consent screen.
+2. App marks the participant record as research-consented and assigns a study ID in the backend.
+3. Completed VAS sessions are already stored in Neon and become eligible for researcher aggregation after consent.
+4. Researcher signs in with a separate login flow.
+5. Researcher views aggregated counts and averages only.
+
+**Success Outcome:** The participant controls whether research data is synced, and the researcher sees only the approved aggregate dashboard metrics.
+
+**Privacy Notes:** Research dashboard inclusion must use explicit consent, encrypted transport, anonymous participant sessions separated from researcher auth, and no sensitive logging.
 
 ## Safety Guardrails
 
@@ -209,9 +230,9 @@ Sensitive MVP data includes:
 
 MVP data stance:
 
-- Store sensitive records locally only.
-- No backend account.
-- No cloud sync.
+- Store sensitive records in the approved DiaMom backend and keep them out of analytics, logs, and crash reports.
+- No participant backend account.
+- No non-consented cloud sync.
 - No health-data analytics.
 - No third-party sharing of health or contact details.
 - Allow users to delete local data in a later settings story.
@@ -223,7 +244,7 @@ Implementation guardrails for future stories:
 - Do not include sensitive values in crash reports.
 - Do not expose sensitive values in remote debugging output.
 - Product events may track behavior names only, such as `onboarding_started`, `session_started`, or `emergency_stop_clicked`.
-- If backend or provider-facing features are introduced later, require consent-based sync, encrypted transport, data minimization, export/delete options, privacy policy update, and separate legal/privacy review.
+- The approved researcher dashboard flow must use consent-based sync, encrypted transport, data minimization, export/delete planning, privacy policy updates, and separate legal/privacy review.
 
 ## Claim-Safe Result Language
 

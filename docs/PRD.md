@@ -17,7 +17,7 @@ The current UI concept already covers the main user flow: welcome, home, materia
 
 To make the app complete and production-ready, the app must add safety onboarding, medical disclaimer, pre-session safety check, emergency stop flow, activity history, progress tracking, voice guidance, notification reminders, and proper privacy handling.
 
-DiaMom does not require a user account, login, registration, or any persistent profile input. All features are accessible anonymously. No personally identifiable information (name, pregnancy week, due date, etc.) is collected or stored.
+DiaMom does not require a participant user account, login, or registration. The participant experience remains anonymous by default, but participant profile data, onboarding state, and VAS/session records are stored in the Neon-backed DiaMom database through an anonymous participant session. A separate researcher login is supported for the in-app dashboard.
 
 DiaMom must be positioned as a **support and education companion**, not as a replacement for doctor, midwife, or hospital care.
 
@@ -69,6 +69,10 @@ Midwives, nurses, doulas, or maternity educators who want to use the app as a st
 ### 5.3 Support User
 
 Husbands, partners, family members, or birth companions who may support the mother during breathing or Labor Dance sessions.
+
+### 5.4 Research User
+
+Approved researchers who need an authenticated in-app dashboard to review aggregated participant metrics.
 
 ---
 
@@ -144,7 +148,7 @@ Purpose:
 - Make sure the user reads safety guidance.
 - Prevent unsafe direct access to movement sessions.
 
-DiaMom does **not** collect a user profile. No name, pregnancy week, due date, pregnancy history, doctor/midwife approval confirmation, or emergency contact is required or stored. The app is fully anonymous.
+DiaMom stores onboarding and participant session data in the backend database during onboarding through an anonymous participant session. Researcher dashboard reporting still requires explicit participant research consent before participant records are counted in research metrics.
 
 ---
 
@@ -191,6 +195,28 @@ Terms & Disclaimer
 ```
 
 No personal profile or emergency contact data is collected or displayed. Settings are limited to app preferences.
+
+### 8.3A Research Pages
+
+Required screens:
+
+```text
+Research Consent
+Researcher Login
+Researcher Dashboard
+```
+
+Dashboard metrics:
+
+```text
+Total Responden
+Rata-rata VAS Sebelum
+Rata-rata VAS Sesudah
+Rata-rata Delta Nyeri
+Jumlah Menurun / Meningkat / Tetap
+```
+
+`Lama Kala I` is intentionally out of the first release of the researcher dashboard.
 
 ---
 
