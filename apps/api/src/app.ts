@@ -1,9 +1,9 @@
 import { createDatabase, seedDefaultResearcher } from "@diamom/db";
 import Fastify from "fastify";
 
-import { authPlugin } from "./auth";
-import { getApiConfig } from "./config";
-import { registerRoutes } from "./routes";
+import { authPlugin } from "./auth.js";
+import { getApiConfig } from "./config.js";
+import { registerRoutes } from "./routes.js";
 
 export async function createApp() {
   const apiConfig = getApiConfig();

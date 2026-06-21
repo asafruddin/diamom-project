@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { parseApiConfig } from "./config";
+import { parseApiConfig } from "./config.js";
 
 test("parseApiConfig requires deployment secrets", () => {
   assert.throws(

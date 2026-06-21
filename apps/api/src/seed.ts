@@ -1,4 +1,4 @@
-import { getApiConfig } from "./config";
+import { getApiConfig } from "./config.js";
 import { seedDefaultResearcher } from "@diamom/db";
 
 const apiConfig = getApiConfig();

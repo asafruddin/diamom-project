@@ -26,7 +26,7 @@ import {
   issueParticipantAppToken,
   issueResearcherToken,
   logoutResearcherToken,
-} from "./auth";
+} from "./auth.js";
 
 type RouteOptions = {
   db: ReturnType<typeof createDatabase>;
