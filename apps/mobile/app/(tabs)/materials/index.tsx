@@ -31,6 +31,7 @@ export default function MaterialsListScreen() {
             readTime={item.readTime}
             step={item.step}
             title={item.title}
+            thumbnail={item.thumbnail}
           />
         ))}
       </View>

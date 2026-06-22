@@ -6,6 +6,8 @@ import { DiaScreen, PageHeader, SurfaceCard } from "@/components/dia-ui";
 import {
   LearningSectionCard,
   MaterialHero,
+  MaterialIllustration,
+  MaterialIllustrationHero,
   PrevNextMaterialNav,
   SafetyNoticeCard,
   SectionChipRow,
@@ -30,6 +32,13 @@ export default function LaborDanceMovementsScreen() {
         title={MOVEMENTS_DETAIL.title}
         description={MOVEMENTS_DETAIL.description}
       />
+
+      {MOVEMENTS_DETAIL.heroImage && (
+        <MaterialIllustrationHero
+          accessibilityLabel={MOVEMENTS_DETAIL.title}
+          source={MOVEMENTS_DETAIL.heroImage}
+        />
+      )}
 
       <MaterialHero
         detail={MOVEMENTS_DETAIL.heroDetail}
@@ -75,9 +84,11 @@ export default function LaborDanceMovementsScreen() {
           >
             <SurfaceCard style={styles.movementCard}>
               <View style={styles.movementTopRow}>
-                <View style={styles.movementNumber}>
-                  <Text style={styles.movementNumberText}>{index + 1}</Text>
-                </View>
+                <MaterialIllustration
+                  accessibilityLabel={movement.title}
+                  source={movement.illustration}
+                  variant="thumbnail"
+                />
                 <View style={styles.movementTextBlock}>
                   <Text style={styles.movementTitle}>{movement.title}</Text>
                   <Text style={styles.body}>{movement.summary}</Text>
@@ -130,22 +141,9 @@ const styles = StyleSheet.create({
     gap: diamomTheme.spacing.md,
   },
   movementTopRow: {
-    alignItems: "flex-start",
+    alignItems: "center",
     flexDirection: "row",
     gap: diamomTheme.spacing.md,
-  },
-  movementNumber: {
-    alignItems: "center",
-    backgroundColor: diamomTheme.colors.primary,
-    borderRadius: diamomTheme.radius.md,
-    height: 44,
-    justifyContent: "center",
-    width: 44,
-  },
-  movementNumberText: {
-    color: diamomTheme.colors.onPrimary,
-    fontSize: 16,
-    fontWeight: "800",
   },
   movementTextBlock: {
     flex: 1,

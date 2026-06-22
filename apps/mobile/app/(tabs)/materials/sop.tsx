@@ -4,6 +4,7 @@ import { DiaScreen, PageHeader } from "@/components/dia-ui";
 import {
   LearningSectionCard,
   MaterialHero,
+  MaterialIllustrationHero,
   PrevNextMaterialNav,
   SafetyNoticeCard,
   SectionChipRow,
@@ -29,6 +30,13 @@ export default function SopLaborDanceScreen() {
         title={SOP_DETAIL.title}
         description={SOP_DETAIL.description}
       />
+
+      {SOP_DETAIL.heroImage && (
+        <MaterialIllustrationHero
+          accessibilityLabel={SOP_DETAIL.title}
+          source={SOP_DETAIL.heroImage}
+        />
+      )}
 
       <MaterialHero
         detail={SOP_DETAIL.heroDetail}

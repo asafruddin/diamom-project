@@ -48,6 +48,10 @@ export function getVasPointColor(score: number): string {
   return diamomTheme.colors.vasSevere;
 }
 
+export function getVasScoreSurfaceColor(score: number): string {
+  return `${getVasPointColor(score)}40`;
+}
+
 export function formatTimer(totalSeconds: number): string {
   const minutes = Math.floor(totalSeconds / 60)
     .toString()

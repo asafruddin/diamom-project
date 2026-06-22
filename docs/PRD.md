@@ -248,6 +248,26 @@ Labor Dance Pemula
 Nyeri: 6 → 3
 ```
 
+### 8.4A Participant VAS Result Export
+
+The participant result summary page may provide a clearly visible local export action for the participant's own current VAS result.
+
+Allowed export behavior:
+
+```text
+Format: Excel-compatible .xls file
+Delivery: device share sheet / local file handoff only
+Data scope: current participant result summary only
+Fields: name, activity title, duration, before VAS, after VAS, change label, status, saved timestamp, claim-safe note
+```
+
+Privacy and safety requirements:
+
+- Export is initiated by the participant only.
+- Export must not upload data, create a provider dashboard, or sync outside the consented research flow.
+- Exported copy must state that VAS is self-monitoring for support and education only, not medical proof.
+- Export failures must not log sensitive VAS, name, pregnancy, or session values.
+
 ---
 
 ### 8.5 VAS Progress Chart Page
@@ -852,6 +872,7 @@ Acceptance Criteria:
 - MVP should store data locally.
 - If backend is added, data must use secure transport and proper consent.
 - User must be able to delete local data.
+- Participant-initiated VAS result export is allowed only as a local/share-sheet handoff for the participant's own data.
 
 ### Security
 
@@ -1055,6 +1076,7 @@ Focus:
 - VAS before/after.
 - Guided timer.
 - History.
+- Participant-owned Excel-compatible export for the current VAS result.
 
 ### Phase 2 — Engagement
 

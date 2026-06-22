@@ -6,6 +6,7 @@ import { ActionButton, DiaScreen, PageHeader, SurfaceCard } from "@/components/d
 import {
   LearningSectionCard,
   MaterialHero,
+  MaterialIllustrationHero,
   SafetyNoticeCard,
   StepTimelineCard,
 } from "@/features/materials/material-components";
@@ -40,6 +41,11 @@ export default function LaborDanceMovementDetailScreen() {
         showBack
         title={movement.title}
         description={movement.summary}
+      />
+
+      <MaterialIllustrationHero
+        accessibilityLabel={movement.title}
+        source={movement.illustration}
       />
 
       <MaterialHero

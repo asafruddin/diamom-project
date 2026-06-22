@@ -1,6 +1,8 @@
+import { File, Paths } from "expo-file-system";
 import { Redirect, router } from "expo-router";
+import * as Sharing from "expo-sharing";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 
 import type { DashboardSummary } from "@diamom/contracts";
 
@@ -11,6 +13,15 @@ import {
   SurfaceCard,
 } from "@/components/dia-ui";
 import {
+  TrendCountsChart,
+  VasAverageComparisonChart,
+} from "@/features/research/research-dashboard-charts";
+import {
+  buildResearchDashboardExcelHtml,
+  getResearchDashboardExcelFileName,
+} from "@/features/research/research-dashboard-export";
+import {
+  fetchResearchDashboardExport,
   fetchResearchDashboardSummary,
   logoutResearcher,
 } from "@/features/research/research-api";
@@ -22,6 +33,7 @@ export default function ResearcherDashboardScreen() {
   const session = useResearcherAuthStore((state) => state.session);
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     if (!session) {
@@ -57,6 +69,52 @@ export default function ResearcherDashboardScreen() {
     router.replace("/researcher/login");
   };
 
+  const handleExportExcel = async () => {
+    if (isExporting) {
+      return;
+    }
+
+    setIsExporting(true);
+
+    try {
+      const canShare = await Sharing.isAvailableAsync();
+
+      if (!canShare) {
+        Alert.alert(
+          "Ekspor belum tersedia",
+          "Perangkat ini belum mendukung berbagi file Excel dari aplikasi.",
+        );
+        return;
+      }
+
+      const exportData = await fetchResearchDashboardExport(session.accessToken);
+      const file = new File(
+        Paths.cache,
+        getResearchDashboardExcelFileName(),
+      );
+
+      if (file.exists) {
+        file.delete();
+      }
+
+      file.create();
+      file.write(buildResearchDashboardExcelHtml(exportData));
+
+      await Sharing.shareAsync(file.uri, {
+        dialogTitle: "Ekspor dashboard peneliti DiaMom",
+        mimeType: "application/vnd.ms-excel",
+        UTI: "com.microsoft.excel.xls",
+      });
+    } catch {
+      Alert.alert(
+        "Ekspor gagal",
+        "File Excel belum dapat dibuat. Coba lagi beberapa saat lagi.",
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <DiaScreen>
       <PageHeader
@@ -71,6 +129,21 @@ export default function ResearcherDashboardScreen() {
           <Text style={styles.errorText}>{error}</Text>
         </SurfaceCard>
       ) : null}
+
+      <SurfaceCard style={styles.exportCard}>
+        <View style={styles.exportTextBlock}>
+          <Text style={styles.exportTitle}>Ekspor data</Text>
+          <Text style={styles.exportDescription}>
+            Buat file Excel berisi ringkasan metrik dan daftar sesi peserta
+            yang sudah memberikan persetujuan sinkronisasi.
+          </Text>
+        </View>
+        <ActionButton
+          disabled={isExporting || Boolean(error)}
+          label={isExporting ? "Menyiapkan..." : "Ekspor Excel"}
+          onPress={handleExportExcel}
+        />
+      </SurfaceCard>
 
       <View style={styles.metricsGrid}>
         <MetricCard
@@ -90,6 +163,35 @@ export default function ResearcherDashboardScreen() {
           value={formatMetric(summary?.averageDelta)}
         />
       </View>
+
+      <SurfaceCard style={styles.chartCard}>
+        <Text style={styles.sectionTitle}>Grafik Rata-rata VAS</Text>
+        <VasAverageComparisonChart
+          averageAfter={summary?.averageVasAfter ?? 0}
+          averageBefore={summary?.averageVasBefore ?? 0}
+        />
+        <Text style={styles.chartNote}>
+          Grafik ini menampilkan rata-rata nilai VAS sebelum dan sesudah sesi.
+          Data VAS adalah catatan pemantauan mandiri, bukan bukti hasil medis.
+        </Text>
+      </SurfaceCard>
+
+      <SurfaceCard style={styles.chartCard}>
+        <Text style={styles.sectionTitle}>Grafik Tren Nyeri</Text>
+        <TrendCountsChart
+          trendCounts={
+            summary?.trendCounts ?? {
+              decrease: 0,
+              increase: 0,
+              stable: 0,
+            }
+          }
+        />
+        <Text style={styles.chartNote}>
+          Jumlah sesi berdasarkan perubahan nilai VAS: menurun, meningkat, atau
+          tetap.
+        </Text>
+      </SurfaceCard>
 
       <SurfaceCard style={styles.trendCard}>
         <Text style={styles.sectionTitle}>Ringkasan Tren Nyeri</Text>
@@ -135,6 +237,14 @@ function formatMetric(value: number | undefined) {
 }
 
 const styles = StyleSheet.create({
+  chartCard: {
+    gap: diamomTheme.spacing.md,
+  },
+  chartNote: {
+    color: diamomTheme.colors.mutedText,
+    fontSize: 13,
+    lineHeight: 18,
+  },
   errorCard: {
     backgroundColor: diamomTheme.colors.backgroundElevated,
     borderColor: diamomTheme.colors.danger,
@@ -143,6 +253,24 @@ const styles = StyleSheet.create({
     color: diamomTheme.colors.danger,
     fontSize: 14,
     lineHeight: 20,
+  },
+  exportCard: {
+    backgroundColor: diamomTheme.colors.primaryMuted,
+    borderColor: diamomTheme.colors.primaryMuted,
+    gap: diamomTheme.spacing.md,
+  },
+  exportDescription: {
+    color: diamomTheme.colors.primaryStrong,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  exportTextBlock: {
+    gap: diamomTheme.spacing.xs,
+  },
+  exportTitle: {
+    color: diamomTheme.colors.text,
+    fontSize: 20,
+    fontWeight: "800",
   },
   metricCard: {
     flex: 1,

@@ -347,9 +347,10 @@ export async function getActiveResearcherSession(
   });
 }
 
-export async function getDashboardSummary(
-  db: Database,
-): Promise<DashboardSummary> {
+async function getConsentedParticipantSessions(db: Database): Promise<{
+  sessions: ParticipantSessionRecord[];
+  totalRespondents: number;
+}> {
   const consentRows = await db.query.participantConsents.findMany();
   const consentedParticipantIds = new Set(
     consentRows.map((row) => row.participantId),
@@ -371,5 +372,27 @@ export async function getDashboardSummary(
       status: row.status,
     }));
 
-  return buildDashboardSummary(consentedParticipantIds.size, sessions);
+  return {
+    sessions,
+    totalRespondents: consentedParticipantIds.size,
+  };
+}
+
+export async function getDashboardSummary(
+  db: Database,
+): Promise<DashboardSummary> {
+  const { sessions, totalRespondents } =
+    await getConsentedParticipantSessions(db);
+
+  return buildDashboardSummary(totalRespondents, sessions);
+}
+
+export async function getDashboardExport(db: Database) {
+  const { sessions, totalRespondents } =
+    await getConsentedParticipantSessions(db);
+
+  return {
+    sessions,
+    summary: buildDashboardSummary(totalRespondents, sessions),
+  };
 }

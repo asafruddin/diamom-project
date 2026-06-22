@@ -1,6 +1,7 @@
 import { Platform } from "react-native";
 
 import type {
+  DashboardExportResponse,
   DashboardSummary,
   ResearcherLoginRequest,
   ResearcherLogoutResponse,
@@ -44,6 +45,15 @@ async function requestJson<T>(
 
 export function fetchResearchDashboardSummary(token: string) {
   return requestJson<DashboardSummary>("/v1/researcher/dashboard/summary", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: "GET",
+  });
+}
+
+export function fetchResearchDashboardExport(token: string) {
+  return requestJson<DashboardExportResponse>("/v1/researcher/dashboard/export", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

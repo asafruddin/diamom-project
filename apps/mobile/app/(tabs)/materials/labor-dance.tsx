@@ -4,6 +4,7 @@ import { DiaScreen, PageHeader } from "@/components/dia-ui";
 import {
   LearningSectionCard,
   MaterialHero,
+  MaterialIllustrationHero,
   PrevNextMaterialNav,
   SafetyNoticeCard,
   SectionChipRow,
@@ -28,6 +29,13 @@ export default function LaborDanceExplanationScreen() {
         title={LABOR_DANCE_DETAIL.title}
         description={LABOR_DANCE_DETAIL.description}
       />
+
+      {LABOR_DANCE_DETAIL.heroImage && (
+        <MaterialIllustrationHero
+          accessibilityLabel={LABOR_DANCE_DETAIL.title}
+          source={LABOR_DANCE_DETAIL.heroImage}
+        />
+      )}
 
       <MaterialHero
         detail={LABOR_DANCE_DETAIL.heroDetail}

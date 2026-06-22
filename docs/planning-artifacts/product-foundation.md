@@ -14,6 +14,7 @@ DiaMom may:
 - Guide safe, gentle practice flows only after required consent and safety checks.
 - Record self-reported pain/comfort scores using VAS.
 - Help users view history and progress as self-monitoring information.
+- Let participants export their own current VAS result summary as a local Excel-compatible file they explicitly share or save.
 - Support a separate researcher-only login flow inside the app for approved research users.
 - Sync explicitly consented participant research data to a Neon backend for aggregated dashboard reporting.
 - Remind users to practice, hydrate, relax, or review materials.
@@ -152,6 +153,7 @@ The approved scope today includes backend-backed participant storage, anonymous 
 **Safety Notes:** Professional guidance always overrides app content. The app must not represent itself as clinical protocol.
 
 **Privacy Notes:** Midwife/provider dashboards, exports, and non-research backend sync remain out of scope and require separate review.
+Participant-owned export of the participant's own VAS result is allowed only when locally initiated by the participant and must not create provider access, cloud sync, or medical-effectiveness claims.
 
 ### Journey 5: Research Consent and Dashboard Review
 

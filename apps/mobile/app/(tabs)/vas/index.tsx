@@ -2,22 +2,14 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import {
-  ActionButton,
-  DiaScreen,
-  SurfaceCard,
-  VasSelector,
-} from "@/components/dia-ui";
+import { ActionButton, DiaScreen, VasSelector } from "@/components/dia-ui";
 import { usePracticeSessionStore } from "@/features/session/session-store";
-import { getVasCategory } from "@/features/session/vas-scale";
+import {
+  VasLegendIllustrationPanel,
+  VasScoreDisplay,
+} from "@/features/session/vas-components";
+import { VAS_ILLUSTRATIONS } from "@/features/session/vas-content";
 import { diamomTheme } from "@/theme";
-
-const VAS_LEGEND = [
-  { label: "Tidak Nyeri", range: "0" },
-  { label: "Nyeri Ringan", range: "1-3" },
-  { label: "Nyeri Sedang", range: "4-6" },
-  { label: "Nyeri Berat", range: "7-10" },
-] as const;
 
 export default function VasBeforeScreen() {
   const beforeScore = usePracticeSessionStore((state) => state.beforeScore);
@@ -42,25 +34,12 @@ export default function VasBeforeScreen() {
         value={selectedScore}
       />
 
-      <View style={styles.scoreSection}>
-        <View style={styles.scoreCircle}>
-          <Text style={styles.scoreValue}>{selectedScore}</Text>
-        </View>
-        <Text style={styles.scoreCategory}>
-          {getVasCategory(selectedScore)}
-        </Text>
-      </View>
+      <VasScoreDisplay score={selectedScore} />
 
-      <SurfaceCard>
-        <Text style={styles.legendTitle}>Keterangan:</Text>
-        {VAS_LEGEND.map((item) => (
-          <View key={item.range} style={styles.legendRow}>
-            <Text style={styles.legendRange}>{item.range}</Text>
-            <Text style={styles.legendSeparator}>:</Text>
-            <Text style={styles.legendLabel}>{item.label}</Text>
-          </View>
-        ))}
-      </SurfaceCard>
+      <VasLegendIllustrationPanel
+        accessibilityLabel="Ilustrasi penilaian nyeri sebelum kegiatan"
+        source={VAS_ILLUSTRATIONS.before}
+      />
 
       <View style={styles.buttonGroup}>
         <ActionButton
@@ -105,51 +84,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     textAlign: "center",
-  },
-  scoreSection: {
-    alignItems: "center",
-    gap: diamomTheme.spacing.sm,
-  },
-  scoreCircle: {
-    alignItems: "center",
-    backgroundColor: diamomTheme.colors.illustrationBase,
-    borderRadius: diamomTheme.radius.pill,
-    height: 120,
-    justifyContent: "center",
-    width: 120,
-  },
-  scoreValue: {
-    color: diamomTheme.colors.primaryStrong,
-    fontSize: 56,
-    fontWeight: "800",
-  },
-  scoreCategory: {
-    color: diamomTheme.colors.text,
-    fontSize: 18,
-    fontWeight: "700",
-  },
-  legendTitle: {
-    color: diamomTheme.colors.text,
-    fontSize: 15,
-    fontWeight: "700",
-    marginBottom: diamomTheme.spacing.xs,
-  },
-  legendRow: {
-    flexDirection: "row",
-    gap: diamomTheme.spacing.md,
-  },
-  legendRange: {
-    color: diamomTheme.colors.mutedText,
-    fontSize: 14,
-    minWidth: 32,
-  },
-  legendSeparator: {
-    color: diamomTheme.colors.mutedText,
-    fontSize: 14,
-  },
-  legendLabel: {
-    color: diamomTheme.colors.mutedText,
-    fontSize: 14,
   },
   buttonGroup: {
     gap: diamomTheme.spacing.md,

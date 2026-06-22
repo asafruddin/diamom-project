@@ -15,7 +15,8 @@ so that I can understand my self-reported comfort change.
    **Then** it displays before score, after score when available, difference, category change, duration, session type, and date/time  
    **And** incomplete results are clearly marked  
    **And** copy avoids medical-effectiveness claims  
-   **And** the user can save the result to history.
+   **And** the user can save the result to history
+   **And** the participant can export the current result summary as a local Excel-compatible file through the device share sheet.
 
 ## Tasks / Subtasks
 
@@ -28,10 +29,12 @@ so that I can understand my self-reported comfort change.
   - [ ] Create or update the route, feature, service, store, repository, content, or component files identified in Dev Notes.
   - [ ] Keep user-facing copy in Bahasa Indonesia unless the text is an internal developer artifact.
   - [ ] Keep DiaMom within support/education boundaries; do not add medical advice, diagnosis, treatment, emergency triage, or guaranteed outcome claims.
+  - [ ] Add a clear `Ekspor Excel` action on the result summary that exports only the current participant result fields authorized by the PRD.
 
 - [ ] Add safety, privacy, and offline guardrails (AC: 1)
   - [ ] Keep sensitive values out of console logs, analytics events, crash payloads, and remote debugging output.
   - [ ] Use local-first behavior; do not introduce backend, cloud sync, provider dashboard, CMS, AI, or English localization in this story.
+  - [ ] Keep export participant-initiated and local/share-sheet only; do not upload exported data or add provider access.
   - [ ] Show calm, actionable empty/error/safety states where the story can fail or block.
 
 - [ ] Add focused tests and validation (AC: 1)
@@ -61,7 +64,7 @@ Local records story: use SQLite/repositories for persistence and keep VAS/histor
 - Follow Expo Router typed route behavior. If routes change, regenerate/check types by running the app or typecheck.
 - Preserve strict TypeScript and existing scripts in `package.json`.
 - Use local-first storage and static content unless the story explicitly calls for a repository or system API.
-- Do not introduce backend account, cloud sync, provider dashboard, admin CMS, PDF export, iOS production work, English release, AI voice recap, personalized medical recommendations, or medical-device behavior.
+- Do not introduce backend account, cloud sync, provider dashboard, admin CMS, PDF export, iOS production work, English release, AI voice recap, personalized medical recommendations, or medical-device behavior. Participant-owned Excel-compatible export of the current result summary is explicitly allowed by this story and PRD section 8.4A.
 
 ### Likely Files / Areas To Touch
 
@@ -76,6 +79,7 @@ Before modifying any UPDATE file, read it completely and preserve existing behav
 - DiaMom is support and education only; it must not diagnose, treat, recommend medical action, triage emergencies, guarantee pain reduction, or replace doctor/midwife care.
 - Sensitive data includes name, pregnancy week, due date, provider approval, emergency contacts, safety answers, VAS scores, activity history, and notes.
 - Do not log sensitive values or send them to analytics/crash reporting.
+- Exported result files must include a claim-safe self-monitoring note and must be created only after participant action.
 - Hard blocks, warnings, high VAS guidance, emergency stop, and delete-local-data behavior must be deterministic and testable when relevant.
 
 ### Previous Story Intelligence
@@ -111,10 +115,33 @@ GPT-5
 
 ### Debug Log References
 
+- `pnpm --filter @diamom/mobile test`
+- `pnpm --filter @diamom/mobile typecheck`
+- `pnpm --filter @diamom/mobile lint`
+- `pnpm typecheck`
+- `pnpm test`
+- `pnpm lint`
+- `pnpm doctor` — duplicate native module issue resolved; remaining failures are network-backed Expo schema / React Native Directory checks due `exp.host` DNS failure in this environment.
+
 ### Completion Notes List
 
+- Added participant-initiated local Excel-compatible export for the current VAS result summary.
+- Export uses a local `.xls` file and device share sheet; no backend upload, analytics event, or sensitive logging is introduced.
+- Exported file includes a claim-safe self-monitoring note.
+
 ### File List
+
+- `apps/mobile/app/(tabs)/vas/summary.tsx`
+- `apps/mobile/src/features/session/vas-result-export.ts`
+- `apps/mobile/src/features/session/vas-result-export.test.ts`
+- `apps/mobile/package.json`
+- `apps/mobile/app.json`
+- `pnpm-lock.yaml`
+- `docs/PRD.md`
+- `docs/planning-artifacts/product-foundation.md`
+- `docs/implementation-artifacts/6-2-build-claim-safe-result-summary.md`
 
 ## Change Log
 
 - 2026-05-21 - Created story context from epics, PRD, architecture, product foundation, and current app shell.
+- 2026-06-22 - Authorized and implemented participant-owned Excel-compatible export for the current VAS result summary.

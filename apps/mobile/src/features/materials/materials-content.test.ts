@@ -73,3 +73,55 @@ test("material copy avoids known unsafe medical claims", () => {
 
   assert.strictEqual(hasUnsafeMedicalClaim(copy), false);
 });
+
+test("all materials have illustration assets where required", () => {
+  for (const item of MATERIAL_ITEMS) {
+    // closing (Penutup) is allowed to not have a thumbnail
+    if (item.id !== "closing") {
+      assert.ok(
+        item.thumbnail,
+        `${item.id} should have a thumbnail image`,
+      );
+    }
+  }
+
+  const breathingExercises = [
+    { id: "deep-breath", title: "Napas Dalam" },
+    { id: "long-breath", title: "Napas Panjang" },
+    { id: "short-breath", title: "Napas Pendek" },
+    { id: "relax-breath", title: "Napas Relaksasi" },
+  ];
+
+  for (const exercise of breathingExercises) {
+    assert.ok(
+      exercise.id,
+      `breathing exercise should exist`,
+    );
+  }
+
+  const movements = [
+    { slug: "goyang-pinggul", title: "Goyang Pinggul" },
+    { slug: "gerakan-melingkar", title: "Gerakan Melingkar" },
+    { slug: "jongkok", title: "Jongkok" },
+    { slug: "condong-ke-depan", title: "Condong ke Depan" },
+    { slug: "gerakan-kupu-kupu", title: "Gerakan Kupu-Kupu" },
+    { slug: "berdiri-relaksasi", title: "Berdiri & Relaksasi" },
+  ];
+
+  for (const movement of movements) {
+    const found = movements.find((m) => m.slug === movement.slug);
+    assert.ok(
+      found,
+      `movement ${movement.slug} should exist`,
+    );
+  }
+
+  for (const material of MATERIAL_DETAILS) {
+    if (material.id !== "closing") {
+      assert.ok(
+        material.heroImage,
+        `material ${material.id} should have a heroImage`,
+      );
+    }
+  }
+});

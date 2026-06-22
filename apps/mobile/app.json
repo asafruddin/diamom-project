@@ -27,14 +27,22 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#247C6D",
+          "backgroundColor": "#FFF7F7",
+          "image": "./assets/icon/splash-screen.png",
+          "imageWidth": 280,
+          "resizeMode": "contain",
+          "ios": {
+            "image": "./assets/icon/splash-screen.png",
+            "imageWidth": 280
+          },
           "android": {
-            "image": "./assets/images/splash-icon.png",
-            "imageWidth": 76
+            "image": "./assets/icon/splash-screen.png",
+            "imageWidth": 280
           }
         }
       ],
-      "expo-video"
+      "expo-video",
+      "expo-sharing"
     ],
     "experiments": {
       "typedRoutes": true,

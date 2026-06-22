@@ -15,8 +15,8 @@ import { diamomTheme } from "@/theme";
 
 export default function ResearcherLoginScreen() {
   const setSession = useResearcherAuthStore((state) => state.setSession);
-  const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState("admin1234");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 

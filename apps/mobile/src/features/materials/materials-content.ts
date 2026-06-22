@@ -1,4 +1,5 @@
 import type Ionicons from "@expo/vector-icons/Ionicons";
+import type { ImageSource } from "expo-image";
 
 export type MaterialHref =
   | "/(tabs)/materials/labor-dance"
@@ -26,6 +27,7 @@ export type MaterialItem = {
   href: MaterialHref;
   iconName: MaterialIconName;
   readTime: string;
+  thumbnail?: ImageSource;
 };
 
 export type MaterialSection = {
@@ -62,6 +64,7 @@ export type MaterialDetail = {
   sections: MaterialSection[];
   safetyNotes: string[];
   movementGroups?: MaterialMovementGroup[];
+  heroImage?: ImageSource;
 };
 
 export type SopStep = {
@@ -80,6 +83,7 @@ export type BreathingExercise = {
   preparation: string;
   steps: string[];
   safetyNotes: string[];
+  illustration: ImageSource;
 };
 
 export type LaborDanceMovement = {
@@ -94,6 +98,7 @@ export type LaborDanceMovement = {
   steps: string[];
   whenToStop: string[];
   caution: string;
+  illustration: ImageSource;
 };
 
 export const HOME_SHORTCUTS = [
@@ -117,8 +122,8 @@ export const HOME_SHORTCUTS = [
     step: "03",
     title: "Info Pengembang",
     description:
-      "Lihat ringkasan produk, batas penggunaan, dan pengaturan sederhana.",
-    href: "/(tabs)/profile" as const,
+      "Kenali tim peneliti yang mengembangkan aplikasi DiaMom.",
+    href: "/developer/info" as const,
   },
   {
     id: "details",
@@ -140,6 +145,7 @@ export const MATERIAL_ITEMS: MaterialItem[] = [
     href: "/(tabs)/materials/labor-dance",
     iconName: "body",
     readTime: "5 menit",
+    thumbnail: require("@/assets/material/materi-1-penjelasan.png"),
   },
   {
     id: "sop",
@@ -150,6 +156,7 @@ export const MATERIAL_ITEMS: MaterialItem[] = [
     href: "/(tabs)/materials/sop",
     iconName: "clipboard",
     readTime: "4 menit",
+    thumbnail: require("@/assets/material/materi-2-sop.png"),
   },
   {
     id: "breathing",
@@ -160,6 +167,7 @@ export const MATERIAL_ITEMS: MaterialItem[] = [
     href: "/(tabs)/materials/breathing",
     iconName: "leaf",
     readTime: "3 menit",
+    thumbnail: require("@/assets/material/materi-3-pernapasan/pernapasan.png"),
   },
   {
     id: "movements",
@@ -170,6 +178,7 @@ export const MATERIAL_ITEMS: MaterialItem[] = [
     href: "/(tabs)/materials/movements",
     iconName: "walk",
     readTime: "6 menit",
+    thumbnail: require("@/assets/material/materi-4-gerakan/labor-dance.png"),
   },
   {
     id: "closing",
@@ -194,6 +203,7 @@ export const LABOR_DANCE_DETAIL: MaterialDetail = {
   heroTitle: "Gerak lembut, napas tenang, dan dukungan yang membuat ibu merasa lebih siap.",
   heroDetail:
     "Materi ini bersifat edukasi. Ikuti arahan dokter, bidan, atau tenaga kesehatan sebelum mencoba gerakan.",
+  heroImage: require("@/assets/material/materi-1-penjelasan.png"),
   sections: [
     {
       id: "definition",
@@ -299,6 +309,7 @@ export const SOP_DETAIL: MaterialDetail = {
   heroTitle: "SOP dibuat singkat agar ibu dan pendamping mudah mengikuti alur belajar.",
   heroDetail:
     "SOP ini tidak menggantikan arahan tenaga kesehatan dan perlu disesuaikan dengan kondisi ibu.",
+  heroImage: require("@/assets/material/materi-2-sop.png"),
   sections: [
     {
       id: "overview",
@@ -326,6 +337,7 @@ export const BREATHING_DETAIL: MaterialDetail = {
   heroTitle: "Napas yang pelan memberi tubuh kesempatan untuk melambat.",
   heroDetail:
     "Pilih ritme yang terasa nyaman. Tidak perlu memaksakan hitungan bila tubuh meminta jeda.",
+  heroImage: require("@/assets/material/materi-3-pernapasan/pernapasan.png"),
   sections: [
     {
       id: "purpose",
@@ -353,6 +365,7 @@ export const MOVEMENTS_DETAIL: MaterialDetail = {
   heroTitle: "Setiap gerakan boleh dibuat lebih kecil, lebih lambat, atau dihentikan.",
   heroDetail:
     "Utamakan rasa aman. Bila tubuh memberi sinyal tidak nyaman, berhenti dan cari dukungan.",
+  heroImage: require("@/assets/material/materi-4-gerakan/labor-dance.png"),
   sections: [
     {
       id: "before-moving",
@@ -488,6 +501,7 @@ export const BREATHING_EXERCISES: BreathingExercise[] = [
       "Hembuskan lebih panjang lewat mulut.",
     ],
     safetyNotes: ["Lewati hitungan tahan napas bila membuat pusing."],
+    illustration: require("@/assets/material/materi-3-pernapasan/napas-dalam.png"),
   },
   {
     id: "long-breath",
@@ -501,6 +515,7 @@ export const BREATHING_EXERCISES: BreathingExercise[] = [
       "Ulangi beberapa kali, lalu berhenti bila tubuh meminta jeda.",
     ],
     safetyNotes: ["Tidak perlu mengejar hitungan bila napas terasa berat."],
+    illustration: require("@/assets/material/materi-3-pernapasan/napas-panjang.png"),
   },
   {
     id: "short-breath",
@@ -515,6 +530,7 @@ export const BREATHING_EXERCISES: BreathingExercise[] = [
       "Kembali ke napas biasa saat tubuh mulai tenang.",
     ],
     safetyNotes: ["Berhenti bila napas terasa makin cepat atau tidak nyaman."],
+    illustration: require("@/assets/material/materi-3-pernapasan/napasa-pendek.png"),
   },
   {
     id: "relax-breath",
@@ -529,6 +545,7 @@ export const BREATHING_EXERCISES: BreathingExercise[] = [
       "Ulangi dengan tempo yang terasa alami.",
     ],
     safetyNotes: ["Berhenti bila muncul pusing, sesak, atau nyeri dada."],
+    illustration: require("@/assets/material/materi-3-pernapasan/napas-relaksasi.png"),
   },
 ];
 
@@ -561,6 +578,7 @@ export const LABOR_DANCE_MOVEMENTS: LaborDanceMovement[] = [
     ],
     caution:
       "Jaga gerakan tetap kecil dan nyaman. Hentikan bila tubuh memberi sinyal tidak aman.",
+    illustration: require("@/assets/material/materi-4-gerakan/goyang-pinggul.png"),
   },
   {
     slug: "gerakan-melingkar",
@@ -589,6 +607,7 @@ export const LABOR_DANCE_MOVEMENTS: LaborDanceMovement[] = [
     ],
     caution:
       "Jaga putaran tetap kecil. Pegang permukaan stabil bila tubuh terasa kurang seimbang.",
+    illustration: require("@/assets/material/materi-4-gerakan/memutar.png"),
   },
   {
     slug: "jongkok",
@@ -617,6 +636,7 @@ export const LABOR_DANCE_MOVEMENTS: LaborDanceMovement[] = [
     ],
     caution:
       "Gunakan pendamping atau pegangan. Hindari menahan napas saat bergerak.",
+    illustration: require("@/assets/material/materi-4-gerakan/squat.png"),
   },
   {
     slug: "condong-ke-depan",
@@ -644,6 +664,7 @@ export const LABOR_DANCE_MOVEMENTS: LaborDanceMovement[] = [
       "Muncul pusing, nyeri dada, sesak, atau rasa tidak nyaman.",
     ],
     caution: "Gunakan permukaan yang stabil dan hentikan bila terasa pusing.",
+    illustration: require("@/assets/material/materi-4-gerakan/condong-depan.png"),
   },
   {
     slug: "gerakan-kupu-kupu",
@@ -672,6 +693,7 @@ export const LABOR_DANCE_MOVEMENTS: LaborDanceMovement[] = [
     ],
     caution:
       "Berhenti bila ada rasa tertarik berlebihan atau tidak nyaman pada pinggul.",
+    illustration: require("@/assets/material/materi-4-gerakan/kupu-kupu.png"),
   },
   {
     slug: "berdiri-relaksasi",
@@ -700,6 +722,7 @@ export const LABOR_DANCE_MOVEMENTS: LaborDanceMovement[] = [
     ],
     caution:
       "Pastikan tubuh stabil dan hentikan bila ada rasa melayang atau lemah.",
+    illustration: require("@/assets/material/materi-4-gerakan/relaksasi.png"),
   },
 ];
 

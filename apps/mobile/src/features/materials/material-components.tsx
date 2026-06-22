@@ -1,6 +1,8 @@
 import type { MaterialHref, MaterialIconName } from "./materials-content";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { Image } from "expo-image";
+import type { ImageSource } from "expo-image";
 import { router } from "expo-router";
 import {
   Pressable,
@@ -64,7 +66,50 @@ type MaterialModuleCardProps = {
   readTime: string;
   step: string;
   title: string;
+  thumbnail?: ImageSource;
 };
+
+type MaterialIllustrationProps = {
+  accessibilityLabel: string;
+  source: ImageSource;
+  variant?: "thumbnail" | "hero";
+};
+
+export function MaterialIllustration({
+  accessibilityLabel,
+  source,
+  variant = "thumbnail",
+}: MaterialIllustrationProps) {
+  const isHero = variant === "hero";
+  return (
+    <View style={isHero ? styles.heroImageFrame : styles.thumbnailFrame}>
+      <Image
+        accessibilityLabel={accessibilityLabel}
+        contentFit="contain"
+        source={source}
+        style={isHero ? styles.heroImage : styles.thumbnail}
+      />
+    </View>
+  );
+}
+
+export function MaterialIllustrationHero({
+  accessibilityLabel,
+  source,
+}: {
+  accessibilityLabel: string;
+  source: ImageSource;
+}) {
+  return (
+    <SurfaceCard style={styles.heroImageCard}>
+      <MaterialIllustration
+        accessibilityLabel={accessibilityLabel}
+        source={source}
+        variant="hero"
+      />
+    </SurfaceCard>
+  );
+}
 
 export function MaterialHero({
   detail,
@@ -252,6 +297,7 @@ export function MaterialModuleCard({
   readTime,
   step,
   title,
+  thumbnail,
 }: MaterialModuleCardProps) {
   return (
     <Pressable
@@ -261,13 +307,21 @@ export function MaterialModuleCard({
       style={({ pressed }) => [pressed && styles.pressed]}
     >
       <SurfaceCard style={styles.moduleCard}>
-        <View style={styles.moduleIconWrap}>
-          <Ionicons
-            color={diamomTheme.colors.primaryStrong}
-            name={iconName}
-            size={24}
+        {thumbnail ? (
+          <MaterialIllustration
+            accessibilityLabel={title}
+            source={thumbnail}
+            variant="thumbnail"
           />
-        </View>
+        ) : (
+          <View style={styles.moduleIconWrap}>
+            <Ionicons
+              color={diamomTheme.colors.primaryStrong}
+              name={iconName}
+              size={24}
+            />
+          </View>
+        )}
         <View style={styles.moduleTextBlock}>
           <View style={styles.moduleMetaRow}>
             <Text style={styles.stepText}>Materi {step}</Text>
@@ -325,7 +379,38 @@ function getToneStyle(
   return styles.iconCalm;
 }
 
+const THUMBNAIL_SIZE = 72;
+const HERO_IMAGE_HEIGHT = 240;
+
 const styles = StyleSheet.create({
+  heroImageCard: {
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    padding: 0,
+  },
+  heroImageFrame: {
+    alignItems: "center",
+    height: HERO_IMAGE_HEIGHT,
+    justifyContent: "center",
+    width: "100%",
+  },
+  heroImage: {
+    height: "100%",
+    width: "100%",
+  },
+  thumbnailFrame: {
+    backgroundColor: diamomTheme.colors.backgroundElevated,
+    borderColor: diamomTheme.colors.border,
+    borderRadius: diamomTheme.radius.sm,
+    borderWidth: 1,
+    height: THUMBNAIL_SIZE,
+    width: THUMBNAIL_SIZE,
+  },
+  thumbnail: {
+    height: "100%",
+    width: "100%",
+  },
   heroCard: {
     backgroundColor: diamomTheme.colors.backgroundElevated,
     minHeight: 240,

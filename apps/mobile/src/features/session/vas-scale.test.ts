@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import test from "node:test";
 
-import { clampVasScore, formatTimer, getVasCategory } from "./vas-scale";
+import { clampVasScore, formatTimer, getVasCategory, getVasScoreSurfaceColor } from "./vas-scale";
 
 test("VAS scale helpers", async (t) => {
   await t.test("clampVasScore keeps values in range", () => {
@@ -20,5 +20,9 @@ test("VAS scale helpers", async (t) => {
   await t.test("formatTimer returns mm:ss", () => {
     assert.strictEqual(formatTimer(1800), "30:00");
     assert.strictEqual(formatTimer(65), "01:05");
+  });
+
+  await t.test("getVasScoreSurfaceColor returns tinted hex", () => {
+    assert.match(getVasScoreSurfaceColor(3), /^#[0-9A-Fa-f]{8}$/);
   });
 });

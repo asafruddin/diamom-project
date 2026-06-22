@@ -1,5 +1,8 @@
+import { File, Paths } from "expo-file-system";
 import { router } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+import * as Sharing from "expo-sharing";
+import { useState } from "react";
+import { Alert, StyleSheet, Text, View } from "react-native";
 
 import {
   ActionButton,
@@ -15,6 +18,10 @@ import {
   getResultStatusLabel,
 } from "@/features/session/result-summary";
 import { usePracticeSessionStore } from "@/features/session/session-store";
+import {
+  buildVasResultExcelHtml,
+  getVasResultExcelFileName,
+} from "@/features/session/vas-result-export";
 import { useVasHistoryStore } from "@/features/session/vas-history-store";
 import { getVasCategory, getVasPointColor } from "@/features/session/vas-scale";
 import { diamomTheme } from "@/theme";
@@ -38,6 +45,8 @@ function getMotivationalMessage(difference: number): string {
 }
 
 export default function VasSummaryScreen() {
+  const [isExporting, setIsExporting] = useState(false);
+  const activityTitle = usePracticeSessionStore((state) => state.activityTitle);
   const afterScore = usePracticeSessionStore((state) => state.afterScore);
   const beforeScore = usePracticeSessionStore((state) => state.beforeScore);
   const durationMinutes = usePracticeSessionStore(
@@ -58,6 +67,65 @@ export default function VasSummaryScreen() {
   const chartBars = buildResultChartBars(prev, next);
   const status = latestRecord?.status ?? getResultStatusLabel();
   const completedAt = latestRecord?.savedAt;
+  const completedAtLabel = completedAt ? formatSavedAt(completedAt) : "-";
+  const beforeCategory = getVasCategory(prev);
+  const afterCategory = getVasCategory(next);
+
+  const handleExportExcel = async () => {
+    if (isExporting) return;
+
+    setIsExporting(true);
+
+    try {
+      const canShare = await Sharing.isAvailableAsync();
+
+      if (!canShare) {
+        Alert.alert(
+          "Ekspor belum tersedia",
+          "Perangkat ini belum mendukung berbagi file Excel dari aplikasi.",
+        );
+        return;
+      }
+
+      const file = new File(
+        Paths.cache,
+        getVasResultExcelFileName(completedAt),
+      );
+
+      if (file.exists) {
+        file.delete();
+      }
+
+      file.create();
+      file.write(
+        buildVasResultExcelHtml({
+          activityTitle,
+          afterCategory,
+          afterScore: next,
+          beforeCategory,
+          beforeScore: prev,
+          changeLabel: changeSummary.label,
+          completedAtLabel,
+          durationLabel: formatDurationMinutes(durationMinutes),
+          motherName,
+          status,
+        }),
+      );
+
+      await Sharing.shareAsync(file.uri, {
+        dialogTitle: "Ekspor hasil VAS DiaMom",
+        mimeType: "application/vnd.ms-excel",
+        UTI: "com.microsoft.excel.xls",
+      });
+    } catch {
+      Alert.alert(
+        "Ekspor gagal",
+        "File Excel belum dapat dibuat. Coba lagi beberapa saat lagi.",
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <DiaScreen>
@@ -66,6 +134,21 @@ export default function VasSummaryScreen() {
         title="Hasil Penilaian"
         description="Perubahan tingkat nyeri yang Anda catat setelah sesi selesai."
       />
+
+      <SurfaceCard style={styles.exportCard}>
+        <View style={styles.exportTextBlock}>
+          <Text style={styles.exportTitle}>Ekspor hasil</Text>
+          <Text style={styles.exportDescription}>
+            Buat file Excel dari ringkasan sesi ini untuk disimpan atau dibagikan
+            oleh Anda.
+          </Text>
+        </View>
+        <ActionButton
+          disabled={isExporting}
+          label={isExporting ? "Menyiapkan..." : "Ekspor Excel"}
+          onPress={handleExportExcel}
+        />
+      </SurfaceCard>
 
       <SurfaceCard style={styles.comparisonCard}>
         <View style={styles.scoreRow}>
@@ -79,7 +162,7 @@ export default function VasSummaryScreen() {
             <Text
               style={[styles.scoreCategory, { color: getVasPointColor(prev) }]}
             >
-              {getVasCategory(prev)}
+              {beforeCategory}
             </Text>
           </View>
 
@@ -95,7 +178,7 @@ export default function VasSummaryScreen() {
             <Text
               style={[styles.scoreCategory, { color: getVasPointColor(next) }]}
             >
-              {getVasCategory(next)}
+              {afterCategory}
             </Text>
           </View>
         </View>
@@ -110,11 +193,11 @@ export default function VasSummaryScreen() {
         />
         <DetailRow
           label="Nyeri awal"
-          value={`${prev} • ${getVasCategory(prev)}`}
+          value={`${prev} • ${beforeCategory}`}
         />
         <DetailRow
           label="Nyeri akhir"
-          value={`${next} • ${getVasCategory(next)}`}
+          value={`${next} • ${afterCategory}`}
         />
         <DetailRow
           label="Penurunan / Peningkatan Nyeri"
@@ -122,7 +205,7 @@ export default function VasSummaryScreen() {
         />
         <DetailRow label="Status" value={status} />
         {completedAt ? (
-          <DetailRow label="Waktu simpan" value={formatSavedAt(completedAt)} />
+          <DetailRow label="Waktu simpan" value={completedAtLabel} />
         ) : null}
       </SurfaceCard>
 
@@ -197,6 +280,24 @@ function formatSavedAt(savedAt: string): string {
 }
 
 const styles = StyleSheet.create({
+  exportCard: {
+    backgroundColor: diamomTheme.colors.primaryMuted,
+    borderColor: diamomTheme.colors.primaryMuted,
+    gap: diamomTheme.spacing.md,
+  },
+  exportTextBlock: {
+    gap: diamomTheme.spacing.xs,
+  },
+  exportTitle: {
+    color: diamomTheme.colors.text,
+    fontSize: 20,
+    fontWeight: "800",
+  },
+  exportDescription: {
+    color: diamomTheme.colors.primaryStrong,
+    fontSize: 14,
+    lineHeight: 20,
+  },
   comparisonCard: {
     paddingVertical: diamomTheme.spacing.lg,
   },

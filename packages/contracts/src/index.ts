@@ -122,3 +122,8 @@ export interface DashboardSummary {
     stable: number;
   };
 }
+
+export interface DashboardExportResponse {
+  sessions: ParticipantSessionRecord[];
+  summary: DashboardSummary;
+}

@@ -11,6 +11,7 @@ import {
   clearParticipantData,
   createParticipant,
   createParticipantVasRecord,
+  getDashboardExport,
   getDashboardSummary,
   getParticipantSnapshot,
   getResearcherByUsername,
@@ -239,5 +240,11 @@ export async function registerRoutes(
     "/v1/researcher/dashboard/summary",
     { preHandler: app.verifyResearcher },
     async () => getDashboardSummary(options.db),
+  );
+
+  app.get(
+    "/v1/researcher/dashboard/export",
+    { preHandler: app.verifyResearcher },
+    async () => getDashboardExport(options.db),
   );
 }

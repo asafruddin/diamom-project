@@ -295,7 +295,32 @@ export function VasSelector({
           ))}
         </View>
         <View style={styles.vasTrackContainer}>
-          <View style={styles.vasTrackLine} />
+          <View style={styles.vasTrackGradient}>
+            <View
+              style={[
+                styles.vasTrackSegment,
+                { backgroundColor: diamomTheme.colors.vasLow, flex: 3 },
+              ]}
+            />
+            <View
+              style={[
+                styles.vasTrackSegment,
+                { backgroundColor: diamomTheme.colors.vasMid, flex: 2 },
+              ]}
+            />
+            <View
+              style={[
+                styles.vasTrackSegment,
+                { backgroundColor: diamomTheme.colors.vasHigh, flex: 2 },
+              ]}
+            />
+            <View
+              style={[
+                styles.vasTrackSegment,
+                { backgroundColor: diamomTheme.colors.vasSevere, flex: 3 },
+              ]}
+            />
+          </View>
           <View style={styles.vasDotsRow}>
             {VAS_SCALE_POINTS.map((score) => {
               const isSelected = score === value;
@@ -559,12 +584,17 @@ const styles = StyleSheet.create({
     height: 28,
     justifyContent: "center",
   },
-  vasTrackLine: {
-    backgroundColor: diamomTheme.colors.border,
-    height: 3,
+  vasTrackGradient: {
+    borderRadius: diamomTheme.radius.pill,
+    flexDirection: "row",
+    height: 6,
     left: 10,
+    overflow: "hidden",
     position: "absolute",
     right: 10,
+  },
+  vasTrackSegment: {
+    height: "100%",
   },
   vasDotsRow: {
     alignItems: "center",

@@ -1,10 +1,11 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { StyleSheet, Text, View } from "react-native";
 
 import { DiaScreen, PageHeader, SurfaceCard } from "@/components/dia-ui";
 import {
   LearningSectionCard,
   MaterialHero,
+  MaterialIllustration,
+  MaterialIllustrationHero,
   PrevNextMaterialNav,
   SafetyNoticeCard,
   SectionChipRow,
@@ -29,6 +30,13 @@ export default function BreathingExercisesScreen() {
         title={BREATHING_DETAIL.title}
         description={BREATHING_DETAIL.description}
       />
+
+      {BREATHING_DETAIL.heroImage && (
+        <MaterialIllustrationHero
+          accessibilityLabel={BREATHING_DETAIL.title}
+          source={BREATHING_DETAIL.heroImage}
+        />
+      )}
 
       <MaterialHero
         detail={BREATHING_DETAIL.heroDetail}
@@ -60,13 +68,11 @@ export default function BreathingExercisesScreen() {
         {BREATHING_EXERCISES.map((exercise) => (
           <SurfaceCard key={exercise.id} style={styles.exerciseCard}>
             <View style={styles.exerciseHeader}>
-              <View style={styles.exerciseIconWrap}>
-                <Ionicons
-                  color={diamomTheme.colors.primaryStrong}
-                  name="leaf"
-                  size={22}
-                />
-              </View>
+              <MaterialIllustration
+                accessibilityLabel={exercise.title}
+                source={exercise.illustration}
+                variant="thumbnail"
+              />
               <View style={styles.exerciseTextBlock}>
                 <Text style={styles.exerciseTitle}>{exercise.title}</Text>
                 <Text style={styles.exerciseRhythm}>{exercise.rhythm}</Text>
