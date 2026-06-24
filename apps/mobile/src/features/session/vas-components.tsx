@@ -111,7 +111,7 @@ export function VasLegendIllustrationPanel({
 
 const INLINE_HEIGHT = 180;
 const SESSION_HEIGHT = 240;
-const PANEL_HEIGHT = 168;
+const PANEL_HEIGHT = 220;
 
 const styles = StyleSheet.create({
   inlineCard: {
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: PANEL_HEIGHT,
     justifyContent: "center",
-    minWidth: 120,
+    minWidth: 140,
   },
   panelImage: {
     height: "100%",

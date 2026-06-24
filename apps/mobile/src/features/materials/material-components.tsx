@@ -21,7 +21,16 @@ type MaterialHeroProps = {
   detail: string;
   iconName: MaterialIconName;
   readTime: string;
+  showIcon?: boolean;
   title: string;
+};
+
+type MaterialIllustrationProps = {
+  accessibilityLabel: string;
+  contentFit?: "contain" | "cover";
+  contentPosition?: "center" | "top";
+  source: ImageSource;
+  variant?: "thumbnail" | "hero";
 };
 
 type SectionChipRowProps = {
@@ -69,14 +78,10 @@ type MaterialModuleCardProps = {
   thumbnail?: ImageSource;
 };
 
-type MaterialIllustrationProps = {
-  accessibilityLabel: string;
-  source: ImageSource;
-  variant?: "thumbnail" | "hero";
-};
-
 export function MaterialIllustration({
   accessibilityLabel,
+  contentFit = "contain",
+  contentPosition = "center",
   source,
   variant = "thumbnail",
 }: MaterialIllustrationProps) {
@@ -85,7 +90,8 @@ export function MaterialIllustration({
     <View style={isHero ? styles.heroImageFrame : styles.thumbnailFrame}>
       <Image
         accessibilityLabel={accessibilityLabel}
-        contentFit="contain"
+        contentFit={contentFit}
+        contentPosition={contentPosition}
         source={source}
         style={isHero ? styles.heroImage : styles.thumbnail}
       />
@@ -95,15 +101,21 @@ export function MaterialIllustration({
 
 export function MaterialIllustrationHero({
   accessibilityLabel,
+  contentFit,
+  contentPosition,
   source,
 }: {
   accessibilityLabel: string;
+  contentFit?: "contain" | "cover";
+  contentPosition?: "center" | "top";
   source: ImageSource;
 }) {
   return (
     <SurfaceCard style={styles.heroImageCard}>
       <MaterialIllustration
         accessibilityLabel={accessibilityLabel}
+        contentFit={contentFit}
+        contentPosition={contentPosition}
         source={source}
         variant="hero"
       />
@@ -115,6 +127,7 @@ export function MaterialHero({
   detail,
   iconName,
   readTime,
+  showIcon = false,
   title,
 }: MaterialHeroProps) {
   return (
@@ -123,13 +136,15 @@ export function MaterialHero({
         <View style={styles.heroBandLarge} />
         <View style={styles.heroBandSmall} />
       </View>
-      <View style={styles.heroIconWrap}>
-        <Ionicons
-          color={diamomTheme.colors.onPrimary}
-          name={iconName}
-          size={42}
-        />
-      </View>
+      {showIcon ? (
+        <View style={styles.heroIconWrap}>
+          <Ionicons
+            color={diamomTheme.colors.onPrimary}
+            name={iconName}
+            size={42}
+          />
+        </View>
+      ) : null}
       <View style={styles.readTimePill}>
         <Ionicons
           color={diamomTheme.colors.primaryStrong}
@@ -310,6 +325,7 @@ export function MaterialModuleCard({
         {thumbnail ? (
           <MaterialIllustration
             accessibilityLabel={title}
+            contentFit="cover"
             source={thumbnail}
             variant="thumbnail"
           />
@@ -379,8 +395,8 @@ function getToneStyle(
   return styles.iconCalm;
 }
 
-const THUMBNAIL_SIZE = 72;
-const HERO_IMAGE_HEIGHT = 240;
+const THUMBNAIL_SIZE = 96;
+const HERO_IMAGE_HEIGHT = 300;
 
 const styles = StyleSheet.create({
   heroImageCard: {

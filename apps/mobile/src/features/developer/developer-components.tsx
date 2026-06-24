@@ -18,6 +18,7 @@ export function DeveloperResearcherCard({
         <Image
           accessibilityLabel={`Foto ${researcher.name}`}
           contentFit="cover"
+          contentPosition="top"
           source={researcher.photo}
           style={styles.photo}
         />
@@ -58,8 +59,9 @@ export function DeveloperResearcherCard({
   );
 }
 
-const PHOTO_SIZE = 116;
-const INSTITUTION_LOGO_SIZE = 64;
+const PHOTO_WIDTH = 116;
+const PHOTO_HEIGHT = 130;
+const INSTITUTION_LOGO_SIZE = 92;
 
 const styles = StyleSheet.create({
   card: {
@@ -70,11 +72,11 @@ const styles = StyleSheet.create({
   photoFrame: {
     backgroundColor: diamomTheme.colors.backgroundElevated,
     borderColor: diamomTheme.colors.border,
-    borderRadius: diamomTheme.radius.pill,
+    borderRadius: diamomTheme.radius.md,
     borderWidth: 2,
-    height: PHOTO_SIZE,
+    height: PHOTO_HEIGHT,
     overflow: "hidden",
-    width: PHOTO_SIZE,
+    width: PHOTO_WIDTH,
   },
   photo: {
     height: "100%",
@@ -127,11 +129,12 @@ const styles = StyleSheet.create({
     borderRadius: diamomTheme.radius.sm,
     borderWidth: 1,
     justifyContent: "center",
-    paddingHorizontal: diamomTheme.spacing.xxl,
+    paddingHorizontal: diamomTheme.spacing.lg,
+    paddingVertical: diamomTheme.spacing.sm,
   },
   institutionLogo: {
-    height: INSTITUTION_LOGO_SIZE,
-    width: INSTITUTION_LOGO_SIZE,
+    height: INSTITUTION_LOGO_SIZE - diamomTheme.spacing.xl,
+    width: INSTITUTION_LOGO_SIZE + diamomTheme.spacing.xxl,
   },
   institutionName: {
     color: diamomTheme.colors.text,

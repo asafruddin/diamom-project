@@ -37,6 +37,9 @@ interface PageHeaderProps {
 interface ActionButtonProps {
   accessibilityLabel?: string;
   disabled?: boolean;
+  fullWidth?: boolean;
+  iconName?: keyof typeof Ionicons.glyphMap;
+  iconPlacement?: "leading" | "overlap-trailing";
   label: string;
   onPress: () => void;
   variant?: "primary" | "secondary";
@@ -138,11 +141,18 @@ export function SurfaceCard({ children, style }: SurfaceCardProps) {
 export function ActionButton({
   accessibilityLabel,
   disabled = false,
+  fullWidth = false,
+  iconName,
+  iconPlacement = "leading",
   label,
   onPress,
   variant = "primary",
 }: ActionButtonProps) {
   const isPrimary = variant === "primary";
+  const iconColor = isPrimary
+    ? diamomTheme.colors.onPrimary
+    : diamomTheme.colors.primaryStrong;
+  const hasOverlapIcon = Boolean(iconName) && iconPlacement === "overlap-trailing";
 
   return (
     <Pressable
@@ -153,20 +163,53 @@ export function ActionButton({
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
+        fullWidth && styles.buttonFullWidth,
+        hasOverlapIcon && styles.buttonWithOverlapIcon,
         isPrimary ? styles.primaryButton : styles.secondaryButton,
         disabled && styles.buttonDisabled,
         pressed && !disabled && styles.buttonPressed,
       ]}
     >
-      <Text
-        style={[
-          styles.buttonText,
-          isPrimary ? styles.primaryButtonText : styles.secondaryButtonText,
-          disabled && styles.buttonTextDisabled,
-        ]}
-      >
-        {label}
-      </Text>
+      {hasOverlapIcon ? (
+        <>
+          <Text
+            style={[
+              styles.buttonText,
+              styles.buttonTextCentered,
+              isPrimary ? styles.primaryButtonText : styles.secondaryButtonText,
+              disabled && styles.buttonTextDisabled,
+            ]}
+          >
+            {label}
+          </Text>
+          <View pointerEvents="none" style={styles.overlapTrailingIcon}>
+            <Ionicons
+              color={
+                disabled
+                  ? diamomTheme.colors.textSoft
+                  : diamomTheme.colors.accent
+              }
+              name={iconName}
+              size={30}
+            />
+          </View>
+        </>
+      ) : (
+        <View style={styles.buttonContent}>
+          {iconName ? (
+            <Ionicons color={iconColor} name={iconName} size={20} />
+          ) : null}
+          <Text
+            style={[
+              styles.buttonText,
+              isPrimary ? styles.primaryButtonText : styles.secondaryButtonText,
+              disabled && styles.buttonTextDisabled,
+            ]}
+          >
+            {label}
+          </Text>
+        </View>
+      )}
     </Pressable>
   );
 }
@@ -410,6 +453,30 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     minHeight: 54,
     paddingHorizontal: diamomTheme.spacing.lg,
+  },
+  buttonFullWidth: {
+    alignSelf: "stretch",
+  },
+  buttonWithOverlapIcon: {
+    overflow: "visible",
+    paddingRight: diamomTheme.spacing.xl,
+  },
+  buttonContent: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: diamomTheme.spacing.sm,
+    justifyContent: "center",
+  },
+  buttonTextCentered: {
+    fontWeight: "700",
+    textAlign: "center",
+    width: "100%",
+  },
+  overlapTrailingIcon: {
+    position: "absolute",
+    right: -10,
+    top: "50%",
+    transform: [{ translateY: -15 }],
   },
   buttonPressed: {
     opacity: 0.84,

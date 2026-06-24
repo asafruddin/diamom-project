@@ -118,20 +118,19 @@ export const HOME_SHORTCUTS = [
     href: "/(tabs)/vas" as const,
   },
   {
-    id: "about",
+    id: "vas-history",
     step: "03",
+    title: "Riwayat VAS",
+    description: "Lihat catatan penilaian nyeri yang sudah Anda simpan.",
+    href: "/(tabs)/vas/history" as const,
+  },
+  {
+    id: "about",
+    step: "04",
     title: "Info Pengembang",
     description:
       "Kenali tim peneliti yang mengembangkan aplikasi DiaMom.",
     href: "/developer/info" as const,
-  },
-  {
-    id: "details",
-    step: "04",
-    title: "Rincian Lainnya",
-    description:
-      "Buka ketentuan, reset onboarding, dan baca posisi DiaMom secara utuh.",
-    href: "/(tabs)/profile" as const,
   },
 ] as const;
 
@@ -391,32 +390,15 @@ export const CLOSING_DETAIL: MaterialDetail = {
   eyebrow: "Materi 5",
   title: "Penutup",
   description:
-    "Akhiri sesi belajar dengan tenang, dukungan lembut, dan pengingat untuk mengikuti arahan tenaga kesehatan.",
+    "Akhiri sesi belajar dengan tenang dan lanjutkan hanya saat tubuh terasa aman.",
   readTime: "2 menit",
   heroIconName: "heart",
   heroTitle: "Anda sudah memberi waktu untuk memahami tubuh dengan lebih lembut.",
   heroDetail:
     "Ambil napas pelan, minum air bila perlu, dan lanjutkan hanya saat tubuh terasa aman.",
-  sections: [
-    {
-      id: "affirmation",
-      title: "Afirmasi lembut",
-      iconName: "flower",
-      body: "Ibu hebat. Setiap langkah kecil untuk belajar, bernapas, dan mengenali tubuh adalah bagian dari persiapan yang penuh perhatian.",
-      tone: "support",
-    },
-    {
-      id: "boundary",
-      title: "Pengingat batas aman",
-      iconName: "shield",
-      body: "DiaMom adalah teman belajar dan dukungan. Untuk keputusan tentang kondisi kehamilan, persalinan, atau keluhan tubuh, selalu ikuti arahan dokter, bidan, atau tenaga kesehatan.",
-      tone: "safety",
-    },
-  ],
-  safetyNotes: [
-    "Berhenti kapan saja bila merasa tidak aman atau tidak nyaman.",
-    "Hubungi dokter, bidan, atau pendamping bila gejala mengganggu atau berlanjut.",
-  ],
+  heroImage: require("@/assets/material/materi-1-penjelasan.png"),
+  sections: [],
+  safetyNotes: [],
 };
 
 export const MATERIAL_DETAILS: MaterialDetail[] = [

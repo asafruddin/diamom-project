@@ -15,6 +15,10 @@ export const DEVELOPER_INFO_COPY = {
   eyebrow: "Tim Peneliti",
   title: "Info Pengembang",
   description: "Peneliti yang mengembangkan aplikasi DiaMom.",
+  footerTagline:
+    "Evidence-Based Maternity Care : Safe | Comfortable | Positive Birth Experience",
+  footerCredit:
+    "Dikembangkan oleh Tim Peneliti | Kolaborasi Tiga Institusi | Tahun 2026",
 } as const;
 
 export const DEVELOPER_RESEARCHERS: DeveloperResearcher[] = [
@@ -35,7 +39,7 @@ export const DEVELOPER_RESEARCHERS: DeveloperResearcher[] = [
     isChair: false,
     nidn: "0931088001",
     institution: "Poltekkes Kemenkes Manado",
-    photo: require("@/assets/developer/elisabeth_machdalena.jpg"),
+    photo: require("@/assets/developer/elisabeth_machdalena.png"),
     institutionLogo: require("@/assets/developer/instansi/logo_pk_manado.png"),
   },
   {

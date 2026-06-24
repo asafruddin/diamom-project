@@ -2,11 +2,8 @@ import { router } from "expo-router";
 
 import { ActionButton, DiaScreen, PageHeader } from "@/components/dia-ui";
 import {
-  LearningSectionCard,
-  MaterialHero,
+  MaterialIllustrationHero,
   PrevNextMaterialNav,
-  SafetyNoticeCard,
-  SectionChipRow,
 } from "@/features/materials/material-components";
 import {
   CLOSING_DETAIL,
@@ -27,32 +24,12 @@ export default function ClosingScreen() {
         description={CLOSING_DETAIL.description}
       />
 
-      <MaterialHero
-        detail={CLOSING_DETAIL.heroDetail}
-        iconName={CLOSING_DETAIL.heroIconName}
-        readTime={CLOSING_DETAIL.readTime}
-        title={CLOSING_DETAIL.heroTitle}
-      />
-
-      <SectionChipRow
-        sections={[
-          ...CLOSING_DETAIL.sections.map((section) => section.title),
-          "Pengingat aman",
-        ]}
-      />
-
-      {CLOSING_DETAIL.sections.map((section) => (
-        <LearningSectionCard
-          body={section.body}
-          bullets={section.bullets}
-          iconName={section.iconName}
-          key={section.id}
-          title={section.title}
-          tone={section.tone}
+      {CLOSING_DETAIL.heroImage ? (
+        <MaterialIllustrationHero
+          accessibilityLabel={CLOSING_DETAIL.title}
+          source={CLOSING_DETAIL.heroImage}
         />
-      ))}
-
-      <SafetyNoticeCard items={CLOSING_DETAIL.safetyNotes} title="Pengingat aman" />
+      ) : null}
 
       <ActionButton
         accessibilityLabel="Mulai penilaian VAS"

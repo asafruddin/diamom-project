@@ -4,6 +4,8 @@ import test from "node:test";
 import { hasUnsafeMedicalClaim } from "@/lib/copy-guardrails";
 
 import {
+  CLOSING_DETAIL,
+  HOME_SHORTCUTS,
   LABOR_DANCE_MOVEMENTS,
   MATERIAL_DETAILS,
   MATERIAL_ITEMS,
@@ -74,9 +76,24 @@ test("material copy avoids known unsafe medical claims", () => {
   assert.strictEqual(hasUnsafeMedicalClaim(copy), false);
 });
 
+test("home shortcuts include VAS history and omit profile details", () => {
+  const ids = HOME_SHORTCUTS.map((shortcut) => shortcut.id);
+
+  assert.deepStrictEqual(ids, ["materials", "vas", "vas-history", "about"]);
+  assert.strictEqual(
+    HOME_SHORTCUTS.find((shortcut) => shortcut.id === "vas-history")?.href,
+    "/(tabs)/vas/history",
+  );
+});
+
+test("closing material keeps a simplified penutup layout", () => {
+  assert.ok(CLOSING_DETAIL.heroImage);
+  assert.strictEqual(CLOSING_DETAIL.sections.length, 0);
+  assert.strictEqual(CLOSING_DETAIL.safetyNotes.length, 0);
+});
+
 test("all materials have illustration assets where required", () => {
   for (const item of MATERIAL_ITEMS) {
-    // closing (Penutup) is allowed to not have a thumbnail
     if (item.id !== "closing") {
       assert.ok(
         item.thumbnail,
@@ -117,11 +134,9 @@ test("all materials have illustration assets where required", () => {
   }
 
   for (const material of MATERIAL_DETAILS) {
-    if (material.id !== "closing") {
-      assert.ok(
-        material.heroImage,
-        `material ${material.id} should have a heroImage`,
-      );
-    }
+    assert.ok(
+      material.heroImage,
+      `material ${material.id} should have a heroImage`,
+    );
   }
 });

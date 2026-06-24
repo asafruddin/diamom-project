@@ -25,7 +25,7 @@ export default function VasAfterScreen() {
   const motherName = useProfileStore(
     (state) => state.motherIdentity?.motherName ?? "Ibu",
   );
-  const [selectedScore, setSelectedScore] = useState(afterScore ?? 3);
+  const [selectedScore, setSelectedScore] = useState(afterScore ?? 0);
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {

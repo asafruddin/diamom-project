@@ -2,11 +2,12 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useEvent } from "expo";
-import { useVideoPlayer, VideoView } from "expo-video";
+import { useVideoPlayer } from "expo-video";
 import { useCallback, useEffect, useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
-import { ActionButton, DiaScreen } from "@/components/dia-ui";
+import { ActionButton, DiaScreen, SurfaceCard } from "@/components/dia-ui";
+import { LaborDanceVideoSheet } from "@/features/session/labor-dance-video-sheet";
 import {
   LABOR_DANCE_VIDEO_SHARE_URL,
   getPlayableGoogleDriveVideoUrl,
@@ -16,13 +17,19 @@ import { VAS_ILLUSTRATIONS } from "@/features/session/vas-content";
 import { formatTimer } from "@/features/session/vas-scale";
 import { diamomTheme } from "@/theme";
 
+const STOP_IF_ITEMS = [
+  "Pusing",
+  "Perdarahan",
+  "Sesak napas",
+] as const;
+
 export default function PracticeSessionScreen() {
   const activityTitle = usePracticeSessionStore((state) => state.activityTitle);
   const beforeScore = usePracticeSessionStore((state) => state.beforeScore);
   const durationMinutes = usePracticeSessionStore(
     (state) => state.durationMinutes,
   );
-  const [hasStartedPlayback, setHasStartedPlayback] = useState(false);
+  const [hasStartedSession, setHasStartedSession] = useState(false);
   const [isVideoSheetVisible, setIsVideoSheetVisible] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(durationMinutes * 60);
@@ -45,10 +52,6 @@ export default function PracticeSessionScreen() {
         ? statusChange.error?.message ??
           "Video Labor Dance belum dapat diputar saat ini."
         : null;
-  const isVideoLoading =
-    hasStartedPlayback &&
-    !videoErrorMessage &&
-    statusChange.status !== "readyToPlay";
 
   const pausePlayback = useCallback(() => {
     if (player.playing) {
@@ -79,47 +82,26 @@ export default function PracticeSessionScreen() {
     return () => clearInterval(id);
   }, [isRunning]);
 
-  useEffect(() => {
-    if (!hasStartedPlayback) {
-      return;
-    }
-
-    if (!isVideoSheetVisible || !videoSource || videoErrorMessage) {
-      pausePlayback();
-      return;
-    }
-
-    if (isRunning && statusChange.status === "readyToPlay" && !player.playing) {
-      player.play();
-      return;
-    }
-
-    if (!isRunning) {
-      pausePlayback();
-    }
-  }, [
-    hasStartedPlayback,
-    isRunning,
-    isVideoSheetVisible,
-    player,
-    pausePlayback,
-    statusChange.status,
-    videoErrorMessage,
-    videoSource,
-  ]);
-
   const handleStart = () => {
-    setHasStartedPlayback(true);
+    setHasStartedSession(true);
     setIsRunning(true);
     setIsVideoSheetVisible(true);
   };
 
   const handlePause = () => {
     setIsRunning(false);
+    pausePlayback();
+  };
+
+  const handleResume = () => {
+    setIsRunning(true);
   };
 
   const handleOpenVideoSheet = () => {
     setIsVideoSheetVisible(true);
+    if (hasStartedSession && !isDone) {
+      setIsRunning(true);
+    }
   };
 
   const handleCloseVideoSheet = () => {
@@ -129,9 +111,9 @@ export default function PracticeSessionScreen() {
 
   const handleNext = () => {
     pausePlayback();
-    setHasStartedPlayback(false);
+    setHasStartedSession(false);
     setIsVideoSheetVisible(false);
-    handlePause();
+    setIsRunning(false);
     router.push("/(tabs)/vas/after");
   };
 
@@ -169,15 +151,37 @@ export default function PracticeSessionScreen() {
         Ikuti gerakan dengan nyaman dan fokus pada napas.
       </Text>
 
+      <SurfaceCard style={styles.safetyCard}>
+        <Text style={styles.safetyTitle}>Hentikan jika:</Text>
+        {STOP_IF_ITEMS.map((item, index) => (
+          <Text key={item} style={styles.safetyItem}>
+            {String.fromCharCode(97 + index)}. {item}
+          </Text>
+        ))}
+      </SurfaceCard>
+
       <View style={styles.buttonGroup}>
-        {!hasStartedPlayback ? (
+        {!hasStartedSession ? (
           <ActionButton label="Mulai" onPress={handleStart} />
-        ) : isDone ? (
-          <ActionButton label="Buka Kontrol" onPress={handleOpenVideoSheet} />
-        ) : isRunning ? (
-          <ActionButton label="Lihat Video" onPress={handleOpenVideoSheet} />
         ) : (
-          <ActionButton label="Lanjutkan" onPress={handleStart} />
+          <>
+            <ActionButton
+              disabled={isRunning}
+              label="Mulai"
+              onPress={handleResume}
+            />
+            <ActionButton
+              disabled={!isRunning}
+              label="Jeda"
+              onPress={handlePause}
+              variant="secondary"
+            />
+            <ActionButton
+              label="Lihat Video Tutorial"
+              onPress={handleOpenVideoSheet}
+              variant="secondary"
+            />
+          </>
         )}
       </View>
 
@@ -185,84 +189,18 @@ export default function PracticeSessionScreen() {
         <Text style={styles.videoErrorText}>{videoErrorMessage}</Text>
       ) : null}
 
-      <Modal
-        animationType="slide"
-        onRequestClose={handleCloseVideoSheet}
-        transparent
+      <LaborDanceVideoSheet
+        isDone={isDone}
+        isRunning={isRunning}
+        onClose={handleCloseVideoSheet}
+        onFinish={handleNext}
+        onPause={handlePause}
+        onResume={handleResume}
+        player={player}
+        videoErrorMessage={videoErrorMessage}
+        videoSource={videoSource}
         visible={isVideoSheetVisible}
-      >
-        <View style={styles.sheetRoot}>
-          <Pressable
-            accessibilityLabel="Tutup video panduan"
-            accessibilityRole="button"
-            onPress={handleCloseVideoSheet}
-            style={styles.sheetBackdrop}
-          />
-          <View style={styles.sheet}>
-            <View style={styles.sheetHandle} />
-            <View style={styles.sheetHeader}>
-              <Text style={styles.sheetTitle}>Video Panduan</Text>
-              <Pressable
-                accessibilityLabel="Tutup video panduan"
-                accessibilityRole="button"
-                onPress={handleCloseVideoSheet}
-                style={styles.sheetCloseButton}
-              >
-                <Ionicons
-                  color={diamomTheme.colors.primaryStrong}
-                  name="close"
-                  size={22}
-                />
-              </Pressable>
-            </View>
-            {videoErrorMessage ? (
-              <View style={styles.videoFallbackFrame}>
-                <Ionicons
-                  color={diamomTheme.colors.danger}
-                  name="alert-circle-outline"
-                  size={42}
-                />
-                <Text style={styles.videoErrorText}>{videoErrorMessage}</Text>
-              </View>
-            ) : (
-              <View style={styles.videoFrame}>
-                <VideoView
-                  contentFit="contain"
-                  fullscreenOptions={{ enable: false }}
-                  nativeControls={false}
-                  player={player}
-                  style={styles.video}
-                />
-                {isVideoLoading ? (
-                  <View style={styles.videoOverlay}>
-                    <Text style={styles.videoOverlayText}>
-                      Menyiapkan video...
-                    </Text>
-                  </View>
-                ) : null}
-              </View>
-            )}
-            <View style={styles.sheetControlFrame}>
-              <Text style={styles.videoHelperText}>
-                Ikuti video seperlunya. Anda dapat menutup panduan dan tetap
-                memakai timer utama.
-              </Text>
-              <View style={styles.sheetButtonGroup}>
-                {isDone ? null : isRunning ? (
-                  <ActionButton
-                    label="Jeda"
-                    onPress={handlePause}
-                    variant="secondary"
-                  />
-                ) : (
-                  <ActionButton label="Lanjutkan" onPress={handleStart} />
-                )}
-                <ActionButton label="Selesai" onPress={handleNext} />
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      />
     </DiaScreen>
   );
 }
@@ -292,7 +230,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "center",
-    minHeight: 250,
+    minHeight: 280,
     width: "100%",
   },
   stopwatchWrap: {
@@ -308,57 +246,8 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   heroImage: {
-    height: 270,
-    width: 188,
-  },
-  videoFrame: {
-    aspectRatio: 16 / 9,
-    backgroundColor: diamomTheme.colors.backgroundElevated,
-    borderRadius: diamomTheme.radius.md,
-    overflow: "hidden",
-    position: "relative",
-  },
-  video: {
-    flex: 1,
-  },
-  videoFallbackFrame: {
-    alignItems: "center",
-    aspectRatio: 16 / 9,
-    backgroundColor: diamomTheme.colors.backgroundElevated,
-    borderColor: diamomTheme.colors.border,
-    borderRadius: diamomTheme.radius.md,
-    borderWidth: 1,
-    gap: diamomTheme.spacing.sm,
-    justifyContent: "center",
-    padding: diamomTheme.spacing.lg,
-  },
-  videoOverlay: {
-    alignItems: "center",
-    backgroundColor: "rgba(92, 60, 89, 0.3)",
-    bottom: 0,
-    justifyContent: "center",
-    left: 0,
-    position: "absolute",
-    right: 0,
-    top: 0,
-  },
-  videoOverlayText: {
-    color: diamomTheme.colors.onPrimary,
-    fontSize: 15,
-    fontWeight: "700",
-    textAlign: "center",
-  },
-  videoHelperText: {
-    color: diamomTheme.colors.mutedText,
-    fontSize: 14,
-    lineHeight: 20,
-    textAlign: "center",
-  },
-  videoErrorText: {
-    color: diamomTheme.colors.danger,
-    fontSize: 14,
-    lineHeight: 20,
-    textAlign: "center",
+    height: 320,
+    width: 220,
   },
   timer: {
     color: diamomTheme.colors.text,
@@ -378,61 +267,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: diamomTheme.spacing.xl,
     textAlign: "center",
   },
+  safetyCard: {
+    gap: diamomTheme.spacing.xs,
+    marginHorizontal: diamomTheme.spacing.md,
+  },
+  safetyTitle: {
+    color: diamomTheme.colors.text,
+    fontSize: 15,
+    fontWeight: "800",
+  },
+  safetyItem: {
+    color: diamomTheme.colors.mutedText,
+    fontSize: 14,
+    lineHeight: 20,
+  },
   buttonGroup: {
     gap: diamomTheme.spacing.md,
     paddingTop: diamomTheme.spacing.md,
   },
-  sheetRoot: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-  sheetBackdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(92, 60, 89, 0.28)",
-  },
-  sheet: {
-    backgroundColor: diamomTheme.colors.surface,
-    borderTopLeftRadius: diamomTheme.radius.lg,
-    borderTopRightRadius: diamomTheme.radius.lg,
-    gap: diamomTheme.spacing.md,
-    paddingBottom: diamomTheme.spacing.xl,
-    paddingHorizontal: diamomTheme.spacing.lg,
-    paddingTop: diamomTheme.spacing.sm,
-  },
-  sheetControlFrame: {
-    backgroundColor: diamomTheme.colors.background,
-    borderColor: diamomTheme.colors.border,
-    borderRadius: diamomTheme.radius.md,
-    borderWidth: 1,
-    gap: diamomTheme.spacing.md,
-    padding: diamomTheme.spacing.md,
-  },
-  sheetButtonGroup: {
-    gap: diamomTheme.spacing.sm,
-  },
-  sheetHandle: {
-    alignSelf: "center",
-    backgroundColor: diamomTheme.colors.border,
-    borderRadius: diamomTheme.radius.pill,
-    height: 4,
-    width: 42,
-  },
-  sheetHeader: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  sheetTitle: {
-    color: diamomTheme.colors.text,
-    fontSize: 20,
-    fontWeight: "800",
-  },
-  sheetCloseButton: {
-    alignItems: "center",
-    backgroundColor: diamomTheme.colors.primaryMuted,
-    borderRadius: diamomTheme.radius.pill,
-    height: 40,
-    justifyContent: "center",
-    width: 40,
+  videoErrorText: {
+    color: diamomTheme.colors.danger,
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: "center",
   },
 });

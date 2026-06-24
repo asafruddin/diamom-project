@@ -1,13 +1,8 @@
-import { router } from "expo-router";
 import { Image } from "expo-image";
-import { StyleSheet, Text, View } from "react-native";
+import { router } from "expo-router";
+import { StyleSheet, View } from "react-native";
 
-import {
-    ActionButton,
-    DiaScreen,
-    IllustrationPanel,
-    InfoPill,
-} from "@/components/dia-ui";
+import { ActionButton, DiaScreen, InfoPill } from "@/components/dia-ui";
 import { getInitialDiaMomRoute } from "@/features/entry/entry-routing";
 import { useProfileStore } from "@/features/onboarding/profile-store";
 import { diamomTheme } from "@/theme";
@@ -47,30 +42,24 @@ export default function DiaMomEntryScreen() {
           style={styles.brandMark}
         />
         <InfoPill label="Persalinan Nyaman, Ibu Bahagia" />
-        <Text style={styles.subtitle}>
-          Teman belajar untuk napas, Labor Dance, dan pemantauan kenyamanan diri
-          menjelang persalinan.
-        </Text>
       </View>
 
-      <IllustrationPanel
-        badge="DM"
-        title="Belajar dengan tenang, bergerak dengan lembut."
-        detail="Data peserta tersimpan ke database penelitian DiaMom agar riwayat dan onboarding tetap konsisten."
+      <Image
+        accessibilityLabel="Ilustrasi ibu hamil"
+        contentFit="contain"
+        source={require("@/assets/icon/splash-screen.png")}
+        style={styles.heroIllustration}
       />
 
-      <View style={styles.ctaGroup}>
+      <View style={styles.startButtonWrap}>
         <ActionButton
           accessibilityLabel="Mulai menggunakan DiaMom"
+          disabled={!isHydrated}
+          fullWidth
+          iconName="heart"
+          iconPlacement="overlap-trailing"
           label={isHydrated ? "Mulai" : "Memuat..."}
           onPress={handleStart}
-          disabled={!isHydrated}
-        />
-        <ActionButton
-          accessibilityLabel="Masuk sebagai peneliti"
-          label="Masuk Peneliti"
-          onPress={() => router.push("/researcher/login")}
-          variant="secondary"
         />
       </View>
     </DiaScreen>
@@ -80,17 +69,18 @@ export default function DiaMomEntryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: diamomTheme.spacing.xl,
+    gap: diamomTheme.spacing.lg,
     justifyContent: "center",
+    paddingHorizontal: diamomTheme.spacing.md,
   },
   copyGroup: {
     alignItems: "center",
     gap: diamomTheme.spacing.sm,
   },
   brandMark: {
-    height: 128,
-    maxWidth: 280,
-    width: "72%",
+    height: 112,
+    maxWidth: 260,
+    width: "68%",
   },
   subtitle: {
     color: diamomTheme.colors.mutedText,
@@ -98,8 +88,12 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     textAlign: "center",
   },
-  ctaGroup: {
-    gap: diamomTheme.spacing.md,
-    marginTop: diamomTheme.spacing.sm,
+  heroIllustration: {
+    alignSelf: "center",
+    height: "60%",
+    width: "88%",
+  },
+  startButtonWrap: {
+    paddingRight: diamomTheme.spacing.sm,
   },
 });

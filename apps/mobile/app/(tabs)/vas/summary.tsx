@@ -135,21 +135,6 @@ export default function VasSummaryScreen() {
         description="Perubahan tingkat nyeri yang Anda catat setelah sesi selesai."
       />
 
-      <SurfaceCard style={styles.exportCard}>
-        <View style={styles.exportTextBlock}>
-          <Text style={styles.exportTitle}>Ekspor hasil</Text>
-          <Text style={styles.exportDescription}>
-            Buat file Excel dari ringkasan sesi ini untuk disimpan atau dibagikan
-            oleh Anda.
-          </Text>
-        </View>
-        <ActionButton
-          disabled={isExporting}
-          label={isExporting ? "Menyiapkan..." : "Ekspor Excel"}
-          onPress={handleExportExcel}
-        />
-      </SurfaceCard>
-
       <SurfaceCard style={styles.comparisonCard}>
         <View style={styles.scoreRow}>
           <View style={styles.scoreBlock}>
@@ -209,6 +194,21 @@ export default function VasSummaryScreen() {
         ) : null}
       </SurfaceCard>
 
+      <SurfaceCard style={styles.exportCard}>
+        <View style={styles.exportTextBlock}>
+          <Text style={styles.exportTitle}>Ekspor hasil</Text>
+          <Text style={styles.exportDescription}>
+            Buat file Excel dari ringkasan sesi ini untuk disimpan atau dibagikan
+            oleh Anda.
+          </Text>
+        </View>
+        <ActionButton
+          disabled={isExporting}
+          label={isExporting ? "Menyiapkan..." : "Ekspor Excel"}
+          onPress={handleExportExcel}
+        />
+      </SurfaceCard>
+
       <SurfaceCard style={styles.chartCard}>
         <Text style={styles.sectionTitle}>Grafik Hasil</Text>
         <View style={styles.chartArea}>
@@ -253,7 +253,7 @@ export default function VasSummaryScreen() {
         label="Selesai"
         onPress={() => {
           resetPracticeSession();
-          router.replace("/(tabs)/vas");
+          router.replace("/(tabs)/vas/history");
         }}
       />
     </DiaScreen>

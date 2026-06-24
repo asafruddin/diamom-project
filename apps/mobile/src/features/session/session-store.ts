@@ -12,8 +12,8 @@ export interface PracticeSessionState {
 
 const initialState = {
   activityTitle: "Labor Dance",
-  afterScore: 3,
-  beforeScore: 6,
+  afterScore: 0,
+  beforeScore: 0,
   durationMinutes: 30,
 };
 

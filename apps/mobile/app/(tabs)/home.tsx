@@ -17,9 +17,9 @@ type HomeShortcutCardProps = {
 const HOME_SHORTCUT_ICONS: Record<ShortcutId, keyof typeof Ionicons.glyphMap> =
   {
     about: "person",
-    details: "ellipsis-horizontal-circle",
     materials: "book",
     vas: "stats-chart",
+    "vas-history": "time",
   };
 
 function HomeShortcutCard({ iconName, onPress, title }: HomeShortcutCardProps) {

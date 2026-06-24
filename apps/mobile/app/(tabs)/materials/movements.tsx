@@ -1,8 +1,11 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useEvent } from "expo";
 import { router } from "expo-router";
+import { useVideoPlayer } from "expo-video";
+import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { DiaScreen, PageHeader, SurfaceCard } from "@/components/dia-ui";
+import { ActionButton, DiaScreen, PageHeader } from "@/components/dia-ui";
 import {
   LearningSectionCard,
   MaterialHero,
@@ -17,12 +20,50 @@ import {
   MOVEMENTS_DETAIL,
   getMaterialNavigation,
 } from "@/features/materials/materials-content";
+import { LaborDanceVideoSheet } from "@/features/session/labor-dance-video-sheet";
+import {
+  LABOR_DANCE_VIDEO_SHARE_URL,
+  getPlayableGoogleDriveVideoUrl,
+} from "@/features/session/labor-dance-video";
 import { diamomTheme } from "@/theme";
 
 const materialHref = "/(tabs)/materials/movements" as const;
 
 export default function LaborDanceMovementsScreen() {
   const navigation = getMaterialNavigation(materialHref);
+  const [isVideoSheetVisible, setIsVideoSheetVisible] = useState(false);
+  const [isVideoRunning, setIsVideoRunning] = useState(false);
+  const videoSource = getPlayableGoogleDriveVideoUrl(LABOR_DANCE_VIDEO_SHARE_URL);
+  const player = useVideoPlayer(videoSource, (videoPlayer) => {
+    videoPlayer.loop = false;
+    videoPlayer.muted = false;
+    videoPlayer.showNowPlayingNotification = false;
+    videoPlayer.staysActiveInBackground = false;
+  });
+  const statusChange = useEvent(player, "statusChange", {
+    error: undefined,
+    status: player.status,
+  });
+  const videoErrorMessage =
+    !videoSource
+      ? "Tautan video Labor Dance tidak valid."
+      : statusChange.status === "error"
+        ? statusChange.error?.message ??
+          "Video Labor Dance belum dapat diputar saat ini."
+        : null;
+
+  const handleOpenVideo = () => {
+    setIsVideoSheetVisible(true);
+    setIsVideoRunning(true);
+  };
+
+  const handleCloseVideo = () => {
+    setIsVideoSheetVisible(false);
+    setIsVideoRunning(false);
+    if (player.playing) {
+      player.pause();
+    }
+  };
 
   return (
     <DiaScreen>
@@ -69,7 +110,7 @@ export default function LaborDanceMovementsScreen() {
       <SafetyNoticeCard items={MOVEMENTS_DETAIL.safetyNotes} />
 
       <View style={styles.list}>
-        {LABOR_DANCE_MOVEMENTS.map((movement, index) => (
+        {LABOR_DANCE_MOVEMENTS.map((movement) => (
           <Pressable
             accessibilityLabel={`Buka detail gerakan ${movement.title}`}
             accessibilityRole="button"
@@ -82,10 +123,11 @@ export default function LaborDanceMovementsScreen() {
             }
             style={({ pressed }) => [pressed && styles.pressed]}
           >
-            <SurfaceCard style={styles.movementCard}>
+            <View style={styles.movementCard}>
               <View style={styles.movementTopRow}>
                 <MaterialIllustration
                   accessibilityLabel={movement.title}
+                  contentFit="cover"
                   source={movement.illustration}
                   variant="thumbnail"
                 />
@@ -104,12 +146,29 @@ export default function LaborDanceMovementsScreen() {
                 <InfoMeta iconName="cube" label={movement.equipment} />
                 <InfoMeta iconName="people" label={movement.companion} />
               </View>
-            </SurfaceCard>
+            </View>
           </Pressable>
         ))}
       </View>
 
+      <ActionButton
+        accessibilityLabel="Buka video tutorial Labor Dance"
+        label="Video Tutorial"
+        onPress={handleOpenVideo}
+      />
+
       <PrevNextMaterialNav {...navigation} />
+
+      <LaborDanceVideoSheet
+        isRunning={isVideoRunning}
+        onClose={handleCloseVideo}
+        onPause={() => setIsVideoRunning(false)}
+        onResume={() => setIsVideoRunning(true)}
+        player={player}
+        videoErrorMessage={videoErrorMessage}
+        videoSource={videoSource}
+        visible={isVideoSheetVisible}
+      />
     </DiaScreen>
   );
 }
@@ -138,7 +197,12 @@ const styles = StyleSheet.create({
     gap: diamomTheme.spacing.md,
   },
   movementCard: {
+    backgroundColor: diamomTheme.colors.surface,
+    borderColor: diamomTheme.colors.border,
+    borderRadius: diamomTheme.radius.md,
+    borderWidth: 1,
     gap: diamomTheme.spacing.md,
+    padding: diamomTheme.spacing.md,
   },
   movementTopRow: {
     alignItems: "center",

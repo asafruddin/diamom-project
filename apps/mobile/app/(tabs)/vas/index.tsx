@@ -16,7 +16,7 @@ export default function VasBeforeScreen() {
   const setBeforeScore = usePracticeSessionStore(
     (state) => state.setBeforeScore,
   );
-  const [selectedScore, setSelectedScore] = useState(beforeScore ?? 6);
+  const [selectedScore, setSelectedScore] = useState(beforeScore ?? 0);
 
   return (
     <DiaScreen>
@@ -49,12 +49,6 @@ export default function VasBeforeScreen() {
             setBeforeScore(selectedScore);
             router.push("/(tabs)/vas/session");
           }}
-        />
-        <ActionButton
-          accessibilityLabel="Buka riwayat VAS"
-          label="Lihat Riwayat VAS"
-          onPress={() => router.push("/(tabs)/vas/history")}
-          variant="secondary"
         />
       </View>
     </DiaScreen>

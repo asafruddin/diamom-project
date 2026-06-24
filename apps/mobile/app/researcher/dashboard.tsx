@@ -130,21 +130,6 @@ export default function ResearcherDashboardScreen() {
         </SurfaceCard>
       ) : null}
 
-      <SurfaceCard style={styles.exportCard}>
-        <View style={styles.exportTextBlock}>
-          <Text style={styles.exportTitle}>Ekspor data</Text>
-          <Text style={styles.exportDescription}>
-            Buat file Excel berisi ringkasan metrik dan daftar sesi peserta
-            yang sudah memberikan persetujuan sinkronisasi.
-          </Text>
-        </View>
-        <ActionButton
-          disabled={isExporting || Boolean(error)}
-          label={isExporting ? "Menyiapkan..." : "Ekspor Excel"}
-          onPress={handleExportExcel}
-        />
-      </SurfaceCard>
-
       <View style={styles.metricsGrid}>
         <MetricCard
           label="Total Responden"
@@ -206,6 +191,21 @@ export default function ResearcherDashboardScreen() {
         <TrendRow
           label="Tetap"
           value={String(summary?.trendCounts.stable ?? 0)}
+        />
+      </SurfaceCard>
+
+      <SurfaceCard style={styles.exportCard}>
+        <View style={styles.exportTextBlock}>
+          <Text style={styles.exportTitle}>Ekspor data</Text>
+          <Text style={styles.exportDescription}>
+            Buat file Excel berisi ringkasan metrik dan daftar sesi peserta
+            yang sudah memberikan persetujuan sinkronisasi.
+          </Text>
+        </View>
+        <ActionButton
+          disabled={isExporting || Boolean(error)}
+          label={isExporting ? "Menyiapkan..." : "Ekspor Excel"}
+          onPress={handleExportExcel}
         />
       </SurfaceCard>
 
