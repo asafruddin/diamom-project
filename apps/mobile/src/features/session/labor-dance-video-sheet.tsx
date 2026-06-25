@@ -1,24 +1,19 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEvent } from "expo";
+import * as ScreenOrientation from "expo-screen-orientation";
+import { StatusBar } from "expo-status-bar";
 import type { VideoPlayer } from "expo-video";
 import { VideoView } from "expo-video";
-import { useEffect, useRef, useState } from "react";
-import {
-  Modal,
-  PanResponder,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ActionButton } from "@/components/dia-ui";
-import { formatTimer } from "@/features/session/vas-scale";
 import { diamomTheme } from "@/theme";
 
 type LaborDanceVideoSheetProps = {
   isDone?: boolean;
+  isPreparing?: boolean;
   isRunning: boolean;
   onClose: () => void;
   onFinish?: () => void;
@@ -32,6 +27,7 @@ type LaborDanceVideoSheetProps = {
 
 export function LaborDanceVideoSheet({
   isDone = false,
+  isPreparing = false,
   isRunning,
   onClose,
   onFinish,
@@ -45,58 +41,48 @@ export function LaborDanceVideoSheet({
   const insets = useSafeAreaInsets();
   const videoRef = useRef<VideoView>(null);
   const [isVideoExpanded, setIsVideoExpanded] = useState(false);
-  const [trackWidth, setTrackWidth] = useState(1);
-  const timeUpdate = useEvent(player, "timeUpdate", {
-    bufferedPosition: player.bufferedPosition,
-    currentLiveTimestamp: player.currentLiveTimestamp,
-    currentOffsetFromLive: player.currentOffsetFromLive,
-    currentTime: player.currentTime,
-  });
   const statusChange = useEvent(player, "statusChange", {
     error: undefined,
     status: player.status,
   });
-  const duration = player.duration || 0;
-  const currentTime = timeUpdate.currentTime ?? player.currentTime ?? 0;
   const isVideoLoading =
-    Boolean(videoSource) &&
     !videoErrorMessage &&
-    statusChange.status !== "readyToPlay";
+    (isPreparing || Boolean(videoSource)) &&
+    (isPreparing || statusChange.status !== "readyToPlay");
 
-  const seekToRatio = (ratio: number) => {
-    if (duration <= 0) {
-      return;
+  const stopVideoPlayback = useCallback(() => {
+    if (player.playing) {
+      player.pause();
     }
 
-    const clampedRatio = Math.max(0, Math.min(1, ratio));
-    const targetTime = clampedRatio * duration;
-    player.seekBy(targetTime - currentTime);
-  };
-
-  const seekResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: (event) => {
-        seekToRatio(event.nativeEvent.locationX / trackWidth);
-      },
-      onPanResponderMove: (event) => {
-        seekToRatio(event.nativeEvent.locationX / trackWidth);
-      },
-      onStartShouldSetPanResponder: () => true,
-    }),
-  ).current;
+    player.currentTime = 0;
+  }, [player]);
 
   useEffect(() => {
     if (!visible) {
       setIsVideoExpanded(false);
+      stopVideoPlayback();
     }
-  }, [visible]);
+  }, [stopVideoPlayback, visible]);
+
+  useEffect(() => {
+    const orientationLock = isVideoExpanded
+      ? ScreenOrientation.OrientationLock.LANDSCAPE
+      : ScreenOrientation.OrientationLock.PORTRAIT_UP;
+
+    void ScreenOrientation.lockAsync(orientationLock).catch(() => undefined);
+
+    return () => {
+      if (isVideoExpanded) {
+        void ScreenOrientation.lockAsync(
+          ScreenOrientation.OrientationLock.PORTRAIT_UP,
+        ).catch(() => undefined);
+      }
+    };
+  }, [isVideoExpanded]);
 
   useEffect(() => {
     if (!visible || !videoSource || videoErrorMessage) {
-      if (player.playing) {
-        player.pause();
-      }
       return;
     }
 
@@ -125,8 +111,8 @@ export function LaborDanceVideoSheet({
     player.seekBy(10);
   };
 
-  const handleToggleFullscreen = () => {
-    setIsVideoExpanded((current) => !current);
+  const handleEnterFullscreen = () => {
+    setIsVideoExpanded(true);
   };
 
   const handleExitFullscreen = () => {
@@ -140,8 +126,15 @@ export function LaborDanceVideoSheet({
       transparent
       visible={visible}
     >
+      <StatusBar
+        hidden={isVideoExpanded}
+        style={isVideoExpanded ? "light" : "dark"}
+      />
       <View
-        style={[styles.sheetRoot, isVideoExpanded && styles.sheetRootFullscreen]}
+        style={[
+          styles.sheetRoot,
+          isVideoExpanded && styles.sheetRootFullscreen,
+        ]}
       >
         {!isVideoExpanded ? (
           <Pressable
@@ -182,7 +175,7 @@ export function LaborDanceVideoSheet({
               />
               <Text style={styles.videoErrorText}>{videoErrorMessage}</Text>
             </View>
-          ) : (
+          ) : visible ? (
             <View
               style={[
                 styles.videoFrame,
@@ -198,71 +191,107 @@ export function LaborDanceVideoSheet({
                 style={styles.video}
               />
               {isVideoExpanded ? (
-                <Pressable
-                  accessibilityLabel="Keluar layar penuh"
-                  accessibilityRole="button"
-                  onPress={handleExitFullscreen}
-                  style={[
-                    styles.fullscreenCloseButton,
-                    { top: insets.top + diamomTheme.spacing.sm },
-                  ]}
-                >
-                  <Ionicons
-                    color={diamomTheme.colors.primaryStrong}
-                    name="close"
-                    size={22}
-                  />
-                </Pressable>
+                <>
+                  <Pressable
+                    accessibilityLabel="Keluar layar penuh"
+                    accessibilityRole="button"
+                    onPress={handleExitFullscreen}
+                    style={[
+                      styles.fullscreenCloseButton,
+                      {
+                        right: insets.right + diamomTheme.spacing.md,
+                        top: insets.top + diamomTheme.spacing.sm,
+                      },
+                    ]}
+                  >
+                    <Ionicons
+                      color={diamomTheme.colors.onPrimary}
+                      name="close"
+                      size={22}
+                    />
+                  </Pressable>
+                  <View
+                    style={[
+                      styles.fullscreenControlBar,
+                      {
+                        bottom: insets.bottom + diamomTheme.spacing.md,
+                        left: insets.left + diamomTheme.spacing.lg,
+                        right: insets.right + diamomTheme.spacing.lg,
+                      },
+                    ]}
+                  >
+                    <Pressable
+                      accessibilityLabel="Mundur 10 detik"
+                      accessibilityRole="button"
+                      onPress={handleSeekBackward}
+                      style={styles.fullscreenControlButton}
+                    >
+                      <Ionicons
+                        color={diamomTheme.colors.onPrimary}
+                        name="play-back"
+                        size={24}
+                      />
+                      <Text style={styles.fullscreenControlLabel}>10d</Text>
+                    </Pressable>
+
+                    {isRunning ? (
+                      <Pressable
+                        accessibilityLabel="Jeda video"
+                        accessibilityRole="button"
+                        onPress={onPause}
+                        style={styles.fullscreenPrimaryButton}
+                      >
+                        <Ionicons
+                          color={diamomTheme.colors.text}
+                          name="pause"
+                          size={28}
+                        />
+                      </Pressable>
+                    ) : (
+                      <Pressable
+                        accessibilityLabel="Lanjutkan video"
+                        accessibilityRole="button"
+                        onPress={onResume}
+                        style={styles.fullscreenPrimaryButton}
+                      >
+                        <Ionicons
+                          color={diamomTheme.colors.text}
+                          name="play"
+                          size={28}
+                        />
+                      </Pressable>
+                    )}
+
+                    <Pressable
+                      accessibilityLabel="Maju 10 detik"
+                      accessibilityRole="button"
+                      onPress={handleSeekForward}
+                      style={styles.fullscreenControlButton}
+                    >
+                      <Ionicons
+                        color={diamomTheme.colors.onPrimary}
+                        name="play-forward"
+                        size={24}
+                      />
+                      <Text style={styles.fullscreenControlLabel}>10d</Text>
+                    </Pressable>
+                  </View>
+                </>
               ) : null}
               {isVideoLoading ? (
                 <View style={styles.videoOverlay}>
                   <Text style={styles.videoOverlayText}>
-                    Menyiapkan video...
+                    {isPreparing && !videoSource
+                      ? "Mengunduh video..."
+                      : "Menyiapkan video..."}
                   </Text>
                 </View>
               ) : null}
             </View>
-          )}
+          ) : null}
 
           {!isVideoExpanded ? (
             <View style={styles.sheetControlFrame}>
-              <View style={styles.seekRow}>
-                <Text style={styles.seekTime}>{formatTimer(currentTime)}</Text>
-                <View
-                  onLayout={(event) => {
-                    setTrackWidth(event.nativeEvent.layout.width);
-                  }}
-                  style={styles.seekTrack}
-                  {...seekResponder.panHandlers}
-                >
-                  <View
-                    style={[
-                      styles.seekFill,
-                      {
-                        width:
-                          duration > 0
-                            ? `${(currentTime / duration) * 100}%`
-                            : "0%",
-                      },
-                    ]}
-                  />
-                  <View
-                    style={[
-                      styles.seekThumb,
-                      {
-                        left:
-                          duration > 0
-                            ? `${(currentTime / duration) * 100}%`
-                            : "0%",
-                      },
-                    ]}
-                  />
-                </View>
-                <Text style={styles.seekTime}>
-                  {formatTimer(duration || 0)}
-                </Text>
-              </View>
-
               <View style={styles.transportRow}>
                 <Pressable
                   accessibilityLabel="Mundur 10 detik"
@@ -323,7 +352,7 @@ export function LaborDanceVideoSheet({
                 <Pressable
                   accessibilityLabel="Layar penuh"
                   accessibilityRole="button"
-                  onPress={handleToggleFullscreen}
+                  onPress={handleEnterFullscreen}
                   style={styles.transportButton}
                 >
                   <Ionicons
@@ -419,14 +448,46 @@ const styles = StyleSheet.create({
   },
   fullscreenCloseButton: {
     alignItems: "center",
-    backgroundColor: diamomTheme.colors.primaryMuted,
+    backgroundColor: "rgba(0, 0, 0, 0.58)",
     borderRadius: diamomTheme.radius.pill,
     height: 40,
     justifyContent: "center",
     position: "absolute",
-    right: diamomTheme.spacing.lg,
     width: 40,
     zIndex: 2,
+  },
+  fullscreenControlBar: {
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.58)",
+    borderRadius: diamomTheme.radius.pill,
+    flexDirection: "row",
+    gap: diamomTheme.spacing.md,
+    justifyContent: "center",
+    paddingHorizontal: diamomTheme.spacing.md,
+    paddingVertical: diamomTheme.spacing.sm,
+    position: "absolute",
+    zIndex: 2,
+  },
+  fullscreenControlButton: {
+    alignItems: "center",
+    borderRadius: diamomTheme.radius.pill,
+    height: 48,
+    justifyContent: "center",
+    minWidth: 54,
+    paddingHorizontal: diamomTheme.spacing.sm,
+  },
+  fullscreenPrimaryButton: {
+    alignItems: "center",
+    backgroundColor: diamomTheme.colors.onPrimary,
+    borderRadius: diamomTheme.radius.pill,
+    height: 56,
+    justifyContent: "center",
+    width: 56,
+  },
+  fullscreenControlLabel: {
+    color: diamomTheme.colors.onPrimary,
+    fontSize: 10,
+    fontWeight: "800",
   },
   video: {
     flex: 1,
@@ -471,41 +532,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     gap: diamomTheme.spacing.md,
     padding: diamomTheme.spacing.md,
-  },
-  seekRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: diamomTheme.spacing.sm,
-  },
-  seekTime: {
-    color: diamomTheme.colors.mutedText,
-    fontSize: 12,
-    fontWeight: "700",
-    minWidth: 44,
-    textAlign: "center",
-  },
-  seekTrack: {
-    backgroundColor: diamomTheme.colors.primaryMuted,
-    borderRadius: diamomTheme.radius.pill,
-    flex: 1,
-    height: 8,
-    justifyContent: "center",
-    overflow: "visible",
-    position: "relative",
-  },
-  seekFill: {
-    backgroundColor: diamomTheme.colors.primary,
-    borderRadius: diamomTheme.radius.pill,
-    height: 8,
-  },
-  seekThumb: {
-    backgroundColor: diamomTheme.colors.primaryStrong,
-    borderRadius: diamomTheme.radius.pill,
-    height: 16,
-    marginLeft: -8,
-    position: "absolute",
-    top: -4,
-    width: 16,
   },
   transportRow: {
     alignItems: "center",

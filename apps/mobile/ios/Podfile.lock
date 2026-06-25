@@ -84,6 +84,29 @@ PODS:
   - ExpoRouter (55.0.16):
     - ExpoModulesCore
     - RNScreens
+  - ExpoScreenOrientation (55.0.16):
+    - ExpoModulesCore
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-Core-prebuilt
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
   - ExpoSecureStore (55.0.14):
     - ExpoModulesCore
   - ExpoSharing (55.0.20):
@@ -2231,6 +2254,7 @@ DEPENDENCIES:
   - "ExpoModulesCore (from `../../../node_modules/.pnpm/expo-modules-core@55.0.25_react-native-worklets@0.7.4_@babel+core@7.29.0_react-native@0_c0899644cbc8bdf564b8763ab11b5c5e/node_modules/expo-modules-core`)"
   - "ExpoModulesJSI (from `../../../node_modules/.pnpm/expo-modules-core@55.0.25_react-native-worklets@0.7.4_@babel+core@7.29.0_react-native@0_c0899644cbc8bdf564b8763ab11b5c5e/node_modules/expo-modules-core`)"
   - "ExpoRouter (from `../../../node_modules/.pnpm/expo-router@55.0.16_@expo+log-box@55.0.12_@expo+metro-runtime@55.0.11_@types+react@19.2_1ed34b5ca99b26cf1d9d0895741ade95/node_modules/expo-router/ios`)"
+  - "ExpoScreenOrientation (from `../../../node_modules/.pnpm/expo-screen-orientation@55.0.16_expo@55.0.26_react-native@0.83.6_@babel+core@7.29.0_@types+react@19.2.15_react@19.2.0_/node_modules/expo-screen-orientation/ios`)"
   - "ExpoSecureStore (from `../../../node_modules/.pnpm/expo-secure-store@55.0.14_expo@55.0.26/node_modules/expo-secure-store/ios`)"
   - "ExpoSharing (from `../../../node_modules/.pnpm/expo-sharing@55.0.20_expo@55.0.26_react-native@0.83.6_@babel+core@7.29.0_@types+react@19.2.15_react@19.2.0__react@19.2.0/node_modules/expo-sharing/ios`)"
   - "ExpoSplashScreen (from `../../../node_modules/.pnpm/expo-splash-screen@55.0.21_expo@55.0.26_typescript@5.9.3/node_modules/expo-splash-screen/ios`)"
@@ -2360,6 +2384,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/.pnpm/expo-modules-core@55.0.25_react-native-worklets@0.7.4_@babel+core@7.29.0_react-native@0_c0899644cbc8bdf564b8763ab11b5c5e/node_modules/expo-modules-core"
   ExpoRouter:
     :path: "../../../node_modules/.pnpm/expo-router@55.0.16_@expo+log-box@55.0.12_@expo+metro-runtime@55.0.11_@types+react@19.2_1ed34b5ca99b26cf1d9d0895741ade95/node_modules/expo-router/ios"
+  ExpoScreenOrientation:
+    :path: "../../../node_modules/.pnpm/expo-screen-orientation@55.0.16_expo@55.0.26_react-native@0.83.6_@babel+core@7.29.0_@types+react@19.2.15_react@19.2.0_/node_modules/expo-screen-orientation/ios"
   ExpoSecureStore:
     :path: "../../../node_modules/.pnpm/expo-secure-store@55.0.14_expo@55.0.26/node_modules/expo-secure-store/ios"
   ExpoSharing:
@@ -2550,6 +2576,7 @@ SPEC CHECKSUMS:
   ExpoModulesCore: 14aaf355a4f385b04df93f6fd0f58873ed79e044
   ExpoModulesJSI: 52db434b6c7f626a4613974b2bd05f9816c07224
   ExpoRouter: e0a5af7189bd15f1343612393b0dea6e43777722
+  ExpoScreenOrientation: 5dfc631587ce69fbe985f6a17ec0d2120ae1e7bc
   ExpoSecureStore: 49c8b5e467e359051eee6fb67a8988f93476df2b
   ExpoSharing: 9a095a12aac276fe7bdba6d96e3121a00c13c2ca
   ExpoSplashScreen: 506ede2502df2b6c21d92e2337ad77efbc9f4126

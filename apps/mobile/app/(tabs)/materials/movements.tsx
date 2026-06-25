@@ -1,7 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useEvent } from "expo";
 import { router } from "expo-router";
-import { useVideoPlayer } from "expo-video";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -20,11 +18,9 @@ import {
   MOVEMENTS_DETAIL,
   getMaterialNavigation,
 } from "@/features/materials/materials-content";
-import {
-  LABOR_DANCE_VIDEO_SHARE_URL,
-  getPlayableGoogleDriveVideoUrl,
-} from "@/features/session/labor-dance-video";
+import { LABOR_DANCE_VIDEO_SHARE_URL } from "@/features/session/labor-dance-video";
 import { LaborDanceVideoSheet } from "@/features/session/labor-dance-video-sheet";
+import { useLaborDanceVideoPlayer } from "@/features/session/use-labor-dance-video-player";
 import { diamomTheme } from "@/theme";
 
 const materialHref = "/(tabs)/materials/movements" as const;
@@ -33,25 +29,8 @@ export default function LaborDanceMovementsScreen() {
   const navigation = getMaterialNavigation(materialHref);
   const [isVideoSheetVisible, setIsVideoSheetVisible] = useState(false);
   const [isVideoRunning, setIsVideoRunning] = useState(false);
-  const videoSource = getPlayableGoogleDriveVideoUrl(
-    LABOR_DANCE_VIDEO_SHARE_URL,
-  );
-  const player = useVideoPlayer(videoSource, (videoPlayer) => {
-    videoPlayer.loop = false;
-    videoPlayer.muted = false;
-    videoPlayer.showNowPlayingNotification = false;
-    videoPlayer.staysActiveInBackground = false;
-  });
-  const statusChange = useEvent(player, "statusChange", {
-    error: undefined,
-    status: player.status,
-  });
-  const videoErrorMessage = !videoSource
-    ? "Tautan video Labor Dance tidak valid."
-    : statusChange.status === "error"
-      ? (statusChange.error?.message ??
-        "Video Labor Dance belum dapat diputar saat ini.")
-      : null;
+  const { isPreparing, player, videoErrorMessage, videoSource } =
+    useLaborDanceVideoPlayer(LABOR_DANCE_VIDEO_SHARE_URL);
 
   const handleOpenVideo = () => {
     setIsVideoSheetVisible(true);
@@ -161,6 +140,7 @@ export default function LaborDanceMovementsScreen() {
       <PrevNextMaterialNav {...navigation} />
 
       <LaborDanceVideoSheet
+        isPreparing={isPreparing}
         isRunning={isVideoRunning}
         onClose={handleCloseVideo}
         onPause={() => setIsVideoRunning(false)}

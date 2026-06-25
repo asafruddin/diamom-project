@@ -1,17 +1,13 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { useEvent } from "expo";
-import { useVideoPlayer } from "expo-video";
 import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { ActionButton, DiaScreen, SurfaceCard } from "@/components/dia-ui";
 import { LaborDanceVideoSheet } from "@/features/session/labor-dance-video-sheet";
-import {
-  LABOR_DANCE_VIDEO_SHARE_URL,
-  getPlayableGoogleDriveVideoUrl,
-} from "@/features/session/labor-dance-video";
+import { LABOR_DANCE_VIDEO_SHARE_URL } from "@/features/session/labor-dance-video";
+import { useLaborDanceVideoPlayer } from "@/features/session/use-labor-dance-video-player";
 import { usePracticeSessionStore } from "@/features/session/session-store";
 import { VAS_ILLUSTRATIONS } from "@/features/session/vas-content";
 import { formatTimer } from "@/features/session/vas-scale";
@@ -33,25 +29,9 @@ export default function PracticeSessionScreen() {
   const [isVideoSheetVisible, setIsVideoSheetVisible] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(durationMinutes * 60);
-  const videoSource = getPlayableGoogleDriveVideoUrl(LABOR_DANCE_VIDEO_SHARE_URL);
-  const player = useVideoPlayer(videoSource, (videoPlayer) => {
-    videoPlayer.loop = false;
-    videoPlayer.muted = false;
-    videoPlayer.showNowPlayingNotification = false;
-    videoPlayer.staysActiveInBackground = false;
-  });
-  const statusChange = useEvent(player, "statusChange", {
-    error: undefined,
-    status: player.status,
-  });
+  const { isPreparing, player, videoErrorMessage, videoSource } =
+    useLaborDanceVideoPlayer(LABOR_DANCE_VIDEO_SHARE_URL);
   const isDone = secondsLeft === 0;
-  const videoErrorMessage =
-    !videoSource
-      ? "Tautan video Labor Dance tidak valid."
-      : statusChange.status === "error"
-        ? statusChange.error?.message ??
-          "Video Labor Dance belum dapat diputar saat ini."
-        : null;
 
   const pausePlayback = useCallback(() => {
     if (player.playing) {
@@ -191,6 +171,7 @@ export default function PracticeSessionScreen() {
 
       <LaborDanceVideoSheet
         isDone={isDone}
+        isPreparing={isPreparing}
         isRunning={isRunning}
         onClose={handleCloseVideoSheet}
         onFinish={handleNext}

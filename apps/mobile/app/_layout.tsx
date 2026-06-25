@@ -1,3 +1,4 @@
+import * as ScreenOrientation from "expo-screen-orientation";
 import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -14,6 +15,12 @@ export default function RootLayout() {
     void hydrateParticipant();
     void hydrateResearcher();
   }, [hydrateParticipant, hydrateResearcher]);
+
+  useEffect(() => {
+    void ScreenOrientation.lockAsync(
+      ScreenOrientation.OrientationLock.PORTRAIT_UP,
+    ).catch(() => undefined);
+  }, []);
 
   return (
     <>
