@@ -4,11 +4,11 @@
     "slug": "diamom-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon/diamom-logo.png",
+    "icon": "./assets/icon/diamom-icon.png",
     "scheme": "diamom",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/icon/diamom-logo.png",
+      "icon": "./assets/icon/diamom-icon.png",
       "bundleIdentifier": "com.diamom.app",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
@@ -18,7 +18,7 @@
       "package": "com.diamom.app",
       "adaptiveIcon": {
         "backgroundColor": "#FFF7F7",
-        "foregroundImage": "./assets/icon/diamom-logo.png"
+        "foregroundImage": "./assets/icon/diamom-icon.png"
       },
       "predictiveBackGestureEnabled": false
     },
@@ -32,21 +32,22 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#FFF7F7",
-          "image": "./assets/icon/diamom-logo.png",
+          "image": "./assets/icon/splash-screen.png",
           "imageWidth": 280,
           "resizeMode": "contain",
           "ios": {
-            "image": "./assets/icon/diamom-logo.png",
+            "image": "./assets/icon/splash-screen.png",
             "imageWidth": 280
           },
           "android": {
-            "image": "./assets/icon/diamom-logo.png",
+            "image": "./assets/icon/splash-screen.png",
             "imageWidth": 280
           }
         }
       ],
       "expo-video",
-      "expo-sharing"
+      "expo-sharing",
+      "expo-image"
     ],
     "experiments": {
       "typedRoutes": true,

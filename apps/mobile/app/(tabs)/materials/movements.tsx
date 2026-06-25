@@ -20,11 +20,11 @@ import {
   MOVEMENTS_DETAIL,
   getMaterialNavigation,
 } from "@/features/materials/materials-content";
-import { LaborDanceVideoSheet } from "@/features/session/labor-dance-video-sheet";
 import {
   LABOR_DANCE_VIDEO_SHARE_URL,
   getPlayableGoogleDriveVideoUrl,
 } from "@/features/session/labor-dance-video";
+import { LaborDanceVideoSheet } from "@/features/session/labor-dance-video-sheet";
 import { diamomTheme } from "@/theme";
 
 const materialHref = "/(tabs)/materials/movements" as const;
@@ -33,7 +33,9 @@ export default function LaborDanceMovementsScreen() {
   const navigation = getMaterialNavigation(materialHref);
   const [isVideoSheetVisible, setIsVideoSheetVisible] = useState(false);
   const [isVideoRunning, setIsVideoRunning] = useState(false);
-  const videoSource = getPlayableGoogleDriveVideoUrl(LABOR_DANCE_VIDEO_SHARE_URL);
+  const videoSource = getPlayableGoogleDriveVideoUrl(
+    LABOR_DANCE_VIDEO_SHARE_URL,
+  );
   const player = useVideoPlayer(videoSource, (videoPlayer) => {
     videoPlayer.loop = false;
     videoPlayer.muted = false;
@@ -44,13 +46,12 @@ export default function LaborDanceMovementsScreen() {
     error: undefined,
     status: player.status,
   });
-  const videoErrorMessage =
-    !videoSource
-      ? "Tautan video Labor Dance tidak valid."
-      : statusChange.status === "error"
-        ? statusChange.error?.message ??
-          "Video Labor Dance belum dapat diputar saat ini."
-        : null;
+  const videoErrorMessage = !videoSource
+    ? "Tautan video Labor Dance tidak valid."
+    : statusChange.status === "error"
+      ? (statusChange.error?.message ??
+        "Video Labor Dance belum dapat diputar saat ini.")
+      : null;
 
   const handleOpenVideo = () => {
     setIsVideoSheetVisible(true);
@@ -127,7 +128,7 @@ export default function LaborDanceMovementsScreen() {
               <View style={styles.movementTopRow}>
                 <MaterialIllustration
                   accessibilityLabel={movement.title}
-                  contentFit="cover"
+                  contentFit="contain"
                   source={movement.illustration}
                   variant="thumbnail"
                 />

@@ -88,6 +88,9 @@ test("home shortcuts include VAS history and omit profile details", () => {
 
 test("closing material keeps a simplified penutup layout", () => {
   assert.ok(CLOSING_DETAIL.heroImage);
+  assert.ok(CLOSING_DETAIL.closingBody);
+  assert.ok(CLOSING_DETAIL.encouragementLine);
+  assert.ok(CLOSING_DETAIL.affirmationLine);
   assert.strictEqual(CLOSING_DETAIL.sections.length, 0);
   assert.strictEqual(CLOSING_DETAIL.safetyNotes.length, 0);
 });

@@ -1,9 +1,10 @@
 import type { MaterialHref, MaterialIconName } from "./materials-content";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Image } from "expo-image";
 import type { ImageSource } from "expo-image";
+import { Image } from "expo-image";
 import { router } from "expo-router";
+import { useState } from "react";
 import {
   Pressable,
   ScrollView,
@@ -85,13 +86,25 @@ export function MaterialIllustration({
   source,
   variant = "thumbnail",
 }: MaterialIllustrationProps) {
+  const [aspectRatio, setAspectRatio] = useState<number | null>(null);
   const isHero = variant === "hero";
   return (
-    <View style={isHero ? styles.heroImageFrame : styles.thumbnailFrame}>
+    <View
+      style={[
+        isHero ? styles.heroImageFrame : styles.thumbnailFrame,
+        isHero && aspectRatio ? { aspectRatio, height: undefined } : null,
+      ]}
+    >
       <Image
         accessibilityLabel={accessibilityLabel}
         contentFit={contentFit}
         contentPosition={contentPosition}
+        onLoad={(event) => {
+          const { width, height } = event.source;
+          if (width > 0 && height > 0) {
+            setAspectRatio(width / height);
+          }
+        }}
         source={source}
         style={isHero ? styles.heroImage : styles.thumbnail}
       />
@@ -111,7 +124,7 @@ export function MaterialIllustrationHero({
   source: ImageSource;
 }) {
   return (
-    <SurfaceCard style={styles.heroImageCard}>
+    <View style={styles.heroImageCard}>
       <MaterialIllustration
         accessibilityLabel={accessibilityLabel}
         contentFit={contentFit}
@@ -119,7 +132,7 @@ export function MaterialIllustrationHero({
         source={source}
         variant="hero"
       />
-    </SurfaceCard>
+    </View>
   );
 }
 
@@ -258,10 +271,7 @@ export function PrevNextMaterialNav({
           accessibilityLabel={`Buka materi sebelumnya: ${previous.title}`}
           accessibilityRole="button"
           onPress={() => router.push(previous.href)}
-          style={({ pressed }) => [
-            styles.navButton,
-            pressed && styles.pressed,
-          ]}
+          style={({ pressed }) => [styles.navButton, pressed && styles.pressed]}
         >
           <Ionicons
             color={diamomTheme.colors.primaryStrong}
@@ -325,7 +335,7 @@ export function MaterialModuleCard({
         {thumbnail ? (
           <MaterialIllustration
             accessibilityLabel={title}
-            contentFit="cover"
+            contentFit="contain"
             source={thumbnail}
             variant="thumbnail"
           />
@@ -345,7 +355,7 @@ export function MaterialModuleCard({
             <Text style={styles.stepText}>{readTime}</Text>
           </View>
           <Text style={styles.moduleTitle}>{title}</Text>
-          <Text style={styles.moduleDescription}>{description}</Text>
+          {/* <Text style={styles.moduleDescription}>{description}</Text> */}
         </View>
         <Ionicons
           color={diamomTheme.colors.textSoft}
@@ -395,18 +405,19 @@ function getToneStyle(
   return styles.iconCalm;
 }
 
-const THUMBNAIL_SIZE = 96;
+const THUMBNAIL_SIZE = 106;
 const HERO_IMAGE_HEIGHT = 300;
 
 const styles = StyleSheet.create({
   heroImageCard: {
     alignItems: "center",
+    backgroundColor: "transparent",
     justifyContent: "center",
     overflow: "hidden",
-    padding: 0,
   },
   heroImageFrame: {
     alignItems: "center",
+    backgroundColor: "transparent",
     height: HERO_IMAGE_HEIGHT,
     justifyContent: "center",
     width: "100%",

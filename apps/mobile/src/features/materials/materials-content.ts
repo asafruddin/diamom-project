@@ -65,6 +65,9 @@ export type MaterialDetail = {
   safetyNotes: string[];
   movementGroups?: MaterialMovementGroup[];
   heroImage?: ImageSource;
+  closingBody?: string;
+  encouragementLine?: string;
+  affirmationLine?: string;
 };
 
 export type SopStep = {
@@ -393,10 +396,15 @@ export const CLOSING_DETAIL: MaterialDetail = {
     "Akhiri sesi belajar dengan tenang dan lanjutkan hanya saat tubuh terasa aman.",
   readTime: "2 menit",
   heroIconName: "heart",
-  heroTitle: "Anda sudah memberi waktu untuk memahami tubuh dengan lebih lembut.",
+  heroTitle: "Anda Hebat, Ibu! 💜",
   heroDetail:
-    "Ambil napas pelan, minum air bila perlu, dan lanjutkan hanya saat tubuh terasa aman.",
-  heroImage: require("@/assets/material/materi-1-penjelasan.png"),
+    "Tetap semangat dan yakin, persalinan lancar, ibu dan bayi sehat.",
+  heroImage: require("@/assets/material/materi-5-penutup.png"),
+  closingBody:
+    "Labor Dance adalah salah satu cara alami untuk membantu ibu melalui proses persalinan dengan lebih nyaman. Lakukan dengan tenang, fokus pada napas, dan percayalah pada tubuh Anda.",
+  encouragementLine: "Anda Hebat, Ibu! 💜",
+  affirmationLine:
+    "Tetap semangat dan yakin, persalinan lancar, ibu dan bayi sehat.",
   sections: [],
   safetyNotes: [],
 };

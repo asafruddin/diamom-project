@@ -27,7 +27,7 @@ export default function LaborDanceExplanationScreen() {
         eyebrow={LABOR_DANCE_DETAIL.eyebrow}
         showBack
         title={LABOR_DANCE_DETAIL.title}
-        description={LABOR_DANCE_DETAIL.description}
+        // description={LABOR_DANCE_DETAIL.description}
       />
 
       {LABOR_DANCE_DETAIL.heroImage && (

@@ -34,8 +34,6 @@ export default function BreathingExercisesScreen() {
       {BREATHING_DETAIL.heroImage && (
         <MaterialIllustrationHero
           accessibilityLabel={BREATHING_DETAIL.title}
-          contentFit="cover"
-          contentPosition="top"
           source={BREATHING_DETAIL.heroImage}
         />
       )}
@@ -72,7 +70,7 @@ export default function BreathingExercisesScreen() {
             <View style={styles.exerciseHeader}>
               <MaterialIllustration
                 accessibilityLabel={exercise.title}
-                contentFit="cover"
+                contentFit="contain"
                 contentPosition="top"
                 source={exercise.illustration}
                 variant="thumbnail"
@@ -99,7 +97,10 @@ export default function BreathingExercisesScreen() {
         ))}
       </View>
 
-      <SafetyNoticeCard items={BREATHING_DETAIL.safetyNotes} title="Pengingat aman" />
+      <SafetyNoticeCard
+        items={BREATHING_DETAIL.safetyNotes}
+        title="Pengingat aman"
+      />
 
       <PrevNextMaterialNav {...navigation} />
     </DiaScreen>
