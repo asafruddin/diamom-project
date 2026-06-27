@@ -152,7 +152,8 @@ export function ActionButton({
   const iconColor = isPrimary
     ? diamomTheme.colors.onPrimary
     : diamomTheme.colors.primaryStrong;
-  const hasOverlapIcon = Boolean(iconName) && iconPlacement === "overlap-trailing";
+  const hasOverlapIcon =
+    Boolean(iconName) && iconPlacement === "overlap-trailing";
 
   return (
     <Pressable
@@ -616,7 +617,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   pill: {
-    alignSelf: "flex-start",
     backgroundColor: diamomTheme.colors.primaryMuted,
     borderRadius: diamomTheme.radius.pill,
     paddingHorizontal: diamomTheme.spacing.md,

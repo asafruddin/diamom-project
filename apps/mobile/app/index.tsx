@@ -9,9 +9,6 @@ import { diamomTheme } from "@/theme";
 
 export default function DiaMomEntryScreen() {
   const isHydrated = useProfileStore((state) => state.isHydrated);
-  const hasAcceptedDisclaimer = useProfileStore(
-    (state) => state.hasAcceptedDisclaimer,
-  );
   const hasCompletedSafetyScreening = useProfileStore(
     (state) => state.hasCompletedSafetyScreening,
   );
@@ -25,7 +22,7 @@ export default function DiaMomEntryScreen() {
     }
 
     const route = getInitialDiaMomRoute({
-      hasAcceptedDisclaimer,
+      hasAcceptedDisclaimer: true,
       hasCompletedMotherIdentity,
       hasCompletedSafetyScreening,
     });
@@ -61,13 +58,6 @@ export default function DiaMomEntryScreen() {
           label={isHydrated ? "Mulai" : "Memuat..."}
           onPress={handleStart}
         />
-        <ActionButton
-          accessibilityLabel="Masuk sebagai peneliti"
-          fullWidth
-          label="Masuk sebagai Peneliti"
-          onPress={() => router.push("/researcher/login")}
-          variant="secondary"
-        />
       </View>
     </DiaScreen>
   );
@@ -88,12 +78,6 @@ const styles = StyleSheet.create({
     height: 112,
     maxWidth: 260,
     width: "68%",
-  },
-  subtitle: {
-    color: diamomTheme.colors.mutedText,
-    fontSize: 17,
-    lineHeight: 26,
-    textAlign: "center",
   },
   heroIllustration: {
     alignSelf: "center",

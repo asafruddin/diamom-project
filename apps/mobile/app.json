@@ -41,7 +41,7 @@
             "imageWidth": 280
           },
           "android": {
-            "image": "./assets/icon/diamom-logo.png",
+            "image": "./assets/icon/diamom-logo-android-splash.png",
             "imageWidth": 280
           }
         }
@@ -54,7 +54,8 @@
       ],
       "expo-video",
       "expo-sharing",
-      "expo-image"
+      "expo-image",
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true,

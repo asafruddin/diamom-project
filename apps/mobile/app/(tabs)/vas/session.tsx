@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Image } from "expo-image";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -8,6 +8,7 @@ import { ActionButton, DiaScreen, SurfaceCard } from "@/components/dia-ui";
 import { LaborDanceVideoSheet } from "@/features/session/labor-dance-video-sheet";
 import { LABOR_DANCE_VIDEO_URL } from "@/features/session/labor-dance-video";
 import { useLaborDanceVideoPlayer } from "@/features/session/use-labor-dance-video-player";
+import { useSessionMusicPlayer } from "@/features/session/use-session-music-player";
 import { usePracticeSessionStore } from "@/features/session/session-store";
 import { VAS_ILLUSTRATIONS } from "@/features/session/vas-content";
 import { formatTimer } from "@/features/session/vas-scale";
@@ -28,10 +29,25 @@ export default function PracticeSessionScreen() {
   const [hasStartedSession, setHasStartedSession] = useState(false);
   const [isVideoSheetVisible, setIsVideoSheetVisible] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
+  const [isVideoRunning, setIsVideoRunning] = useState(false);
+  const [isMusicActive, setIsMusicActive] = useState(true);
   const [secondsLeft, setSecondsLeft] = useState(durationMinutes * 60);
   const { isPreparing, player, videoErrorMessage, videoSource } =
     useLaborDanceVideoPlayer(LABOR_DANCE_VIDEO_URL);
+  const { startMusic, stopMusic } = useSessionMusicPlayer(
+    isMusicActive && !isVideoSheetVisible,
+  );
   const isDone = secondsLeft === 0;
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!isMusicActive || isVideoSheetVisible) {
+        return;
+      }
+
+      startMusic();
+    }, [isMusicActive, isVideoSheetVisible, startMusic]),
+  );
 
   const pausePlayback = useCallback(() => {
     if (player.playing) {
@@ -65,35 +81,43 @@ export default function PracticeSessionScreen() {
   const handleStart = () => {
     setHasStartedSession(true);
     setIsRunning(true);
-    setIsVideoSheetVisible(true);
   };
 
-  const handlePause = () => {
+  const handlePauseSession = () => {
     setIsRunning(false);
-    pausePlayback();
+    if (isVideoSheetVisible) {
+      setIsVideoRunning(false);
+      pausePlayback();
+    }
   };
 
-  const handleResume = () => {
+  const handleResumeSession = () => {
+    if (isDone) {
+      return;
+    }
+
     setIsRunning(true);
   };
 
   const handleOpenVideoSheet = () => {
     setIsVideoSheetVisible(true);
-    if (hasStartedSession && !isDone) {
-      setIsRunning(true);
-    }
+    setIsVideoRunning(true);
   };
 
   const handleCloseVideoSheet = () => {
     setIsVideoSheetVisible(false);
+    setIsVideoRunning(false);
     pausePlayback();
   };
 
-  const handleNext = () => {
+  const handleFinish = () => {
+    stopMusic();
+    setIsMusicActive(false);
     pausePlayback();
     setHasStartedSession(false);
     setIsVideoSheetVisible(false);
     setIsRunning(false);
+    setIsVideoRunning(false);
     router.push("/(tabs)/vas/after");
   };
 
@@ -145,15 +169,19 @@ export default function PracticeSessionScreen() {
           <ActionButton label="Mulai" onPress={handleStart} />
         ) : (
           <>
+            {isRunning ? (
+              <ActionButton label="Jeda" onPress={handlePauseSession} />
+            ) : (
+              <ActionButton
+                disabled={isDone}
+                label="Lanjutkan"
+                onPress={handleResumeSession}
+              />
+            )}
             <ActionButton
-              disabled={isRunning}
-              label="Mulai"
-              onPress={handleResume}
-            />
-            <ActionButton
-              disabled={!isRunning}
-              label="Jeda"
-              onPress={handlePause}
+              accessibilityLabel="Selesaikan kegiatan"
+              label="Selesai"
+              onPress={handleFinish}
               variant="secondary"
             />
             <ActionButton
@@ -170,13 +198,11 @@ export default function PracticeSessionScreen() {
       ) : null}
 
       <LaborDanceVideoSheet
-        isDone={isDone}
         isPreparing={isPreparing}
-        isRunning={isRunning}
+        isRunning={isVideoRunning}
         onClose={handleCloseVideoSheet}
-        onFinish={handleNext}
-        onPause={handlePause}
-        onResume={handleResume}
+        onPause={() => setIsVideoRunning(false)}
+        onResume={() => setIsVideoRunning(true)}
         player={player}
         videoErrorMessage={videoErrorMessage}
         videoSource={videoSource}

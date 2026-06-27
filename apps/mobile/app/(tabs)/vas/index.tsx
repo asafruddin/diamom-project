@@ -3,7 +3,10 @@ import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { ActionButton, DiaScreen, VasSelector } from "@/components/dia-ui";
+import { LaborDanceVideoSheet } from "@/features/session/labor-dance-video-sheet";
+import { LABOR_DANCE_VIDEO_URL } from "@/features/session/labor-dance-video";
 import { usePracticeSessionStore } from "@/features/session/session-store";
+import { useLaborDanceVideoPlayer } from "@/features/session/use-labor-dance-video-player";
 import {
   VasLegendIllustrationPanel,
   VasScoreDisplay,
@@ -17,6 +20,23 @@ export default function VasBeforeScreen() {
     (state) => state.setBeforeScore,
   );
   const [selectedScore, setSelectedScore] = useState(beforeScore ?? 0);
+  const [isVideoSheetVisible, setIsVideoSheetVisible] = useState(false);
+  const [isVideoRunning, setIsVideoRunning] = useState(false);
+  const { isPreparing, player, videoErrorMessage, videoSource } =
+    useLaborDanceVideoPlayer(LABOR_DANCE_VIDEO_URL);
+
+  const handleOpenVideo = () => {
+    setIsVideoSheetVisible(true);
+    setIsVideoRunning(true);
+  };
+
+  const handleCloseVideo = () => {
+    setIsVideoSheetVisible(false);
+    setIsVideoRunning(false);
+    if (player.playing) {
+      player.pause();
+    }
+  };
 
   return (
     <DiaScreen>
@@ -50,7 +70,25 @@ export default function VasBeforeScreen() {
             router.push("/(tabs)/vas/session");
           }}
         />
+        <ActionButton
+          accessibilityLabel="Lihat video tutorial Labor Dance"
+          label="Lihat Video Tutorial"
+          onPress={handleOpenVideo}
+          variant="secondary"
+        />
       </View>
+
+      <LaborDanceVideoSheet
+        isPreparing={isPreparing}
+        isRunning={isVideoRunning}
+        onClose={handleCloseVideo}
+        onPause={() => setIsVideoRunning(false)}
+        onResume={() => setIsVideoRunning(true)}
+        player={player}
+        videoErrorMessage={videoErrorMessage}
+        videoSource={videoSource}
+        visible={isVideoSheetVisible}
+      />
     </DiaScreen>
   );
 }

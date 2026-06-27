@@ -49,7 +49,7 @@ export const DEVELOPER_RESEARCHERS: DeveloperResearcher[] = [
     isChair: false,
     nidn: "0523039202",
     institution: "STIKES Guna Bangsa Yogyakarta",
-    photo: require("@/assets/developer/selasih_putri.jpeg"),
+    photo: require("@/assets/developer/selasih_putri.png"),
     institutionLogo: require("@/assets/developer/instansi/logo_gby.png"),
   },
   {
@@ -59,7 +59,7 @@ export const DEVELOPER_RESEARCHERS: DeveloperResearcher[] = [
     isChair: false,
     nidn: "4007099201",
     institution: "Poltekkes Kemenkes Riau",
-    photo: require("@/assets/developer/septi_indah.jpeg"),
+    photo: require("@/assets/developer/septi_indah.png"),
     institutionLogo: require("@/assets/developer/instansi/logo_pk_riau.png"),
   },
 ];
