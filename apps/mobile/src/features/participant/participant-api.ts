@@ -28,7 +28,7 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${getApiBaseUrl()}${path}`, {
     ...requestInit,
     headers: {
-      ...(requestInit.body ? { "Content-Type": "application/json" } : {}),
+      "Content-Type": "application/json",
       ...(headers ?? {}),
     },
   });
@@ -62,6 +62,7 @@ function withParticipantToken(token: string) {
 
 export function bootstrapParticipantApp() {
   return requestJson<ParticipantAppSession>("/v1/participant/bootstrap", {
+    body: "{}",
     method: "POST",
   });
 }

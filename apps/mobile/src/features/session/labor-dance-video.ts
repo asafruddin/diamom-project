@@ -1,41 +1,36 @@
-const GOOGLE_DRIVE_FILE_ID_PATTERN = /\/file\/d\/([^/]+)\//;
+export const LABOR_DANCE_VIDEO_URL =
+  "https://player.cloudinary.com/embed/?cloud_name=dmrefeofw&public_id=Video_-_Labor_Dance_1_t5pmbh";
 
-export const LABOR_DANCE_VIDEO_SHARE_URL =
-  "https://drive.google.com/file/d/1ZPNKh-rSqbLIiLLxmH_1qLeMnfo7hUYE/view?usp=drive_link";
-
-export function getGoogleDriveFileId(
-  shareUrl: string | null | undefined,
+export function getPlayableLaborDanceVideoUrl(
+  videoUrl: string | null | undefined,
 ): string | null {
-  if (!shareUrl) {
+  if (!videoUrl) {
     return null;
-  }
-
-  const fileIdFromPath = shareUrl.match(GOOGLE_DRIVE_FILE_ID_PATTERN)?.[1];
-
-  if (fileIdFromPath) {
-    return fileIdFromPath;
   }
 
   try {
-    const parsedUrl = new URL(shareUrl);
-    return parsedUrl.searchParams.get("id");
+    const parsedUrl = new URL(videoUrl);
+
+    if (
+      parsedUrl.hostname === "player.cloudinary.com" &&
+      parsedUrl.pathname === "/embed/"
+    ) {
+      const cloudName = parsedUrl.searchParams.get("cloud_name");
+      const publicId = parsedUrl.searchParams.get("public_id");
+
+      if (!cloudName || !publicId) {
+        return null;
+      }
+
+      return `https://res.cloudinary.com/${cloudName}/video/upload/${publicId}.mp4`;
+    }
+
+    if (parsedUrl.hostname === "res.cloudinary.com") {
+      return videoUrl;
+    }
   } catch {
     return null;
   }
-}
 
-export function getLaborDanceVideoCacheFileName(fileId: string): string {
-  return `labor-dance-${fileId}.mp4`;
-}
-
-export function getPlayableGoogleDriveVideoUrl(
-  shareUrl: string | null | undefined,
-): string | null {
-  const fileId = getGoogleDriveFileId(shareUrl);
-
-  if (!fileId) {
-    return null;
-  }
-
-  return `https://drive.usercontent.google.com/download?id=${fileId}&export=download&confirm=t`;
+  return null;
 }

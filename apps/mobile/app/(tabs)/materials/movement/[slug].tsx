@@ -83,12 +83,6 @@ export default function LaborDanceMovementDetailScreen() {
       />
 
       <SafetyNoticeCard items={movement.whenToStop} />
-
-      <ActionButton
-        accessibilityLabel="Lanjut ke penilaian VAS"
-        label="Lanjut ke Penilaian VAS"
-        onPress={() => router.push("/(tabs)/vas")}
-      />
     </DiaScreen>
   );
 }

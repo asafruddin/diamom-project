@@ -18,7 +18,7 @@ import {
   MOVEMENTS_DETAIL,
   getMaterialNavigation,
 } from "@/features/materials/materials-content";
-import { LABOR_DANCE_VIDEO_SHARE_URL } from "@/features/session/labor-dance-video";
+import { LABOR_DANCE_VIDEO_URL } from "@/features/session/labor-dance-video";
 import { LaborDanceVideoSheet } from "@/features/session/labor-dance-video-sheet";
 import { useLaborDanceVideoPlayer } from "@/features/session/use-labor-dance-video-player";
 import { diamomTheme } from "@/theme";
@@ -30,7 +30,7 @@ export default function LaborDanceMovementsScreen() {
   const [isVideoSheetVisible, setIsVideoSheetVisible] = useState(false);
   const [isVideoRunning, setIsVideoRunning] = useState(false);
   const { isPreparing, player, videoErrorMessage, videoSource } =
-    useLaborDanceVideoPlayer(LABOR_DANCE_VIDEO_SHARE_URL);
+    useLaborDanceVideoPlayer(LABOR_DANCE_VIDEO_URL);
 
   const handleOpenVideo = () => {
     setIsVideoSheetVisible(true);

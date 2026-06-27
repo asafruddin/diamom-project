@@ -6,7 +6,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { ActionButton, DiaScreen, SurfaceCard } from "@/components/dia-ui";
 import { LaborDanceVideoSheet } from "@/features/session/labor-dance-video-sheet";
-import { LABOR_DANCE_VIDEO_SHARE_URL } from "@/features/session/labor-dance-video";
+import { LABOR_DANCE_VIDEO_URL } from "@/features/session/labor-dance-video";
 import { useLaborDanceVideoPlayer } from "@/features/session/use-labor-dance-video-player";
 import { usePracticeSessionStore } from "@/features/session/session-store";
 import { VAS_ILLUSTRATIONS } from "@/features/session/vas-content";
@@ -30,7 +30,7 @@ export default function PracticeSessionScreen() {
   const [isRunning, setIsRunning] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(durationMinutes * 60);
   const { isPreparing, player, videoErrorMessage, videoSource } =
-    useLaborDanceVideoPlayer(LABOR_DANCE_VIDEO_SHARE_URL);
+    useLaborDanceVideoPlayer(LABOR_DANCE_VIDEO_URL);
   const isDone = secondsLeft === 0;
 
   const pausePlayback = useCallback(() => {

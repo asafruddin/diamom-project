@@ -1,7 +1,8 @@
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 
-import { DiaScreen } from "@/components/dia-ui";
+import { ActionButton, DiaScreen } from "@/components/dia-ui";
 import { CLOSING_DETAIL } from "@/features/materials/materials-content";
 import { diamomTheme } from "@/theme";
 
@@ -12,7 +13,7 @@ export default function ClosingScreen() {
         <View style={styles.illustrationWrap}>
           <Image
             accessibilityLabel={CLOSING_DETAIL.title}
-            contentFit="contain"
+            contentFit="cover"
             source={CLOSING_DETAIL.heroImage}
             style={styles.illustration}
           />
@@ -36,6 +37,12 @@ export default function ClosingScreen() {
           </Text>
         </View>
       ) : null}
+
+      <ActionButton
+        accessibilityLabel="Lanjut ke penilaian VAS"
+        label="Lanjut ke Penilaian VAS"
+        onPress={() => router.push("/(tabs)/vas")}
+      />
     </DiaScreen>
   );
 }
@@ -51,9 +58,9 @@ const styles = StyleSheet.create({
   illustrationWrap: {
     alignItems: "center",
     alignSelf: "center",
-    height: 280,
+    height: "30%",
     justifyContent: "center",
-    width: "78%",
+    width: "100%",
   },
   illustration: {
     height: "100%",

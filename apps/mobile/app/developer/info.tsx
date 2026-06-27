@@ -1,7 +1,6 @@
-import { router } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 
-import { ActionButton, DiaScreen, PageHeader } from "@/components/dia-ui";
+import { DiaScreen, PageHeader } from "@/components/dia-ui";
 import { DeveloperResearcherCard } from "@/features/developer/developer-components";
 import {
   DEVELOPER_INFO_COPY,
@@ -22,13 +21,6 @@ export default function DeveloperInfoScreen() {
       {DEVELOPER_RESEARCHERS.map((researcher) => (
         <DeveloperResearcherCard key={researcher.id} researcher={researcher} />
       ))}
-
-      <ActionButton
-        accessibilityLabel="Masuk sebagai peneliti"
-        label="Masuk Peneliti"
-        onPress={() => router.push("/researcher/login")}
-        variant="secondary"
-      />
 
       <View style={styles.footerBlock}>
         <Text style={styles.footerTagline}>

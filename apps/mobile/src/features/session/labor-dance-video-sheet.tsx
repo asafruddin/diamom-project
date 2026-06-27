@@ -280,11 +280,7 @@ export function LaborDanceVideoSheet({
               ) : null}
               {isVideoLoading ? (
                 <View style={styles.videoOverlay}>
-                  <Text style={styles.videoOverlayText}>
-                    {isPreparing && !videoSource
-                      ? "Mengunduh video..."
-                      : "Menyiapkan video..."}
-                  </Text>
+                  <Text style={styles.videoOverlayText}>Menyiapkan video...</Text>
                 </View>
               ) : null}
             </View>

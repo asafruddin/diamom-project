@@ -51,7 +51,7 @@ export default function DiaMomEntryScreen() {
         style={styles.heroIllustration}
       />
 
-      <View style={styles.startButtonWrap}>
+      <View style={styles.actionGroup}>
         <ActionButton
           accessibilityLabel="Mulai menggunakan DiaMom"
           disabled={!isHydrated}
@@ -60,6 +60,13 @@ export default function DiaMomEntryScreen() {
           iconPlacement="overlap-trailing"
           label={isHydrated ? "Mulai" : "Memuat..."}
           onPress={handleStart}
+        />
+        <ActionButton
+          accessibilityLabel="Masuk sebagai peneliti"
+          fullWidth
+          label="Masuk sebagai Peneliti"
+          onPress={() => router.push("/researcher/login")}
+          variant="secondary"
         />
       </View>
     </DiaScreen>
@@ -93,7 +100,8 @@ const styles = StyleSheet.create({
     height: "60%",
     width: "88%",
   },
-  startButtonWrap: {
+  actionGroup: {
+    gap: diamomTheme.spacing.sm,
     paddingRight: diamomTheme.spacing.sm,
   },
 });
